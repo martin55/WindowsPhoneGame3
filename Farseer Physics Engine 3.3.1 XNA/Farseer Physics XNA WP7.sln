@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010 Express for Windows Phone
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Farseer Physics XNA WP7", "Farseer Physics XNA WP7.csproj", "{AA6CB78E-9484-4843-8613-54CD2BF1E948}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FishGame", "..\WindowsPhoneGame3\WindowsPhoneGame3\WindowsPhoneGame3\WindowsPhoneGame3\FishGame.csproj", "{639DD94D-7973-4890-A211-F80BC4DA7105}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FishGameContent", "..\WindowsPhoneGame3\WindowsPhoneGame3\WindowsPhoneGame3\WindowsPhoneGame3Content\FishGameContent.contentproj", "{72FE8C3D-FD07-4726-847A-924E00A5A995}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Windows Phone = Debug|Windows Phone
+		Release|Windows Phone = Release|Windows Phone
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AA6CB78E-9484-4843-8613-54CD2BF1E948}.Debug|Windows Phone.ActiveCfg = Debug|Windows Phone
+		{AA6CB78E-9484-4843-8613-54CD2BF1E948}.Debug|Windows Phone.Build.0 = Debug|Windows Phone
+		{AA6CB78E-9484-4843-8613-54CD2BF1E948}.Release|Windows Phone.ActiveCfg = Release|Windows Phone
+		{AA6CB78E-9484-4843-8613-54CD2BF1E948}.Release|Windows Phone.Build.0 = Release|Windows Phone
+		{639DD94D-7973-4890-A211-F80BC4DA7105}.Debug|Windows Phone.ActiveCfg = Debug|Windows Phone
+		{639DD94D-7973-4890-A211-F80BC4DA7105}.Debug|Windows Phone.Build.0 = Debug|Windows Phone
+		{639DD94D-7973-4890-A211-F80BC4DA7105}.Debug|Windows Phone.Deploy.0 = Debug|Windows Phone
+		{639DD94D-7973-4890-A211-F80BC4DA7105}.Release|Windows Phone.ActiveCfg = Release|Windows Phone
+		{639DD94D-7973-4890-A211-F80BC4DA7105}.Release|Windows Phone.Build.0 = Release|Windows Phone
+		{639DD94D-7973-4890-A211-F80BC4DA7105}.Release|Windows Phone.Deploy.0 = Release|Windows Phone
+		{72FE8C3D-FD07-4726-847A-924E00A5A995}.Debug|Windows Phone.ActiveCfg = Debug|Windows Phone
+		{72FE8C3D-FD07-4726-847A-924E00A5A995}.Release|Windows Phone.ActiveCfg = Release|Windows Phone
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

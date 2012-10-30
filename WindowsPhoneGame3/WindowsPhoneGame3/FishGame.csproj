@@ -52,9 +52,6 @@
     <XnaCompressContent>false</XnaCompressContent>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FarseerPhysicsXNA">
-      <HintPath>..\..\..\Farseer Physics Engine 3.3.1 XNA\obj\Windows Phone\Debug\FarseerPhysicsXNA.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Devices.Sensors, Version=7.0.0.0, Culture=neutral, PublicKeyToken=24eec0d8c86cda1e, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Xna.Framework" />
     <Reference Include="Microsoft.Xna.Framework.Game" />
@@ -90,6 +87,10 @@
     <Content Include="PhoneGameThumb.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Farseer Physics Engine 3.3.1 XNA\Farseer Physics XNA WP7.csproj">
+      <Project>{AA6CB78E-9484-4843-8613-54CD2BF1E948}</Project>
+      <Name>Farseer Physics XNA WP7</Name>
+    </ProjectReference>
     <ProjectReference Include="..\WindowsPhoneGame3Content\FishGameContent.contentproj">
       <Project>{72FE8C3D-FD07-4726-847A-924E00A5A995}</Project>
       <Name>FishGameContent %28Content%29</Name>

@@ -5,7 +5,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FishGame", "WindowsPhoneGam
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FishGameContent", "WindowsPhoneGame3\WindowsPhoneGame3Content\FishGameContent.contentproj", "{72FE8C3D-FD07-4726-847A-924E00A5A995}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Farseer Physics XNA WP7", "..\Farseer Physics Engine 3.3.1 XNA\Farseer Physics XNA WP7.csproj", "{AA6CB78E-9484-4843-8613-54CD2BF1E948}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Farseer Physics XNA WP7", "Farseer Physics Engine 3.3.1 XNA\Farseer Physics XNA WP7.csproj", "{AA6CB78E-9484-4843-8613-54CD2BF1E948}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

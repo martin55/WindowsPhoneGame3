@@ -1,5 +1,3 @@
-using System;
-
 namespace WindowsPhoneGame3
 {
 #if WINDOWS || XBOX
