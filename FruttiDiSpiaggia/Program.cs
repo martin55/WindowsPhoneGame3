@@ -1,4 +1,4 @@
-namespace WindowsPhoneGame3
+namespace FruttiDiSpiaggia
 {
 #if WINDOWS || XBOX
     static class Program
@@ -16,4 +16,3 @@ namespace WindowsPhoneGame3
     }
 #endif
 }
-

@@ -7,7 +7,7 @@
     <Platform Condition=" '$(Platform)' == '' ">Windows Phone</Platform>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WindowsPhoneGame3</RootNamespace>
+    <RootNamespace>FruttiDiSpiaggia</RootNamespace>
     <AssemblyName>WindowsPhoneGame3</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
@@ -68,7 +68,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Camera.cs" />
-    <Compile Include="Game1.cs">
+    <Compile Include="Constants.cs" />
+    <Compile Include="GameCore.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Particle.cs" />
@@ -87,13 +88,13 @@
     <Content Include="PhoneGameThumb.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Farseer Physics Engine 3.3.1 XNA\Farseer Physics XNA WP7.csproj">
+    <ProjectReference Include="..\Farseer Physics Engine 3.3.1 XNA\Farseer Physics XNA WP7.csproj">
       <Project>{AA6CB78E-9484-4843-8613-54CD2BF1E948}</Project>
       <Name>Farseer Physics XNA WP7</Name>
     </ProjectReference>
-    <ProjectReference Include="..\WindowsPhoneGame3Content\FishGameContent.contentproj">
+    <ProjectReference Include="..\FruttiDiSpiaggiaContent\FruttiDiSpiaggiaContent.contentproj">
       <Project>{72FE8C3D-FD07-4726-847A-924E00A5A995}</Project>
-      <Name>FishGameContent %28Content%29</Name>
+      <Name>FruttiDiSpiaggiaContent %28Content%29</Name>
       <XnaReferenceType>Content</XnaReferenceType>
     </ProjectReference>
   </ItemGroup>

@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010 Express for Windows Phone
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FishGame", "WindowsPhoneGame3\WindowsPhoneGame3\FishGame.csproj", "{639DD94D-7973-4890-A211-F80BC4DA7105}"
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FruttiDiSpiaggia", "FruttiDiSpiaggia\FruttiDiSpiaggia.csproj", "{639DD94D-7973-4890-A211-F80BC4DA7105}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FishGameContent", "WindowsPhoneGame3\WindowsPhoneGame3Content\FishGameContent.contentproj", "{72FE8C3D-FD07-4726-847A-924E00A5A995}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FruttiDiSpiaggiaContent", "FruttiDiSpiaggiaContent\FruttiDiSpiaggiaContent.contentproj", "{72FE8C3D-FD07-4726-847A-924E00A5A995}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Farseer Physics XNA WP7", "Farseer Physics Engine 3.3.1 XNA\Farseer Physics XNA WP7.csproj", "{AA6CB78E-9484-4843-8613-54CD2BF1E948}"
 EndProject

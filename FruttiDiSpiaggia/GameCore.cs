@@ -1,4 +1,4 @@
-namespace FishGame
+namespace FruttiDiSpiaggia
 {
     using System;
     using System.Collections.Generic;
@@ -10,32 +10,66 @@ namespace FishGame
     using FarseerPhysics.Factories;
 
     /// <summary>
-    /// This is the main type for your game
+    /// This is the main type for the game.
     /// </summary>
-    public class Game1 : Microsoft.Xna.Framework.Game
+    public class GameCore : Microsoft.Xna.Framework.Game
     {
-        // bounding box
-        Body topWall;
-        Body rectangle3;
-        Body _lander;
-        World world;
+        /* Fields */
 
-        // scrolling map
-        Camera camera = new Camera();
+        /// <summary>
+        /// Device accelerometer state.
+        /// </summary>
+        Vector2 accelerometer;
 
-        List<Texture2D> tiles = new List<Texture2D>();
+        /// <summary>
+        /// Textures for the particle generator.
+        /// </summary>
+        SpriteBatch _spriteBatch;
 
-        static int tileWidth = 128;
-        static int tileHeight = 128;
+        /// <summary>
+        /// Particle generator.
+        /// </summary>
+        ParticleEngine particleEngine;
+
+        /// <summary>
+        /// Game camera; at fixed height over the board, movable in different
+        /// directions, always following the main character.
+        /// </summary>
+        private Camera camera;
+
+        // Gameboard bounding box.
+        /// <summary>
+        /// 
+        /// </summary>
+        private Body topWall;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private Body rectangle3;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private Body _lander;
+
+        /// <summary>
+        /// Represents the game world, managing all physics.
+        /// </summary>
+        private World gameWorld;
+
+        // Scrolling map.
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private List<Texture2D> tiles = new List<Texture2D>();
 
         int tileMapWidth;
         int tileMapHeight;
 
         static int screenWidth;
         static int screenHeight;
-
-        static int mapWidthInPixels;
-        static int mapHeightInPixels;
 
         /// <summary>
         /// Gets screen width.
@@ -54,71 +88,99 @@ namespace FishGame
         }
 
         /// <summary>
-        /// Gets map width in pixels.
+        /// 
         /// </summary>
-        public static int MapWidthInPixels
-        {
-            get { return mapWidthInPixels; }
-        }
+        GraphicsDeviceManager _graphics;
+        
+        // Textures
 
         /// <summary>
-        /// Gets map height in pixels.
+        /// 
         /// </summary>
-        public static int MapHeightInPixels
-        {
-            get { return mapHeightInPixels; }
-        }
-
-        GraphicsDeviceManager _graphics;
-        SpriteBatch _spriteBatch;
-        ParticleEngine particleEngine;
-        // Textures
         Texture2D _landerTexture;
+
+        /// <summary>
+        /// 
+        /// </summary>
         Texture2D fishRun;
+
+        /// <summary>
+        /// 
+        /// </summary>
         Texture2D wallTexture;
+
+        /// <summary>
+        /// 
+        /// </summary>
         Texture2D rectangleSprite;
 
-
-        int[,] map = {
-            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1,},
-            {3, 0, 0, 0, 0, 0, 0, 0, 0, 0,},
-            {3, 0, 2, 0, 0, 0, 0, 0, 0, 0 },
-            {3, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {3, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-            {3, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-            {3, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
-            {3, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
-            {3, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
-            {3, 0, 0, 0, 0, 0, 0, 0, 0, 0,},
-        };
-
+        /// <summary>
+        /// 
+        /// </summary>
         int playerCurrentFrame = 0;
+
+        /// <summary>
+        /// 
+        /// </summary>
         int runFrameWidth = 0;
+
+        /// <summary>
+        /// 
+        /// </summary>
         int runFrameHeight = 0;
+
+        /// <summary>
+        /// 
+        /// </summary>
         double playerAnimationDelay = .1;
+
+        /// <summary>
+        /// 
+        /// </summary>
         double currentPlayerAnimationDelay = 0;
+
+        /// <summary>
+        /// 
+        /// </summary>
         private float RotationAngle = 0;
 
         // Entities
-        Vector2 vel = new Vector2();
-        Vector2 pos = new Vector2(screenHeight / 2f, screenWidth / 2f);
-        Accelerometer _motion;
-        Vector2 accelReading = new Vector2();
-        private Vector2 _ballMaxVelocity = new Vector2(3, 3);
-        private const float Threshold = 0.1f;
-        private float speed = 5f;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Game1" /> class.
+        /// 
         /// </summary>
-        public Game1()
-        {
-            _graphics = new GraphicsDeviceManager(this);
-            _graphics.PreferredBackBufferWidth = 800;
-            _graphics.PreferredBackBufferHeight = 480;
-            _graphics.IsFullScreen = true;
+        Vector2 vel = new Vector2();
 
-            _graphics.SupportedOrientations = DisplayOrientation.LandscapeLeft;
+        /// <summary>
+        /// 
+        /// </summary>
+        Vector2 pos = new Vector2(screenHeight / 2f, screenWidth / 2f);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        Accelerometer _motion;
+
+        public static int MapWidthInPixels;
+        public static int MapHeightInPixels;
+
+        /* Constructor */
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GameCore" /> class.
+        /// </summary>
+        public GameCore()
+        {
+            this.camera = new Camera();
+            this.accelerometer = new Vector2();
+            this._graphics = new GraphicsDeviceManager(this)
+                {
+                    PreferredBackBufferWidth = 800,
+                    PreferredBackBufferHeight = 480,
+                    IsFullScreen = true,
+                    SupportedOrientations = DisplayOrientation.LandscapeLeft
+                };
+
             Content.RootDirectory = "Content";
 
             // Frame rate is 30 fps by default for Windows Phone.
@@ -154,13 +216,13 @@ namespace FishGame
             //MediaPlayer.Play(song);
             //MediaPlayer.IsRepeating = true;
 
-            if (world == null)
+            if (gameWorld == null)
             {
-                world = new World(new Vector2(0, 0));
+                gameWorld = new World(new Vector2(0, 0));
             }
             else
             {
-                world.Clear();
+                gameWorld.Clear();
             }
 
             // Create a new SpriteBatch, which can be used to draw textures.
@@ -180,9 +242,6 @@ namespace FishGame
             tiles.Add(Content.Load<Texture2D>("sand4"));
             tiles.Add(Content.Load<Texture2D>("sand5"));
 
-            mapWidthInPixels = tileMapWidth * tileWidth;
-            mapHeightInPixels = tileMapHeight * tileHeight;
-
             screenWidth = GraphicsDevice.Viewport.Width;
             screenHeight = GraphicsDevice.Viewport.Height;
 
@@ -198,16 +257,16 @@ namespace FishGame
             //Initialize xTile map resources
 
 
-            _lander = BodyFactory.CreateCircle(world, 0.4f, 1.0f);
+            _lander = BodyFactory.CreateCircle(gameWorld, 0.4f, 1.0f);
             _lander.BodyType = BodyType.Dynamic;
             _lander.Position = pos;
 
             wallTexture = Content.Load<Texture2D>("rocket");
-            topWall = BodyFactory.CreateRectangle(world, 0.5f, 1f, 2.0f);
+            topWall = BodyFactory.CreateRectangle(gameWorld, 0.5f, 1f, 2.0f);
             topWall.BodyType = BodyType.Static;
             topWall.Position = new Vector2(3f, 2);
 
-            rectangle3 = BodyFactory.CreateCircle(world, 0.4f, 1.0f);
+            rectangle3 = BodyFactory.CreateCircle(gameWorld, 0.4f, 1.0f);
             rectangle3.BodyType = BodyType.Dynamic;
             rectangle3.Position = new Vector2(5.0f, 3);
 
@@ -223,28 +282,29 @@ namespace FishGame
             this.Content.Unload();
         }
 
-        //Method for Changed Readings
+        /// <summary>
+        /// Raised when the accelerometer readings are subject to change.
+        /// </summary>
+        /// <param name="sender">Object that raised the event.</param>
+        /// <param name="e">Detailed state connected with the event.</param>
         public void AccelerometerReadingChanged(object sender, AccelerometerReadingEventArgs e)
         {
-            accelReading.X = -(float)e.X;
-            accelReading.Y = -(float)e.Y;
+            this.accelerometer.X = -(float)e.X;
+            this.accelerometer.Y = -(float)e.Y;
 
             // update the ball's velocity with the accelerometer values
-            if (Math.Abs(accelReading.Y) > Threshold)
+            if (Math.Abs(this.accelerometer.Y) > Constants.VelocityLimit)
             {
-                vel.X = accelReading.Y;
+                vel.X = this.accelerometer.Y;
             }
 
-            if (Math.Abs(accelReading.X) > Threshold)
+            if (Math.Abs(this.accelerometer.X) > Constants.VelocityLimit)
             {
-
-                vel.Y = accelReading.X;
+                vel.Y = this.accelerometer.X;
             }
 
-
-            // limit the velocity to the maximum
-            vel = Vector2.Clamp(vel, -_ballMaxVelocity, _ballMaxVelocity);
-
+            // Limit the velocity.
+            vel = Vector2.Clamp(vel, -Constants.BallVelocityLimit, Constants.BallVelocityLimit);
         }
 
         /// <summary>
@@ -256,7 +316,7 @@ namespace FishGame
         {
             float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            world.Step(Math.Min((float)gameTime.ElapsedGameTime.TotalSeconds, (1f / 30f)));
+            gameWorld.Step(Math.Min((float)gameTime.ElapsedGameTime.TotalSeconds, (1f / 30f)));
             // TODO: Add your update logic here
 
             // TODO: Add your game logic here.
@@ -277,18 +337,18 @@ namespace FishGame
                     playerCurrentFrame = playerCurrentFrame % 16;
                     currentPlayerAnimationDelay -= playerAnimationDelay;
                 }
-                RotationAngle = fAngleBetween(pos, pos + vel);
+                RotationAngle = AngleF(pos, pos + vel);
                 float circle = MathHelper.Pi * 2;
                 RotationAngle = RotationAngle % circle;
 
-                particleEngine.EmitterAng = 0;
-                particleEngine.EmitterVel = new Vector2(-vel.X, -vel.Y);
+                particleEngine.EmitterAngle = 0;
+                particleEngine.EmitterVelocity = new Vector2(-vel.X, -vel.Y);
                 particleEngine.EmitterLocation = new Vector2(_lander.Position.X, _lander.Position.Y);
                 particleEngine.Update();
             }
 
-            pos.X += vel.X * speed;
-            pos.Y += vel.Y * speed;
+            pos.X += vel.X * Constants.Speed;
+            pos.Y += vel.Y * Constants.Speed;
             vel *= elapsed;
 
             // Accept touch
@@ -303,10 +363,10 @@ namespace FishGame
             // }
 
             // Update particles
-            int MaxX = _graphics.GraphicsDevice.Viewport.Width - _landerTexture.Width / 2;
-            int MinX = _landerTexture.Width / 2;
-            int MaxY = _graphics.GraphicsDevice.Viewport.Height - _landerTexture.Height / 2;
-            int MinY = _landerTexture.Height / 2;
+            int xMin = _landerTexture.Width / 2;
+            int xMax = _graphics.GraphicsDevice.Viewport.Width - _landerTexture.Width / 2;
+            int yMin = _landerTexture.Height / 2;
+            int yMax = _graphics.GraphicsDevice.Viewport.Height - _landerTexture.Height / 2;
 
             _lander.ApplyForce(vel);
             _lander.Position = pos * elapsed;
@@ -320,36 +380,57 @@ namespace FishGame
         /// This is called when the game should draw itself.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        /// 
         private Vector2 origin;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="gameTime"></param>
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.SandyBrown);
 
             origin.X = (fishRun.Width / 16) / 2;
             origin.Y = fishRun.Height / 2;
+
             DrawMap();
+
             // Draw sprites
             _spriteBatch.Begin();
-
             particleEngine.Draw(_spriteBatch);
 
-            _spriteBatch.Draw(wallTexture, ToDisplayUnits(topWall.Position),
-                                         null,
-                                            Color.White, topWall.Rotation, new Vector2(wallTexture.Width / 2.0f, wallTexture.Height / 2.0f), 1f,
-                                            SpriteEffects.None, 0f);
+            _spriteBatch.Draw(
+                wallTexture,
+                ToDisplayUnits(topWall.Position),
+                null,
+                Color.White,
+                topWall.Rotation,
+                new Vector2(wallTexture.Width / 2f, wallTexture.Height / 2f),
+                1f,
+                SpriteEffects.None,
+                0f);
 
-            _spriteBatch.Draw(rectangleSprite, ToDisplayUnits(rectangle3.Position),
+            _spriteBatch.Draw(
+                rectangleSprite,
+                ToDisplayUnits(rectangle3.Position),
+                null,
+                Color.Red,
+                rectangle3.Rotation,
+                new Vector2(rectangleSprite.Width / 2f, rectangleSprite.Height / 2f),
+                1f,
+                SpriteEffects.None,
+                0f);
 
-                                            null,
-
-                                            Color.Red, rectangle3.Rotation, new Vector2(rectangleSprite.Width / 2.0f, rectangleSprite.Height / 2.0f), 1f,
-
-                                            SpriteEffects.None, 0f);
-            _spriteBatch.Draw(fishRun, ToDisplayUnits(_lander.Position),
-                     new Microsoft.Xna.Framework.Rectangle(playerCurrentFrame * runFrameWidth, 0, runFrameWidth, runFrameHeight),
-                      Color.White, RotationAngle, origin, 1.0f, SpriteEffects.None, 0f);
-
+            _spriteBatch.Draw(
+                fishRun,
+                ToDisplayUnits(_lander.Position),
+                new Microsoft.Xna.Framework.Rectangle(playerCurrentFrame * runFrameWidth, 0, runFrameWidth, runFrameHeight),
+                Color.White,
+                RotationAngle,
+                origin,
+                1f,
+                SpriteEffects.None,
+                0f);
 
             _spriteBatch.End();
 
@@ -359,14 +440,18 @@ namespace FishGame
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="vPointA"></param>
-        /// <param name="vPointB"></param>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
         /// <returns></returns>
-        private float fAngleBetween(Vector2 vPointA, Vector2 vPointB)
+        private float AngleF(Vector2 a, Vector2 b)
         {
-            float fAngle = (float)Math.Atan2((double)(vPointA.Y - vPointB.Y), (double)(vPointA.X - vPointB.X)) - MathHelper.ToRadians(90);
-            if (fAngle < 0) fAngle += MathHelper.ToRadians(360);
-            return fAngle;
+            float angle = (float)Math.Atan2((double)(a.Y - b.Y), (double)(a.X - b.X)) - MathHelper.ToRadians(90);
+            if (angle < 0)
+            {
+                angle += MathHelper.ToRadians(360);
+            }
+
+            return angle;
         }
 
         /// <summary>
@@ -375,29 +460,28 @@ namespace FishGame
         private void DrawMap()
         {
             Point cameraPoint = VectorToCell(camera.Position);
-            Point viewPoint = VectorToCell(camera.Position +
-                                    ViewPortVector());
+            Point viewPoint = VectorToCell(camera.Position + ViewPortVector());
             Point min = new Point();
             Point max = new Point();
             min.X = cameraPoint.X;
             min.Y = cameraPoint.Y;
-            max.X = (int)Math.Min(viewPoint.X, map.GetLength(1));
-            max.Y = (int)Math.Min(viewPoint.Y, map.GetLength(0));
+            max.X = (int)Math.Min(viewPoint.X, Constants.Map.GetLength(1));
+            max.Y = (int)Math.Min(viewPoint.Y, Constants.Map.GetLength(0));
             Microsoft.Xna.Framework.Rectangle tileRectangle = 
                 new Microsoft.Xna.Framework.Rectangle(
                     0,
                     0,
-                    tileWidth,
-                    tileHeight);
+                    Constants.TileWidth,
+                    Constants.TileHeight);
 
             _spriteBatch.Begin();
             for (int y = min.Y; y < max.Y; y++)
             {
                 for (int x = min.X; x < max.X; x++)
                 {
-                    tileRectangle.X = x * tileWidth - (int)camera.Position.X;
-                    tileRectangle.Y = y * tileHeight - (int)camera.Position.Y;
-                    _spriteBatch.Draw(tiles[map[y, x]],
+                    tileRectangle.X = x * Constants.TileWidth - (int)camera.Position.X;
+                    tileRectangle.Y = y * Constants.TileHeight - (int)camera.Position.Y;
+                    _spriteBatch.Draw(tiles[Constants.Map[y, x]],
                         tileRectangle,
                         Color.White);
                 }
@@ -414,8 +498,8 @@ namespace FishGame
         private Point VectorToCell(Vector2 vector)
         {
             return new Point(
-                        (int)(vector.X / tileWidth),
-                        (int)(vector.Y / tileHeight));
+                (int)(vector.X / Constants.TileWidth),
+                (int)(vector.Y / Constants.TileHeight));
         }
 
         /// <summary>
@@ -425,10 +509,13 @@ namespace FishGame
         private Vector2 ViewPortVector()
         {
             return new Vector2(
-                    screenWidth + tileWidth,
-                    screenHeight + tileHeight);
+                screenWidth + Constants.TileWidth,
+                screenHeight + Constants.TileHeight);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         private static float _displayUnitsToSimUnitsRatio = 100f;
 
         /// <summary>
