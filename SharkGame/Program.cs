@@ -1,4 +1,4 @@
-namespace FruttiDiSpiaggia
+namespace SharkGame
 {
 #if WINDOWS || XBOX
     static class Program

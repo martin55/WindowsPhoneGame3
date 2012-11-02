@@ -1,4 +1,4 @@
-namespace FruttiDiSpiaggia
+namespace SharkGame
 {
     using System;
     using System.Collections.Generic;
@@ -39,7 +39,7 @@ namespace FruttiDiSpiaggia
 
         // Gameboard bounding box.
         /// <summary>
-        /// 
+        /// Map bounding box, imposing map size limits on player's movement.
         /// </summary>
         private Body topWall;
 
@@ -212,9 +212,10 @@ namespace FruttiDiSpiaggia
         /// </summary>
         protected override void LoadContent()
         {
-            //Song song = Content.Load<Song>("game_s");  // Put the name of your song here instead of "song_title"
-            //MediaPlayer.Play(song);
-            //MediaPlayer.IsRepeating = true;
+            // Begin playing the game's soundtrack.
+            // Song song = Content.Load<Song>("game_s");  // Put the name of your song here instead of "song_title"
+            // MediaPlayer.Play(song);
+            // MediaPlayer.IsRepeating = true;
 
             if (gameWorld == null)
             {

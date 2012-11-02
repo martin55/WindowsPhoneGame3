@@ -1,4 +1,4 @@
-namespace FruttiDiSpiaggia
+namespace SharkGame
 {
     using Microsoft.Xna.Framework;
 
