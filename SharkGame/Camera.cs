@@ -3,7 +3,8 @@ namespace SharkGame
     using Microsoft.Xna.Framework;
 
     /// <summary>
-    /// Represents a camera object.
+    /// Represents a camera object for a two-dimensional game. Supports movement
+    /// while staying at a fixed height over the game map.
     /// </summary>
     public class Camera
     {
@@ -26,15 +27,18 @@ namespace SharkGame
         /// </summary>
         public Camera()
         {
-            this.position = new Vector2();
-            this.speed = 4.0f;
+            this.position = Vector2.Zero;
+            this.speed = Constants.Speeds.CameraSpeed;
         }
 
-        /* Accessors */
+        /* Properties */
 
         /// <summary>
         /// Gets or sets the camera's speed.
         /// </summary>
+        /// <value>
+        /// Values are restricted to [0.5f, 50f] range.
+        /// </value>
         public float Speed
         {
             get
@@ -51,6 +55,9 @@ namespace SharkGame
         /// <summary>
         /// Gets or sets the camera's position.
         /// </summary>
+        /// <value>
+        /// Values are restricted to [0, map width - screen width] range.
+        /// </value>
         public Vector2 Position
         {
             get
@@ -63,11 +70,11 @@ namespace SharkGame
                 this.position.X = MathHelper.Clamp(
                     value.X,
                     0,
-                    GameCore.MapWidthInPixels - GameCore.ScreenWidth);
+                    GameCore.MapWidth - GameCore.ScreenWidth);
                 this.position.Y = MathHelper.Clamp(
                     value.Y,
                     0,
-                    GameCore.MapHeightInPixels - GameCore.ScreenHeight);
+                    GameCore.MapHeight - GameCore.ScreenHeight);
             }
         }
     }

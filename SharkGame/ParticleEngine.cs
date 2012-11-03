@@ -89,6 +89,18 @@ namespace SharkGame
         /* Methods */
 
         /// <summary>
+        /// Draws all existing particles.
+        /// </summary>
+        /// <param name="spriteBatch"></param>
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            for (int index = 0; index < this.particles.Count; ++index)
+            {
+                this.particles[index].Draw(spriteBatch);
+            }
+        }
+
+        /// <summary>
         /// Generates some and updates all existing particles.
         /// </summary>
         public void Update()
@@ -97,7 +109,7 @@ namespace SharkGame
 
             for (int i = 0; i < total; ++i)
             {
-                this.particles.Add(GenerateNewParticle());
+                this.particles.Add(this.GenerateNewParticle());
             }
 
             for (int particle = 0; particle < this.particles.Count; ++particle)
@@ -118,27 +130,14 @@ namespace SharkGame
         private Particle GenerateNewParticle()
         {
             return new Particle(
-                EmitterLocation,
-                EmitterVelocity,
-                EmitterAngle,
+                this.EmitterLocation,
+                this.EmitterVelocity,
+                this.EmitterAngle,
                 0f,
                 1f,
                 Color.SandyBrown,
-                this.textures[this.random.Next(textures.Count)],
+                this.textures[this.random.Next(this.textures.Count)],
                 10 + this.random.Next(20));
-        }
-
-        /// <summary>
-        /// Draws all existing particles.
-        /// </summary>
-        /// <param name="spriteBatch"></param>
-        public void Draw(SpriteBatch spriteBatch)
-        {
-            for (int index = 0; index < this.particles.Count; ++index)
-            {
-                this.particles[index].Draw(spriteBatch);
-            }
         }
     }
 }
-

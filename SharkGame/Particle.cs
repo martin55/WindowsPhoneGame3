@@ -177,6 +177,7 @@ namespace SharkGame
         {
             // Save sprite's size as a rectangle.
             Rectangle sourceRectangle = new Rectangle(0, 0, this.sprite.Width, this.sprite.Height);
+
             // Create a vector centered in sprite.
             Vector2 origin = new Vector2(this.sprite.Width / 2, this.sprite.Height / 2);
 
@@ -193,4 +194,3 @@ namespace SharkGame
         }
     }
 }
-

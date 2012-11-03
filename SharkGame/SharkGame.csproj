@@ -60,11 +60,11 @@
     <Reference Include="Microsoft.Xna.Framework.Input.Touch" />
     <Reference Include="mscorlib" />
     <Reference Include="System" />
+    <Reference Include="System.Windows, Version=2.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e, processorArchitecture=MSIL" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Net" />
-    <Reference Include="xTile, Version=2.0.6.0, Culture=neutral, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Camera.cs" />
@@ -93,7 +93,7 @@
       <Project>{AA6CB78E-9484-4843-8613-54CD2BF1E948}</Project>
       <Name>Farseer Physics XNA WP7</Name>
     </ProjectReference>
-    <ProjectReference Include="..\FruttiDiSpiaggiaContent\SharkGameContent.contentproj">
+    <ProjectReference Include="..\SharkGameContent\SharkGameContent.contentproj">
       <Project>{72FE8C3D-FD07-4726-847A-924E00A5A995}</Project>
       <Name>SharkGameContent %28Content%29</Name>
       <XnaReferenceType>Content</XnaReferenceType>
