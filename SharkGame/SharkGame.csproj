@@ -69,6 +69,7 @@
   <ItemGroup>
     <Compile Include="Camera.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="Conversions.cs" />
     <Compile Include="GameCore.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -2,13 +2,14 @@ namespace SharkGame
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
 
     /// <summary>
     /// Represents a particle generator object.
     /// </summary>
-    public class ParticleEngine
+    public class ParticleEmitter
     {
         /* Fields */
 
@@ -45,19 +46,20 @@ namespace SharkGame
         /* Constructor */
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ParticleEngine" /> class.
+        /// Initializes a new instance of the <see cref="ParticleEmitter" /> class
+        /// with the given sprites' collection and position for the emitter.
         /// </summary>
-        /// <param name="textures"></param>
-        /// <param name="location"></param>
-        public ParticleEngine(List<Texture2D> textures, Vector2 location)
+        /// <param name="textures">Collection of sprites.</param>
+        /// <param name="location">New location for the emitter.</param>
+        public ParticleEmitter(List<Texture2D> textures, Vector2 emitterLocation)
         {
-            this.EmitterLocation = location;
+            this.emitterLocation = emitterLocation;
             this.textures = textures;
             this.particles = new List<Particle>();
             this.random = new Random();
         }
 
-        /* Accessors */
+        /* Properties */
 
         /// <summary>
         /// Gets or sets the angle of the particle emitter.
@@ -94,10 +96,7 @@ namespace SharkGame
         /// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch)
         {
-            for (int index = 0; index < this.particles.Count; ++index)
-            {
-                this.particles[index].Draw(spriteBatch);
-            }
+            this.particles.ForEach(particle => particle.Draw(spriteBatch));
         }
 
         /// <summary>
@@ -105,20 +104,18 @@ namespace SharkGame
         /// </summary>
         public void Update()
         {
-            int total = 10;
-
-            for (int i = 0; i < total; ++i)
+            for (int i = 0; i < 10; ++i)
             {
                 this.particles.Add(this.GenerateNewParticle());
             }
 
-            for (int particle = 0; particle < this.particles.Count; ++particle)
+            // Iterate over particles' list, update and remove "dead" particles.
+            for (int i = this.particles.Count - 1; i >= 0; --i)
             {
-                this.particles[particle].Update();
-                if (this.particles[particle].Lifespan <= 0)
+                this.particles[i].Update();
+                if (this.particles[i].Lifespan <= 0)
                 {
-                    this.particles.RemoveAt(particle);
-                    --particle;
+                    this.particles.RemoveAt(i);
                 }
             }
         }
@@ -129,10 +126,11 @@ namespace SharkGame
         /// <returns>A new, predefined particle.</returns>
         private Particle GenerateNewParticle()
         {
+            System.Diagnostics.Debug.WriteLine("Emitter: {0}", this.emitterLocation);
             return new Particle(
-                this.EmitterLocation,
-                this.EmitterVelocity,
-                this.EmitterAngle,
+                this.emitterLocation,
+                this.emitterVelocity,
+                this.emitterAngle,
                 0f,
                 1f,
                 Color.SandyBrown,

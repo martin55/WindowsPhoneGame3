@@ -5,17 +5,33 @@ namespace SharkGame
     /// <summary>
     /// Holds all game-related constants and static values.
     /// </summary>
-    public class Constants
+    public static class Constants
     {
         /// <summary>
-        /// Single in-game tile width.
+        /// Represents how many meters does one pixel represent.
         /// </summary>
-        public static int TileWidth { get { return 128; } }
+        public static float RealToVirtualRatio { get { return 100f; } }
 
         /// <summary>
-        /// Single in-game tile height.
+        /// Game objects' indices for both bodies and textures collection
         /// </summary>
-        public static int TileHeight { get { return 128; } }
+        public static class GameObjects
+        {
+            /// <summary>
+            /// Blue Shark index.
+            /// </summary>
+            public static int BlueShark { get { return 0; } }
+
+            /// <summary>
+            /// Black Shark index. 
+            /// </summary>
+            public static int BlackShark { get { return 1; } }
+
+            /// <summary>
+            /// Rocket index.
+            /// </summary>
+            public static int Rocket { get { return 2; } }
+        }
 
         /// <summary>
         /// Holds all "hardcoded" game maps.
@@ -27,8 +43,28 @@ namespace SharkGame
         /// 2 - fish starting point
         /// 3 - bushes facing right
         /// </remarks>
-        public class Maps
+        public static class Maps
         {
+            /// <summary>
+            /// Gets given map's width in pixels.
+            /// </summary>
+            public static int MapWidth { get { return 0; } }
+
+            /// <summary>
+            /// Gets given maps' height in pixels.
+            /// </summary>
+            public static int MapHeight { get { return 0; } }
+
+            /// <summary>
+            /// Single in-game tile width.
+            /// </summary>
+            public static int TileWidth { get { return 128; } }
+
+            /// <summary>
+            /// Single in-game tile height.
+            /// </summary>
+            public static int TileHeight { get { return 128; } }
+
             /// <summary>
             /// First predefined map.
             /// </summary>
@@ -56,7 +92,7 @@ namespace SharkGame
         /// <summary>
         /// Holds all movement and speed-related constants.
         /// </summary>
-        public class Speeds
+        public static class Speeds
         {
             /// <summary>
             /// Minimal value for the camera movement speed.
@@ -73,22 +109,23 @@ namespace SharkGame
             /// </summary>
             public static float CameraSpeed { get { return 4f; } }
 
+            /// <summary>
+            /// Minimal speed for the blue shark to be registered as movement
+            /// (sensitivity setting for the accelerometer sensor).
+            /// </summary>
+            public static float BlueSharkSpeedMin { get { return 0.1f; } }
+
+            /// <summary>
+            /// Maximal speed for the blue shark.
+            /// </summary>
+            public static Vector2 BlueSharkVelocityMax { get { return new Vector2(3, 3); } }
+
             // TODO: check the things below.
 
             /// <summary>
             /// Speed. (?)
             /// </summary>
             public static float Speed { get { return 5f; } }
-
-            /// <summary>
-            /// Speed limit. (?)
-            /// </summary>
-            public static float BlueSharkSpeedMin { get { return 0.1f; } }
-
-            /// <summary>
-            /// Maximal ball velocity.
-            /// </summary>
-            public static Vector2 BallVelocityLimit { get { return new Vector2(3, 3); } }
         }
     }
 }

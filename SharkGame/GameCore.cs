@@ -13,22 +13,22 @@ namespace SharkGame
     /// Enumerates game objects for use with collection of objects
     /// such as bodies, textures and so on.
     /// </summary>
-    public enum Bodies
+    public enum GameObjects
     {
         /// <summary>
         /// 
         /// </summary>
-        topWall,
+        blueShark,
 
         /// <summary>
         /// 
         /// </summary>
-        blackSharkBody,
+        blackShark,
 
         /// <summary>
         /// 
         /// </summary>
-        mapSurface
+        rocket
     }
 
     /// <summary>
@@ -49,24 +49,9 @@ namespace SharkGame
         private static int screenHeight;
 
         /// <summary>
-        /// Given map's width in pixels.
+        /// Representation of the physical accelerometer sensor.
         /// </summary>
-        private static int mapWidth;
-
-        /// <summary>
-        /// Given maps' height in pixels.
-        /// </summary>
-        private static int mapHeight;
-
-        /// <summary>
-        /// Represents how many meters does one pixel represent.
-        /// </summary>
-        private static float realToVirtualRatio = 100f;
-
-        /// <summary>
-        /// Representation of the physical accelerometer.
-        /// </summary>
-        private Accelerometer _motion;
+        private Accelerometer accelerometer;
 
         /// <summary>
         /// Game camera; at fixed height over the board, movable in different
@@ -75,14 +60,14 @@ namespace SharkGame
         private Camera camera;
 
         /// <summary>
-        /// 
+        /// Object for handling and configuration of the graphics device.
         /// </summary>
-        GraphicsDeviceManager graphics;
+        private GraphicsDeviceManager graphics;
 
         /// <summary>
         /// Particle generator.
         /// </summary>
-        private ParticleEngine particleEngine;
+        private ParticleEmitter particleEngine;
 
         /// <summary>
         /// Textures for the particle generator.
@@ -100,9 +85,9 @@ namespace SharkGame
         // private List<Texture2D> textures;
 
         /// <summary>
-        /// Map bounding box, imposing map size limits on player's movement.
+        /// Blue shark, player-controllable.
         /// </summary>
-        private Body topWall;
+        private Body blueSharkBody;
 
         /// <summary>
         /// Black shark.
@@ -110,31 +95,29 @@ namespace SharkGame
         private Body blackSharkBody;
 
         /// <summary>
-        /// Surface of the map.
+        /// Rocket body.
         /// </summary>
-        private Body mapSurface;
+        private Body rocketBody;
 
         /// <summary>
         /// Game world that holds all objects and manages all the physics and collisions.
         /// </summary>
         private World gameWorld;
 
-        // Scrolling map.
-
         /// <summary>
         /// Collection of sprites for the map.
         /// </summary>
         private List<Texture2D> tiles = new List<Texture2D>();
 
-        // int tileMapWidth;
-        // int tileMapHeight;
-
-        // Textures
+        /// <summary>
+        /// Collection of game sprites for corresponding bodies.
+        /// </summary>
+        private List<Texture2D> sprites = new List<Texture2D>();
 
         /// <summary>
-        /// 
+        /// Rocket sprite.
         /// </summary>
-        private Texture2D lander;
+        private Texture2D rocketSprite;
 
         /// <summary>
         /// 
@@ -144,27 +127,22 @@ namespace SharkGame
         /// <summary>
         /// 
         /// </summary>
-        private Texture2D rocket;
-
-        /// <summary>
-        /// 
-        /// </summary>
         private Texture2D blackSharkSprite;
 
         /// <summary>
-        /// 
+        /// Current frame for the shark's movement animation.
         /// </summary>
         private int playerCurrentFrame = 0;
 
         /// <summary>
-        /// 
+        /// Width of the running fish's single animation frame.
         /// </summary>
-        private int runFrameWidth = 0;
+        private int runFrameWidth;
 
         /// <summary>
-        /// 
+        /// Height of the running fish's single animation frame.
         /// </summary>
-        private int runFrameHeight = 0;
+        private int runFrameHeight;
 
         /// <summary>
         /// 
@@ -220,7 +198,6 @@ namespace SharkGame
 
         /* Properties */
         
-        /// <summary>
         /// Gets device's screen width.
         /// </summary>
         public static int ScreenWidth
@@ -236,22 +213,6 @@ namespace SharkGame
             get { return GameCore.screenHeight; }
         }
 
-        /// <summary>
-        /// Gets given map's width in pixels.
-        /// </summary>
-        public static int MapWidth
-        {
-            get { return GameCore.mapWidth; }
-        }
-
-        /// <summary>
-        /// Gets given maps' height in pixels.
-        /// </summary>
-        public static int MapHeight
-        {
-            get { return GameCore.mapHeight; }
-        }
-
         /* Methods */
 
         /// <summary>
@@ -263,9 +224,9 @@ namespace SharkGame
         protected override void Initialize()
         {
             // Set up accelerometer handling.
-            this._motion = new Accelerometer();
-            this._motion.CurrentValueChanged += new EventHandler<SensorReadingEventArgs<AccelerometerReading>>(Accelerometer_CurrentValueChanged);
-            this._motion.Start();
+            this.accelerometer = new Accelerometer();
+            this.accelerometer.CurrentValueChanged += new EventHandler<SensorReadingEventArgs<AccelerometerReading>>(Accelerometer_CurrentValueChanged);
+            this.accelerometer.Start();
 
             // Perform initialization of the remaining components.
             base.Initialize();
@@ -300,8 +261,9 @@ namespace SharkGame
             // textures.Add(Content.Load<Texture2D>("circle"));
             textures.Add(this.Content.Load<Texture2D>("a"));
 
-            this.particleEngine = new ParticleEngine(textures, new Vector2(400f, 240f));
+            this.particleEngine = new ParticleEmitter(textures, new Vector2(400f, 240f));
 
+            // Load tiles.
             this.tiles.Add(Content.Load<Texture2D>("sand"));
             this.tiles.Add(Content.Load<Texture2D>("sand2"));
             this.tiles.Add(Content.Load<Texture2D>("sand3"));
@@ -311,10 +273,10 @@ namespace SharkGame
             GameCore.screenWidth = GraphicsDevice.Viewport.Width;
             GameCore.screenHeight = GraphicsDevice.Viewport.Height;
 
-            // Load textures
-            this.lander = this.Content.Load<Texture2D>("fish");
-            this.blackSharkSprite = this.Content.Load<Texture2D>("fish");
+            // Load textures.
             this.blueSharkSprite = this.Content.Load<Texture2D>("runfish");
+            this.blackSharkSprite = this.Content.Load<Texture2D>("fish");
+            this.rocketSprite = this.Content.Load<Texture2D>("rocket");
 
             this.runFrameWidth = this.blueSharkSprite.Width / 16;
             this.runFrameHeight = this.blueSharkSprite.Height;
@@ -322,21 +284,18 @@ namespace SharkGame
             // bounding box
             // Initialize xTile map resources
 
-            this.mapSurface = BodyFactory.CreateCircle(this.gameWorld, 0.4f, 1.0f);
-            this.mapSurface.BodyType = BodyType.Dynamic;
-            this.mapSurface.Position = this.centralVector;
+            // Load bodies.
+            this.blueSharkBody = BodyFactory.CreateCircle(this.gameWorld, 0.4f, 1f);
+            this.blueSharkBody.BodyType = BodyType.Dynamic;
+            this.blueSharkBody.Position = this.centralVector;
 
-            this.topWall = BodyFactory.CreateRectangle(this.gameWorld, 0.5f, 1f, 2.0f);
-            this.topWall.BodyType = BodyType.Static;
-            this.topWall.Position = new Vector2(3f, 2f);
+            this.rocketBody = BodyFactory.CreateRectangle(this.gameWorld, 0.5f, 1f, 2f);
+            this.rocketBody.BodyType = BodyType.Static;
+            this.rocketBody.Position = new Vector2(3f, 2f);
 
-            this.blackSharkBody = BodyFactory.CreateCircle(this.gameWorld, 0.4f, 1.0f);
+            this.blackSharkBody = BodyFactory.CreateCircle(this.gameWorld, 0.4f, 1f);
             this.blackSharkBody.BodyType = BodyType.Dynamic;
             this.blackSharkBody.Position = new Vector2(5f, 3f);
-
-            this.rocket = this.Content.Load<Texture2D>("rocket");
-
-            // this._lander = new GameObject(_landerTexture, new Vector2(300, 200));
         }
 
         /// <summary>
@@ -346,40 +305,6 @@ namespace SharkGame
         protected override void UnloadContent()
         {
             this.Content.Unload();
-        }
-
-        /// <summary>
-        /// Handles UI updating.
-        /// </summary>
-        /// <param name="accelerometerReading">New accelerometer data.</param>
-        private void UpdateUI(AccelerometerReading accelerometerReading)
-        {
-            // Set the minimum speed limit (sensitivity) to a sane value,
-            // so that the blue shark will not "drift".
-            if (Math.Abs(accelerometerReading.Acceleration.Y) > Constants.Speeds.BlueSharkSpeedMin)
-            {
-                this.blueSharkVelocity.X = -accelerometerReading.Acceleration.Y;
-            }
-
-            if (Math.Abs(accelerometerReading.Acceleration.X) > Constants.Speeds.BlueSharkSpeedMin)
-            {
-                this.blueSharkVelocity.Y = -accelerometerReading.Acceleration.X;
-            }
-            
-            // Limit the velocity.
-            this.blueSharkVelocity = Vector2.Clamp(this.blueSharkVelocity, -Constants.Speeds.BallVelocityLimit, Constants.Speeds.BallVelocityLimit);
-        }
-
-        /// <summary>
-        /// Raised when the accelerometer readings are subject to change.
-        /// </summary>
-        /// <param name="sender">Object that raised the event.</param>
-        /// <param name="e">Detailed state connected with the event.</param>
-        // public void Accelerometer_CurrentValueChanged(object sender, AccelerometerReadingEventArgs e)
-        public void Accelerometer_CurrentValueChanged(object sender, SensorReadingEventArgs<AccelerometerReading> e)
-        {
-            // Call UpdateUI on the UI thread and pass the AccelerometerReading event's data.
-            System.Windows.Deployment.Current.Dispatcher.BeginInvoke(() => this.UpdateUI(e.SensorReading));
         }
 
         /// <summary>
@@ -400,9 +325,6 @@ namespace SharkGame
 
             // Set the refresh rate to 30 FPS (step one thirtieth of a second in time).
             this.gameWorld.Step(Math.Min(elapsed, 1f / 30f));
-            // TODO: Add your update logic here
-
-            // TODO: Add your game logic here.
 
             this.currentPlayerAnimationDelay += elapsed;
 
@@ -414,13 +336,14 @@ namespace SharkGame
                     this.playerCurrentFrame = this.playerCurrentFrame % 16;
                     this.currentPlayerAnimationDelay -= this.playerAnimationDelay;
                 }
+
                 // Measure the angle at which the blue shark is moving forward.
-                this.rotationAngle = this.AngleF(this.centralVector, this.centralVector + this.blueSharkVelocity) % (MathHelper.Pi * 2f);
+                this.rotationAngle = this.centralVector.AngleBetween(this.centralVector + this.blueSharkVelocity) % (MathHelper.Pi * 2f);
 
                 // Generate blue shark's "footsteps".
                 this.particleEngine.EmitterAngle = 0f;
                 this.particleEngine.EmitterVelocity = new Vector2(-this.blueSharkVelocity.X, -this.blueSharkVelocity.Y);
-                this.particleEngine.EmitterLocation = new Vector2(this.mapSurface.Position.X, this.mapSurface.Position.Y);
+                this.particleEngine.EmitterLocation = this.blueSharkBody.Position;
                 this.particleEngine.Update();
             }
 
@@ -428,27 +351,10 @@ namespace SharkGame
             this.centralVector.Y += this.blueSharkVelocity.Y * Constants.Speeds.Speed;
             this.blueSharkVelocity *= elapsed;
 
-            // Accept touch
-            // TouchCollection touches = TouchPanel.GetState();
-            // foreach (TouchLocation touch in touches)
-            // {
-            //     if (touch.State == TouchLocationState.Pressed)
-            //     {
-            //         this._lander.Position = touch.Position;
-            //         this._lander.Velocity = Vector2.Zero;
-            //     }
-            // }
+            this.blueSharkBody.ApplyForce(this.blueSharkVelocity);
+            this.blueSharkBody.Position = this.centralVector * elapsed;
 
-            // Update particles
-            int xMin = this.lander.Width / 2;
-            int xMax = this.graphics.GraphicsDevice.Viewport.Width - (this.lander.Width / 2);
-            int yMin = this.lander.Height / 2;
-            int yMax = this.graphics.GraphicsDevice.Viewport.Height - (this.lander.Height / 2);
-
-            this.mapSurface.ApplyForce(this.blueSharkVelocity);
-            this.mapSurface.Position = this.centralVector * elapsed;
-
-            this.camera.Position = ToDisplayUnits(this.mapSurface.Position);
+            this.camera.Position = this.blueSharkBody.Position.ToRealVector();
 
             base.Update(gameTime);
         }
@@ -466,7 +372,6 @@ namespace SharkGame
             // Draw the map.
             this.DrawMap();
 
-            // Sprites drawing begins here (performance-awareness).
             this.spriteBatch.Begin();
 
             // Draw any existing particles.
@@ -474,12 +379,12 @@ namespace SharkGame
 
             // Draw the rocket's sprite.
             this.spriteBatch.Draw(
-                this.rocket,
-                ToDisplayUnits(this.topWall.Position),
+                this.rocketSprite,
+                this.rocketBody.Position.ToRealVector(),
                 null,
                 Color.White,
-                this.topWall.Rotation,
-                new Vector2(this.rocket.Width / 2f, this.rocket.Height / 2f),
+                this.rocketBody.Rotation,
+                new Vector2(this.rocketSprite.Width / 2f, this.rocketSprite.Height / 2f),
                 1f,
                 SpriteEffects.None,
                 0f);
@@ -487,7 +392,7 @@ namespace SharkGame
             // Draw the black shark's sprite.
             this.spriteBatch.Draw(
                 this.blackSharkSprite,
-                ToDisplayUnits(this.blackSharkBody.Position),
+                this.blackSharkBody.Position.ToRealVector(),
                 null,
                 Color.Red,
                 this.blackSharkBody.Rotation,
@@ -499,7 +404,7 @@ namespace SharkGame
             // Draw the blue shark's sprite.
             this.spriteBatch.Draw(
                 this.blueSharkSprite,
-                ToDisplayUnits(this.mapSurface.Position),
+                this.blueSharkBody.Position.ToRealVector(),
                 new Microsoft.Xna.Framework.Rectangle(this.playerCurrentFrame * this.runFrameWidth, 0, this.runFrameWidth, this.runFrameHeight),
                 Color.White,
                 this.rotationAngle,
@@ -508,28 +413,10 @@ namespace SharkGame
                 SpriteEffects.None,
                 0f);
 
-            // Sprites drawing ends here.
             this.spriteBatch.End();
 
-            // Continue with drawing what was the default.
+            // Continue with what was the default action.
             base.Draw(gameTime);
-        }
-
-        /// <summary>
-        /// Returns an angle between two vectors.
-        /// </summary>
-        /// <param name="a">First vector.</param>
-        /// <param name="b">Second vector.</param>
-        /// <returns>Angle between the two vectors.</returns>
-        private float AngleF(Vector2 a, Vector2 b)
-        {
-            float angle = (float)Math.Atan2((double)(a.Y - b.Y), (double)(a.X - b.X)) - MathHelper.ToRadians(90);
-            if (angle < 0)
-            {
-                angle += MathHelper.ToRadians(360);
-            }
-
-            return angle;
         }
 
         /// <summary>
@@ -537,9 +424,11 @@ namespace SharkGame
         /// </summary>
         private void DrawMap()
         {
-            Point cameraPoint = this.VectorToCell(this.camera.Position);
-            Point viewPoint = this.VectorToCell(this.camera.Position + this.ViewPortVector());
+            // Get the upper-left and lower-right points of the visible area.
+            Point cameraPoint = this.camera.Position.ToCell();
+            Point viewPoint = (this.camera.Position + this.ViewPortVector()).ToCell();
 
+            // Get the upper-left and lower-right points of the visible part of the map.
             Point min = new Point(cameraPoint.X, cameraPoint.Y);
             Point max = new Point(
                 (int)Math.Min(viewPoint.X, Constants.Maps.Map.GetLength(1)),
@@ -549,16 +438,16 @@ namespace SharkGame
                 new Microsoft.Xna.Framework.Rectangle(
                     0,
                     0,
-                    Constants.TileWidth,
-                    Constants.TileHeight);
+                    Constants.Maps.TileWidth,
+                    Constants.Maps.TileHeight);
 
             this.spriteBatch.Begin();
-            for (int y = min.Y; y < max.Y; y++)
+            for (int y = min.Y; y < max.Y; ++y)
             {
-                for (int x = min.X; x < max.X; x++)
+                for (int x = min.X; x < max.X; ++x)
                 {
-                    tileRectangle.X = (x * Constants.TileWidth) - (int)this.camera.Position.X;
-                    tileRectangle.Y = (y * Constants.TileHeight) - (int)this.camera.Position.Y;
+                    tileRectangle.X = (x * Constants.Maps.TileWidth) - (int)this.camera.Position.X;
+                    tileRectangle.Y = (y * Constants.Maps.TileHeight) - (int)this.camera.Position.Y;
                     this.spriteBatch.Draw(
                         this.tiles[Constants.Maps.Map[y, x]],
                         tileRectangle,
@@ -570,15 +459,36 @@ namespace SharkGame
         }
 
         /// <summary>
-        /// Returns vector's initial point.
+        /// Raised when the accelerometer readings are subject to change.
         /// </summary>
-        /// <param name="vector">Vector.</param>
-        /// <returns>Vector's initial point.</returns>
-        private Point VectorToCell(Vector2 vector)
+        /// <param name="sender">Object that raised the event.</param>
+        /// <param name="e">Detailed state connected with the event.</param>
+        private void Accelerometer_CurrentValueChanged(object sender, SensorReadingEventArgs<AccelerometerReading> e)
         {
-            return new Point(
-                (int)(vector.X / Constants.TileWidth),
-                (int)(vector.Y / Constants.TileHeight));
+            // Call UpdateUI on the UI thread and pass the AccelerometerReading event's data.
+            System.Windows.Deployment.Current.Dispatcher.BeginInvoke(() => this.UpdateUI(e.SensorReading));
+        }
+
+        /// <summary>
+        /// Handles UI updating.
+        /// </summary>
+        /// <param name="accelerometerReading">New accelerometer data.</param>
+        private void UpdateUI(AccelerometerReading accelerometerReading)
+        {
+            // Set the minimum speed limit (sensitivity) to a sane value,
+            // so that the blue shark will not "drift".
+            if (Math.Abs(accelerometerReading.Acceleration.Y) > Constants.Speeds.BlueSharkSpeedMin)
+            {
+                this.blueSharkVelocity.X = -accelerometerReading.Acceleration.Y;
+            }
+
+            if (Math.Abs(accelerometerReading.Acceleration.X) > Constants.Speeds.BlueSharkSpeedMin)
+            {
+                this.blueSharkVelocity.Y = -accelerometerReading.Acceleration.X;
+            }
+
+            // Limit the velocity.
+            this.blueSharkVelocity = Vector2.Clamp(this.blueSharkVelocity, -Constants.Speeds.BlueSharkVelocityMax, Constants.Speeds.BlueSharkVelocityMax);
         }
 
         /// <summary>
@@ -588,18 +498,8 @@ namespace SharkGame
         private Vector2 ViewPortVector()
         {
             return new Vector2(
-                GameCore.screenWidth + Constants.TileWidth,
-                GameCore.screenHeight + Constants.TileHeight);
-        }
-
-        /// <summary>
-        /// Returns a vector with display units as values coming from the vector with simulated units as values.
-        /// </summary>
-        /// <param name="simUnits">Vector with simulated units as values.</param>
-        /// <returns>Vector with display units as values.</returns>
-        public static Vector2 ToDisplayUnits(Vector2 simUnits)
-        {
-            return simUnits * GameCore.realToVirtualRatio;
+                GameCore.screenWidth + Constants.Maps.TileWidth,
+                GameCore.screenHeight + Constants.Maps.TileHeight);
         }
     }
 }

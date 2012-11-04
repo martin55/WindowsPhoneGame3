@@ -73,17 +73,17 @@ namespace SharkGame
             Texture2D sprite,
             int lifespan)
         {
-            this.sprite = sprite;
             this.position = position;
             this.velocity = velocity;
             this.angle = angle;
             this.angularVelocity = angularVelocity;
-            this.gradient = gradient;
             this.size = size;
+            this.gradient = gradient;
+            this.sprite = sprite;
             this.lifespan = lifespan;
         }
 
-        /* Accessors */
+        /* Properties */
 
         /// <summary>
         /// Gets the position associated with the particle.
@@ -157,22 +157,12 @@ namespace SharkGame
             private set { this.lifespan = value; }
         }
 
-        /// <summary>
-        /// Updates particle data.
-        /// </summary>
-        public void Update()
-        {
-            --this.lifespan;
-            this.position += this.velocity;
-            this.angle += this.angularVelocity;
-        }
-
         /* Methods */
 
         /// <summary>
-        /// Draws particle with the sprite given.
+        /// Adds a sprite for the particle to the sprites' batch.
         /// </summary>
-        /// <param name="spriteBatch">Sprite for the particle.</param>
+        /// <param name="spriteBatch">Sprites' batch.</param>
         public void Draw(SpriteBatch spriteBatch)
         {
             // Save sprite's size as a rectangle.
@@ -180,6 +170,8 @@ namespace SharkGame
 
             // Create a vector centered in sprite.
             Vector2 origin = new Vector2(this.sprite.Width / 2, this.sprite.Height / 2);
+
+            // System.Diagnostics.Debug.WriteLine("Position: " + this.position);
 
             spriteBatch.Draw(
                 this.sprite,
@@ -191,6 +183,16 @@ namespace SharkGame
                 this.size,
                 SpriteEffects.None,
                 0f);
+        }
+
+        /// <summary>
+        /// Updates particle data.
+        /// </summary>
+        public void Update()
+        {
+            --this.lifespan;
+            this.position += this.velocity;
+            this.angle += this.angularVelocity;
         }
     }
 }
