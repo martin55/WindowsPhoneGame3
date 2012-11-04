@@ -175,7 +175,7 @@ namespace SharkGame
 
             spriteBatch.Draw(
                 this.sprite,
-                this.position,
+                this.position.ToRealVector(),
                 sourceRectangle,
                 this.gradient,
                 this.angle,

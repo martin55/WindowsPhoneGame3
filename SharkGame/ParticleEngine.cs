@@ -50,7 +50,7 @@ namespace SharkGame
         /// with the given sprites' collection and position for the emitter.
         /// </summary>
         /// <param name="textures">Collection of sprites.</param>
-        /// <param name="location">New location for the emitter.</param>
+        /// <param name="emitterLocation">New location for the emitter.</param>
         public ParticleEmitter(List<Texture2D> textures, Vector2 emitterLocation)
         {
             this.emitterLocation = emitterLocation;
@@ -93,7 +93,7 @@ namespace SharkGame
         /// <summary>
         /// Draws all existing particles.
         /// </summary>
-        /// <param name="spriteBatch"></param>
+        /// <param name="spriteBatch">Sprites' batch for drawing the existing particles.</param>
         public void Draw(SpriteBatch spriteBatch)
         {
             this.particles.ForEach(particle => particle.Draw(spriteBatch));

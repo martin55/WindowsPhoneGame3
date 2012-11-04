@@ -10,28 +10,6 @@ namespace SharkGame
     using Microsoft.Xna.Framework.Input;
 
     /// <summary>
-    /// Enumerates game objects for use with collection of objects
-    /// such as bodies, textures and so on.
-    /// </summary>
-    public enum GameObjects
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        blueShark,
-
-        /// <summary>
-        /// 
-        /// </summary>
-        blackShark,
-
-        /// <summary>
-        /// 
-        /// </summary>
-        rocket
-    }
-
-    /// <summary>
     /// Represents basic graphics device initialization, game logic and rendering code object.
     /// </summary>
     public class GameCore : Microsoft.Xna.Framework.Game
@@ -70,6 +48,11 @@ namespace SharkGame
         private ParticleEmitter particleEngine;
 
         /// <summary>
+        /// Game world that holds all objects and manages all the physics and collisions.
+        /// </summary>
+        private World gameWorld;
+
+        /// <summary>
         /// Textures for the particle generator.
         /// </summary>
         private SpriteBatch spriteBatch;
@@ -80,54 +63,24 @@ namespace SharkGame
         private List<Body> bodies;
 
         /// <summary>
-        /// Collection of game textures.
+        /// Collection of game sprites for corresponding bodies.
         /// </summary>
-        // private List<Texture2D> textures;
-
-        /// <summary>
-        /// Blue shark, player-controllable.
-        /// </summary>
-        private Body blueSharkBody;
-
-        /// <summary>
-        /// Black shark.
-        /// </summary>
-        private Body blackSharkBody;
-
-        /// <summary>
-        /// Rocket body.
-        /// </summary>
-        private Body rocketBody;
-
-        /// <summary>
-        /// Game world that holds all objects and manages all the physics and collisions.
-        /// </summary>
-        private World gameWorld;
+        private List<Texture2D> sprites;
 
         /// <summary>
         /// Collection of sprites for the map.
         /// </summary>
-        private List<Texture2D> tiles = new List<Texture2D>();
+        private List<Texture2D> tiles;
 
         /// <summary>
-        /// Collection of game sprites for corresponding bodies.
+        /// Vector with its initial point set to screen center.
         /// </summary>
-        private List<Texture2D> sprites = new List<Texture2D>();
+        private Vector2 centralVector = new Vector2(screenHeight / 2f, screenWidth / 2f);
 
         /// <summary>
-        /// Rocket sprite.
+        /// Blue shark's velocity.
         /// </summary>
-        private Texture2D rocketSprite;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private Texture2D blueSharkSprite;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private Texture2D blackSharkSprite;
+        private Vector2 blueSharkVelocity = Vector2.Zero;
 
         /// <summary>
         /// Current frame for the shark's movement animation.
@@ -159,18 +112,6 @@ namespace SharkGame
         /// </summary>
         private float rotationAngle = 0f;
 
-        // Entities
-
-        /// <summary>
-        /// Blue shark's velocity.
-        /// </summary>
-        private Vector2 blueSharkVelocity = Vector2.Zero;
-
-        /// <summary>
-        /// Vector with its initial point set to screen center.
-        /// </summary>
-        private Vector2 centralVector = new Vector2(screenHeight / 2f, screenWidth / 2f);
-
         /* Constructor */
 
         /// <summary>
@@ -197,7 +138,8 @@ namespace SharkGame
         }
 
         /* Properties */
-        
+
+        /// <summary>
         /// Gets device's screen width.
         /// </summary>
         public static int ScreenWidth
@@ -225,7 +167,7 @@ namespace SharkGame
         {
             // Set up accelerometer handling.
             this.accelerometer = new Accelerometer();
-            this.accelerometer.CurrentValueChanged += new EventHandler<SensorReadingEventArgs<AccelerometerReading>>(Accelerometer_CurrentValueChanged);
+            this.accelerometer.CurrentValueChanged += new EventHandler<SensorReadingEventArgs<AccelerometerReading>>(this.Accelerometer_CurrentValueChanged);
             this.accelerometer.Start();
 
             // Perform initialization of the remaining components.
@@ -252,50 +194,53 @@ namespace SharkGame
                 this.gameWorld.Clear();
             }
 
+            // Get the display size.
+            GameCore.screenWidth = GraphicsDevice.Viewport.Width;
+            GameCore.screenHeight = GraphicsDevice.Viewport.Height;
+
             // Create a new SpriteBatch, which can be used to draw textures.
             this.spriteBatch = new SpriteBatch(this.GraphicsDevice);
 
             // Load particles.
             List<Texture2D> textures = new List<Texture2D>();
-
-            // textures.Add(Content.Load<Texture2D>("circle"));
             textures.Add(this.Content.Load<Texture2D>("a"));
 
+            // Initializes a new instance of the particle emitter with textures.
             this.particleEngine = new ParticleEmitter(textures, new Vector2(400f, 240f));
 
             // Load tiles.
+            this.tiles = new List<Texture2D>();
+
             this.tiles.Add(Content.Load<Texture2D>("sand"));
             this.tiles.Add(Content.Load<Texture2D>("sand2"));
             this.tiles.Add(Content.Load<Texture2D>("sand3"));
             this.tiles.Add(Content.Load<Texture2D>("sand4"));
             this.tiles.Add(Content.Load<Texture2D>("sand5"));
 
-            GameCore.screenWidth = GraphicsDevice.Viewport.Width;
-            GameCore.screenHeight = GraphicsDevice.Viewport.Height;
+            // Load bodies.
+            this.bodies = new List<Body>();
+
+            this.bodies.Add(BodyFactory.CreateCircle(this.gameWorld, 0.4f, 1f));
+            this.bodies[Constants.GameObjects.BlueShark].BodyType = BodyType.Dynamic;
+            this.bodies[Constants.GameObjects.BlueShark].Position = this.centralVector;
+
+            this.bodies.Add(BodyFactory.CreateCircle(this.gameWorld, 0.4f, 1f));
+            this.bodies[Constants.GameObjects.BlackShark].BodyType = BodyType.Dynamic;
+            this.bodies[Constants.GameObjects.BlackShark].Position = new Vector2(5f, 3f);
+
+            this.bodies.Add(BodyFactory.CreateRectangle(this.gameWorld, 0.5f, 1f, 2f));
+            this.bodies[Constants.GameObjects.Rocket].BodyType = BodyType.Static;
+            this.bodies[Constants.GameObjects.Rocket].Position = new Vector2(3f, 2f);
 
             // Load textures.
-            this.blueSharkSprite = this.Content.Load<Texture2D>("runfish");
-            this.blackSharkSprite = this.Content.Load<Texture2D>("fish");
-            this.rocketSprite = this.Content.Load<Texture2D>("rocket");
+            this.sprites = new List<Texture2D>();
 
-            this.runFrameWidth = this.blueSharkSprite.Width / 16;
-            this.runFrameHeight = this.blueSharkSprite.Height;
+            this.sprites.Add(this.Content.Load<Texture2D>("runfish"));
+            this.sprites.Add(this.Content.Load<Texture2D>("fish"));
+            this.sprites.Add(this.Content.Load<Texture2D>("rocket"));
 
-            // bounding box
-            // Initialize xTile map resources
-
-            // Load bodies.
-            this.blueSharkBody = BodyFactory.CreateCircle(this.gameWorld, 0.4f, 1f);
-            this.blueSharkBody.BodyType = BodyType.Dynamic;
-            this.blueSharkBody.Position = this.centralVector;
-
-            this.rocketBody = BodyFactory.CreateRectangle(this.gameWorld, 0.5f, 1f, 2f);
-            this.rocketBody.BodyType = BodyType.Static;
-            this.rocketBody.Position = new Vector2(3f, 2f);
-
-            this.blackSharkBody = BodyFactory.CreateCircle(this.gameWorld, 0.4f, 1f);
-            this.blackSharkBody.BodyType = BodyType.Dynamic;
-            this.blackSharkBody.Position = new Vector2(5f, 3f);
+            this.runFrameWidth = this.sprites[Constants.GameObjects.BlueShark].Width / 16;
+            this.runFrameHeight = this.sprites[Constants.GameObjects.BlueShark].Height;
         }
 
         /// <summary>
@@ -343,7 +288,7 @@ namespace SharkGame
                 // Generate blue shark's "footsteps".
                 this.particleEngine.EmitterAngle = 0f;
                 this.particleEngine.EmitterVelocity = new Vector2(-this.blueSharkVelocity.X, -this.blueSharkVelocity.Y);
-                this.particleEngine.EmitterLocation = this.blueSharkBody.Position;
+                this.particleEngine.EmitterLocation = this.bodies[Constants.GameObjects.BlueShark].Position;
                 this.particleEngine.Update();
             }
 
@@ -351,11 +296,13 @@ namespace SharkGame
             this.centralVector.Y += this.blueSharkVelocity.Y * Constants.Speeds.Speed;
             this.blueSharkVelocity *= elapsed;
 
-            this.blueSharkBody.ApplyForce(this.blueSharkVelocity);
-            this.blueSharkBody.Position = this.centralVector * elapsed;
+            this.bodies[Constants.GameObjects.BlueShark].ApplyForce(this.blueSharkVelocity);
+            this.bodies[Constants.GameObjects.BlueShark].Position = this.centralVector * elapsed;
 
-            this.camera.Position = this.blueSharkBody.Position.ToRealVector();
+            // Adjust camera position so that it follows the blue shark.
+            this.camera.Position = this.bodies[Constants.GameObjects.BlueShark].Position.ToRealVector();
 
+            // Continue with what was the default action.
             base.Update(gameTime);
         }
 
@@ -367,7 +314,9 @@ namespace SharkGame
         protected override void Draw(GameTime gameTime)
         {
             // Adjust origin vector according to the current blue shark's position.
-            Vector2 origin = new Vector2((this.blueSharkSprite.Width / 16) / 2, this.blueSharkSprite.Height / 2);
+            Vector2 origin = new Vector2(
+                (this.sprites[Constants.GameObjects.BlueShark].Width / 16) / 2,
+                this.sprites[Constants.GameObjects.BlueShark].Height / 2);
 
             // Draw the map.
             this.DrawMap();
@@ -377,38 +326,42 @@ namespace SharkGame
             // Draw any existing particles.
             this.particleEngine.Draw(this.spriteBatch);
 
-            // Draw the rocket's sprite.
-            this.spriteBatch.Draw(
-                this.rocketSprite,
-                this.rocketBody.Position.ToRealVector(),
-                null,
-                Color.White,
-                this.rocketBody.Rotation,
-                new Vector2(this.rocketSprite.Width / 2f, this.rocketSprite.Height / 2f),
-                1f,
-                SpriteEffects.None,
-                0f);
-            
-            // Draw the black shark's sprite.
-            this.spriteBatch.Draw(
-                this.blackSharkSprite,
-                this.blackSharkBody.Position.ToRealVector(),
-                null,
-                Color.Red,
-                this.blackSharkBody.Rotation,
-                new Vector2(this.blackSharkSprite.Width / 2f, this.blackSharkSprite.Height / 2f),
-                1f,
-                SpriteEffects.None,
-                0f);
-            
             // Draw the blue shark's sprite.
             this.spriteBatch.Draw(
-                this.blueSharkSprite,
-                this.blueSharkBody.Position.ToRealVector(),
+                this.sprites[Constants.GameObjects.BlueShark],
+                this.bodies[Constants.GameObjects.BlueShark].Position.ToRealVector(),
                 new Microsoft.Xna.Framework.Rectangle(this.playerCurrentFrame * this.runFrameWidth, 0, this.runFrameWidth, this.runFrameHeight),
                 Color.White,
                 this.rotationAngle,
                 origin,
+                1f,
+                SpriteEffects.None,
+                0f);
+
+            // Draw the black shark's sprite.
+            this.spriteBatch.Draw(
+                this.sprites[Constants.GameObjects.BlackShark],
+                this.bodies[Constants.GameObjects.BlackShark].Position.ToRealVector(),
+                null,
+                Color.Red,
+                this.bodies[Constants.GameObjects.BlackShark].Rotation,
+                new Vector2(
+                    this.sprites[Constants.GameObjects.BlackShark].Width / 2f,
+                    this.sprites[Constants.GameObjects.BlackShark].Height / 2f),
+                1f,
+                SpriteEffects.None,
+                0f);
+
+            // Draw the rocket's sprite.
+            this.spriteBatch.Draw(
+                this.sprites[Constants.GameObjects.Rocket],
+                this.bodies[Constants.GameObjects.Rocket].Position.ToRealVector(),
+                null,
+                Color.White,
+                this.bodies[Constants.GameObjects.Rocket].Rotation,
+                new Vector2(
+                    this.sprites[Constants.GameObjects.Rocket].Width / 2f,
+                    this.sprites[Constants.GameObjects.Rocket].Height / 2f),
                 1f,
                 SpriteEffects.None,
                 0f);
@@ -492,9 +445,9 @@ namespace SharkGame
         }
 
         /// <summary>
-        /// 
+        /// Returns the viewport vector, representing the visible portion of the canvas (map).
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Viewport vector.</returns>
         private Vector2 ViewPortVector()
         {
             return new Vector2(
