@@ -33,12 +33,12 @@ namespace SharkGame_2
         /// <summary>
         /// Device's screen width in pixels.
         /// </summary>
-        private static int screenWidth;
+        private static int screenWidth=800;
 
         /// <summary>
         /// Device's screen height in pixels.
         /// </summary>
-        private static int screenHeight;
+        private static int screenHeight=480;
         /// <summary>
         /// Game camera; at fixed height over the board, movable in different
         /// directions, always following the main character.
@@ -170,12 +170,7 @@ namespace SharkGame_2
             e.Cancel = true;
         }
 
-        /// <summary>
-        /// Allows the game to perform any initialization it needs to before starting to run.
-        /// This is where it can query for any required services and load any non-graphic
-        /// related content.  Calling base.Initialize will enumerate through any components
-        /// and initialize them as well.
-        /// </summary>
+       
 
 
 
@@ -195,8 +190,7 @@ namespace SharkGame_2
 
 
 
-            // Start the timer
-            timer.Start();
+          
 
             // Begin playing the game's soundtrack.
             // Song song = Content.Load<Song>("game_s");
@@ -313,7 +307,7 @@ namespace SharkGame_2
 
             this.centralVector.X += this.blueSharkVelocity.X * Constants.Speeds.Speed;
             this.centralVector.Y += this.blueSharkVelocity.Y * Constants.Speeds.Speed;
-            this.blueSharkVelocity *= elapsed;
+            this.blueSharkVelocity *=elapsed;
 
             this.bodies[Constants.GameObjects.BlueShark].ApplyForce(this.blueSharkVelocity);
             this.bodies[Constants.GameObjects.BlueShark].Position = this.centralVector * elapsed;

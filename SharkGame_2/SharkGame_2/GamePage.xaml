@@ -9,7 +9,7 @@
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
-    SupportedOrientations="Landscape" Orientation="Landscape"
+    SupportedOrientations="Landscape" Orientation="LandscapeLeft"
     mc:Ignorable="d" d:DesignHeight="480" d:DesignWidth="800"
     shell:SystemTray.IsVisible="False">
     
