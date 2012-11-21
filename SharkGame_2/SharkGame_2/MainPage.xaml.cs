@@ -22,9 +22,14 @@ namespace SharkGame_2
         }
 
         // Simple button Click event handler to take us to the second page
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void StartButton_Click(object sender, RoutedEventArgs e)
         {
             NavigationService.Navigate(new Uri("/GamePage.xaml", UriKind.Relative));
+        }
+
+        private void OptionsButton_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/Options.xaml", UriKind.Relative));
         }
     }
 }

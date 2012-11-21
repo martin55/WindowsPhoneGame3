@@ -1,0 +1,7 @@
+﻿<Deployment xmlns="http://schemas.microsoft.com/client/2007/deployment" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" EntryPointAssembly="SharkGame_2" EntryPointType="SharkGame_2.App" RuntimeVersion="4.7.50308.0">
+  <Deployment.Parts>
+    <AssemblyPart x:Name="SharkGame_2" Source="SharkGame_2.dll" />
+    <AssemblyPart x:Name="FarseerPhysicsXNA" Source="FarseerPhysicsXNA.dll" />
+    <AssemblyPart x:Name="SharkGame_2Lib" Source="SharkGame_2Lib.dll" />
+  </Deployment.Parts>
+</Deployment>

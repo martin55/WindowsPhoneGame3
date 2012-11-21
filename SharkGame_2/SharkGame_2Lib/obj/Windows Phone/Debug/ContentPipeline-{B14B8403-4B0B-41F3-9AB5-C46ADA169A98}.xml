@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:Pipeline="Microsoft.Xna.Framework.Content.Pipeline">
+  <Asset Type="Pipeline:BuildItemCollection">
+    <Item>
+      <Source>people.png</Source>
+      <Name>people</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Martin\Documents\Visual Studio 2010\Projects\WindowsPhoneGame3\SharkGame_2\SharkGame_2Lib\bin\Windows Phone\Debug\Content\people.xnb</Output>
+      <Time>2012-11-21T19:42:45.5335021+02:00</Time>
+    </Item>
+    <Item>
+      <Source>pool.png</Source>
+      <Name>pool</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Martin\Documents\Visual Studio 2010\Projects\WindowsPhoneGame3\SharkGame_2\SharkGame_2Lib\bin\Windows Phone\Debug\Content\pool.xnb</Output>
+      <Time>2012-11-21T19:42:45.5355023+02:00</Time>
+    </Item>
+    <Item>
+      <Source>sand.png</Source>
+      <Name>sand</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Martin\Documents\Visual Studio 2010\Projects\WindowsPhoneGame3\SharkGame_2\SharkGame_2Lib\bin\Windows Phone\Debug\Content\sand.xnb</Output>
+      <Time>2012-11-21T19:42:45.5375024+02:00</Time>
+    </Item>
+    <Item>
+      <Source>shark.png</Source>
+      <Name>shark</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Martin\Documents\Visual Studio 2010\Projects\WindowsPhoneGame3\SharkGame_2\SharkGame_2Lib\bin\Windows Phone\Debug\Content\shark.xnb</Output>
+      <Time>2012-11-21T19:42:45.5395025+02:00</Time>
+    </Item>
+    <Item>
+      <Source>trap.png</Source>
+      <Name>trap</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Martin\Documents\Visual Studio 2010\Projects\WindowsPhoneGame3\SharkGame_2\SharkGame_2Lib\bin\Windows Phone\Debug\Content\trap.xnb</Output>
+      <Time>2012-11-21T19:42:45.5415026+02:00</Time>
+    </Item>
+    <Item>
+      <Source>wall.png</Source>
+      <Name>wall</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Martin\Documents\Visual Studio 2010\Projects\WindowsPhoneGame3\SharkGame_2\SharkGame_2Lib\bin\Windows Phone\Debug\Content\wall.xnb</Output>
+      <Time>2012-11-21T19:42:45.5435027+02:00</Time>
+    </Item>
+    <Item>
+      <Source>shadow.png</Source>
+      <Name>shadow</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Martin\Documents\Visual Studio 2010\Projects\WindowsPhoneGame3\SharkGame_2\SharkGame_2Lib\bin\Windows Phone\Debug\Content\shadow.xnb</Output>
+      <Time>2012-11-21T19:59:18.7223093+02:00</Time>
+    </Item>
+    <BuildSuccessful>true</BuildSuccessful>
+    <Settings>
+      <ContentProjectGUID>{B14B8403-4B0B-41F3-9AB5-C46ADA169A98}</ContentProjectGUID>
+      <TargetPlatform>WindowsPhone</TargetPlatform>
+      <TargetProfile>Reach</TargetProfile>
+      <BuildConfiguration>Debug</BuildConfiguration>
+      <CompressContent>false</CompressContent>
+      <RootDirectory>C:\Users\Martin\Documents\Visual Studio 2010\Projects\WindowsPhoneGame3\SharkGame_2\SharkGame_2LibContent\</RootDirectory>
+      <LoggerRootDirectory>C:\Users\Martin\Documents\Visual Studio 2010\Projects\WindowsPhoneGame3\SharkGame_2\SharkGame_2Lib\</LoggerRootDirectory>
+      <IntermediateDirectory>C:\Users\Martin\Documents\Visual Studio 2010\Projects\WindowsPhoneGame3\SharkGame_2\SharkGame_2Lib\obj\Windows Phone\Debug\</IntermediateDirectory>
+      <OutputDirectory>C:\Users\Martin\Documents\Visual Studio 2010\Projects\WindowsPhoneGame3\SharkGame_2\SharkGame_2Lib\bin\Windows Phone\Debug\Content\</OutputDirectory>
+    </Settings>
+    <Assemblies>
+      <Assembly>
+        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.XImporter.dll</Key>
+        <Value>2011-09-01T16:22:30+03:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.VideoImporters.dll</Key>
+        <Value>2011-09-01T16:22:30+03:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.TextureImporter.dll</Key>
+        <Value>2011-09-01T16:22:30+03:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.FBXImporter.dll</Key>
+        <Value>2011-09-01T16:22:30+03:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.EffectImporter.dll</Key>
+        <Value>2011-09-01T16:22:30+03:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.AudioImporters.dll</Key>
+        <Value>2011-09-01T16:22:30+03:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Windows\Microsoft.Net\assembly\GAC_32\Microsoft.Xna.Framework.Content.Pipeline\v4.0_4.0.0.0__842cf8be1de50553\Microsoft.Xna.Framework.Content.Pipeline.dll</Key>
+        <Value>2012-09-24T14:06:52.6696267+03:00</Value>
+      </Assembly>
+    </Assemblies>
+  </Asset>
+</XnaContent>

@@ -1,0 +1,7 @@
+Content\people.xnb
+Content\pool.xnb
+Content\sand.xnb
+Content\shark.xnb
+Content\trap.xnb
+Content\wall.xnb
+Content\shadow.xnb
