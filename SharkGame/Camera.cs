@@ -70,11 +70,11 @@ namespace SharkGame
                 this.position.X = MathHelper.Clamp(
                     value.X,
                     0,
-                    Constants.Maps.MapWidth - GameCore.ScreenWidth);
+                    Constants.Maps.MapWidth - GamePage.ScreenWidth);
                 this.position.Y = MathHelper.Clamp(
                     value.Y,
                     0,
-                    Constants.Maps.MapHeight - GameCore.ScreenHeight);
+                    Constants.Maps.MapHeight - GamePage.ScreenHeight);
             }
         }
     }

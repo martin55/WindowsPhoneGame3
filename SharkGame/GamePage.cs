@@ -12,7 +12,7 @@ namespace SharkGame
     /// <summary>
     /// Represents basic graphics device initialization, game logic and rendering code object.
     /// </summary>
-    public class GameCore : Microsoft.Xna.Framework.Game
+    public class GamePage : Microsoft.Xna.Framework.Game
     {
         /* Fields */
 
@@ -115,9 +115,9 @@ namespace SharkGame
         /* Constructor */
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="GameCore" /> class.
+        /// Initializes a new instance of the <see cref="GamePage" /> class.
         /// </summary>
-        public GameCore()
+        public GamePage()
         {
             this.camera = new Camera();
             this.graphics = new GraphicsDeviceManager(this)
@@ -144,7 +144,7 @@ namespace SharkGame
         /// </summary>
         public static int ScreenWidth
         {
-            get { return GameCore.screenWidth; }
+            get { return GamePage.screenWidth; }
         }
 
         /// <summary>
@@ -152,7 +152,7 @@ namespace SharkGame
         /// </summary>
         public static int ScreenHeight
         {
-            get { return GameCore.screenHeight; }
+            get { return GamePage.screenHeight; }
         }
 
         /* Methods */
@@ -195,8 +195,8 @@ namespace SharkGame
             }
 
             // Get the display size.
-            GameCore.screenWidth = GraphicsDevice.Viewport.Width;
-            GameCore.screenHeight = GraphicsDevice.Viewport.Height;
+            GamePage.screenWidth = GraphicsDevice.Viewport.Width;
+            GamePage.screenHeight = GraphicsDevice.Viewport.Height;
 
             // Create a new SpriteBatch, which can be used to draw textures.
             this.spriteBatch = new SpriteBatch(this.GraphicsDevice);
@@ -451,8 +451,8 @@ namespace SharkGame
         private Vector2 ViewPortVector()
         {
             return new Vector2(
-                GameCore.screenWidth + Constants.Maps.TileWidth,
-                GameCore.screenHeight + Constants.Maps.TileHeight);
+                GamePage.screenWidth + Constants.Maps.TileWidth,
+                GamePage.screenHeight + Constants.Maps.TileHeight);
         }
     }
 }
