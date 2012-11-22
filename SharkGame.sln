@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Farseer Physics XNA WP7", "Farseer Physics Engine 3.3.1 XNA\Farseer Physics XNA WP7.csproj", "{AA6CB78E-9484-4843-8613-54CD2BF1E948}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharkGame", "SilverXNASharkGame\SharkGame.csproj", "{C78D3290-8FD2-4BDF-A644-E61EBE05262C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharkGame", "SharkGame\SharkGame.csproj", "{C78D3290-8FD2-4BDF-A644-E61EBE05262C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharkGameLib", "SilverXNASharkGameLib\SharkGameLib.csproj", "{C27927A5-8CBB-41E0-AEE3-DA397C696AE3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharkGameLib", "SharkGameLib\SharkGameLib.csproj", "{C27927A5-8CBB-41E0-AEE3-DA397C696AE3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharkGameLibContent", "SilverXNASharkGameLibContent\SharkGameLibContent.contentproj", "{45C226E9-FF6C-44A5-BA3E-60F97308A269}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharkGameLibContent", "SharkGameLibContent\SharkGameLibContent.contentproj", "{45C226E9-FF6C-44A5-BA3E-60F97308A269}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
