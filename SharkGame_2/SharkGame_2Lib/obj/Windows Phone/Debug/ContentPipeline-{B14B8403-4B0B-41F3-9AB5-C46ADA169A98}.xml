@@ -8,7 +8,7 @@
       <Processor>TextureProcessor</Processor>
       <Options>None</Options>
       <Output>C:\Users\Martin\Documents\Visual Studio 2010\Projects\WindowsPhoneGame3\SharkGame_2\SharkGame_2Lib\bin\Windows Phone\Debug\Content\people.xnb</Output>
-      <Time>2012-11-21T23:00:50.2402685+02:00</Time>
+      <Time>2012-11-22T19:04:45.7408001+02:00</Time>
     </Item>
     <Item>
       <Source>pool.png</Source>
@@ -17,7 +17,7 @@
       <Processor>TextureProcessor</Processor>
       <Options>None</Options>
       <Output>C:\Users\Martin\Documents\Visual Studio 2010\Projects\WindowsPhoneGame3\SharkGame_2\SharkGame_2Lib\bin\Windows Phone\Debug\Content\pool.xnb</Output>
-      <Time>2012-11-21T23:00:50.2472689+02:00</Time>
+      <Time>2012-11-22T19:04:45.7438002+02:00</Time>
     </Item>
     <Item>
       <Source>sand.png</Source>
@@ -26,7 +26,7 @@
       <Processor>TextureProcessor</Processor>
       <Options>None</Options>
       <Output>C:\Users\Martin\Documents\Visual Studio 2010\Projects\WindowsPhoneGame3\SharkGame_2\SharkGame_2Lib\bin\Windows Phone\Debug\Content\sand.xnb</Output>
-      <Time>2012-11-21T23:00:50.2482689+02:00</Time>
+      <Time>2012-11-22T19:04:45.7458003+02:00</Time>
     </Item>
     <Item>
       <Source>shark.png</Source>
@@ -35,7 +35,7 @@
       <Processor>TextureProcessor</Processor>
       <Options>None</Options>
       <Output>C:\Users\Martin\Documents\Visual Studio 2010\Projects\WindowsPhoneGame3\SharkGame_2\SharkGame_2Lib\bin\Windows Phone\Debug\Content\shark.xnb</Output>
-      <Time>2012-11-21T23:00:50.2522692+02:00</Time>
+      <Time>2012-11-22T19:04:45.7498006+02:00</Time>
     </Item>
     <Item>
       <Source>trap.png</Source>
@@ -44,7 +44,7 @@
       <Processor>TextureProcessor</Processor>
       <Options>None</Options>
       <Output>C:\Users\Martin\Documents\Visual Studio 2010\Projects\WindowsPhoneGame3\SharkGame_2\SharkGame_2Lib\bin\Windows Phone\Debug\Content\trap.xnb</Output>
-      <Time>2012-11-21T23:00:50.2542693+02:00</Time>
+      <Time>2012-11-22T19:04:45.7528007+02:00</Time>
     </Item>
     <Item>
       <Source>wall.png</Source>
@@ -53,7 +53,7 @@
       <Processor>TextureProcessor</Processor>
       <Options>None</Options>
       <Output>C:\Users\Martin\Documents\Visual Studio 2010\Projects\WindowsPhoneGame3\SharkGame_2\SharkGame_2Lib\bin\Windows Phone\Debug\Content\wall.xnb</Output>
-      <Time>2012-11-21T23:00:50.2562694+02:00</Time>
+      <Time>2012-11-22T19:04:45.7548009+02:00</Time>
     </Item>
     <Item>
       <Source>shadow.png</Source>
@@ -62,7 +62,7 @@
       <Processor>TextureProcessor</Processor>
       <Options>None</Options>
       <Output>C:\Users\Martin\Documents\Visual Studio 2010\Projects\WindowsPhoneGame3\SharkGame_2\SharkGame_2Lib\bin\Windows Phone\Debug\Content\shadow.xnb</Output>
-      <Time>2012-11-21T23:00:50.2502691+02:00</Time>
+      <Time>2012-11-22T19:04:45.7468004+02:00</Time>
     </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>

@@ -311,7 +311,8 @@ namespace SharkGame_2
 
                 this.currentPlayerAnimationDelay += elapsed;
 
-               
+                if (Math.Abs(this.blueSharkVelocity.X) > 0.07f || Math.Abs(this.blueSharkVelocity.Y) > 0.07f)
+                {
                     while (this.currentPlayerAnimationDelay > this.playerAnimationDelay)
                     {
                         ++this.playerCurrentFrame;
@@ -322,6 +323,15 @@ namespace SharkGame_2
                     // Measure the angle at which the blue shark is moving forward.
                     this.rotationAngle = this.centralVector.AngleBetween(this.centralVector + this.blueSharkVelocity) % (MathHelper.Pi * 2f);
 
+                    // Generate blue shark's "footsteps".
+                    this.particleEngine.EmitterAngle = 0f;
+                    this.particleEngine.EmitterVelocity = new Vector2(-this.blueSharkVelocity.X, -this.blueSharkVelocity.Y);
+                    this.particleEngine.EmitterLocation = this.bodies[Constants.GameObjects.BlueShark].Position;
+                    this.particleEngine.Update();
+                }
+
+
+                 
                     
                 
 
@@ -447,7 +457,6 @@ namespace SharkGame_2
             this.spriteBatch.End();
         }
 
-     
 
         /// <summary>
         /// Raised when the accelerometer readings are subject to change.
@@ -456,12 +465,10 @@ namespace SharkGame_2
         /// <param name="e">Detailed state connected with the event.</param>
         private void Accelerometer_CurrentValueChanged(object sender, SensorReadingEventArgs<AccelerometerReading> e)
         {
-            
-         this.UpdateUI(e.SensorReading);
+            // Call UpdateUI on the UI thread and pass the AccelerometerReading event's data.
+            System.Windows.Deployment.Current.Dispatcher.BeginInvoke(() => this.UpdateUI(e.SensorReading));
         }
 
-      
-        
         /// <summary>
         /// Handles UI updating.
         /// </summary>
@@ -470,16 +477,19 @@ namespace SharkGame_2
         {
             // Set the minimum speed limit (sensitivity) to a sane value,
             // so that the blue shark will not "drift".
-           
-                this.blueSharkVelocity.X = -accelerometerReading.Acceleration.Y;
-         
+            if (Math.Abs(accelerometerReading.Acceleration.Y) > Constants.Speeds.BlueSharkSpeedMin)
+            {
+                blueSharkVelocity.X = -accelerometerReading.Acceleration.Y;
+            }
 
-                this.blueSharkVelocity.Y = -accelerometerReading.Acceleration.X;
-          
+            if (Math.Abs(accelerometerReading.Acceleration.X) > Constants.Speeds.BlueSharkSpeedMin)
+            {
+                blueSharkVelocity.Y = -accelerometerReading.Acceleration.X;
+            }
 
-         
+            // Limit the velocity.
+            blueSharkVelocity = Vector2.Clamp(blueSharkVelocity, -Constants.Speeds.BlueSharkVelocityMax, Constants.Speeds.BlueSharkVelocityMax);
         }
-
         /// <summary>
         /// Returns the viewport vector, representing the visible portion of the canvas (map).
         /// </summary>
