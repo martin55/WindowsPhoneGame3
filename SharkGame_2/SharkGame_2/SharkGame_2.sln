@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharkGame_2Lib", "..\SharkG
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharkGame_2LibContent", "..\SharkGame_2LibContent\SharkGame_2LibContent.contentproj", "{B14B8403-4B0B-41F3-9AB5-C46ADA169A98}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Farseer Physics XNA WP7", "..\..\Farseer Physics Engine 3.3.1 XNA\Farseer Physics XNA WP7.csproj", "{AA6CB78E-9484-4843-8613-54CD2BF1E948}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Farseer Physics XNA WP7", "..\Farseer Physics Engine 3.3.1 XNA\Farseer Physics XNA WP7.csproj", "{AA6CB78E-9484-4843-8613-54CD2BF1E948}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

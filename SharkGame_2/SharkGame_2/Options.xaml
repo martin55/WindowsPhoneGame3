@@ -27,15 +27,16 @@
         <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28"></StackPanel>
 
         <!--ContentPanel - place additional content here-->
-        <Grid x:Name="ContentPanel" Background="#78000000" Margin="33,78,14,0" Grid.Row="1">
+        <Grid x:Name="ContentPanel" Background="#A0000000" Margin="33,35,14,0" Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="201" />
                 <RowDefinition Height="279" />
             </Grid.RowDefinitions>
             <TextBlock x:Name="ApplicationTitle" Text="Options" Style="{StaticResource PhoneTextNormalStyle}" Margin="30,6,496,100" FontSize="36" FontStyle="Normal" FontFamily="Tahoma" FontWeight="Normal" Foreground="White" />
-            <CheckBox Content="CheckBox" Height="72" HorizontalAlignment="Left" Margin="231,63,0,0" Name="checkBox1" VerticalAlignment="Top" />
-            <RadioButton Content="RadioButton" Height="72" HorizontalAlignment="Left" Margin="231,30,0,0" Name="radioButton1" VerticalAlignment="Top" Grid.Row="1" />
-            <Slider Height="84" Value="3" HorizontalAlignment="Left" Margin="203,141,0,0" Name="slider1" VerticalAlignment="Top" Width="320" Grid.RowSpan="2" />
+            <CheckBox Content="SFX" Height="72" HorizontalAlignment="Left" Margin="301,169,0,0" Name="checkBox1" VerticalAlignment="Top" ClickMode="Release" FlowDirection="LeftToRight" IsChecked="True" IsTabStop="True" Checked="checkBox1_Checked" Unchecked="checkBox1_Unchecked" Grid.RowSpan="2" />
+            <CheckBox Content="Music" Height="72" HorizontalAlignment="Left" Margin="301,46,0,0" Name="checkBox2" VerticalAlignment="Top" Grid.Row="1" ClickMode="Release" FlowDirection="LeftToRight" IsChecked="True" IsTabStop="True" Checked="checkBox2_Checked" Unchecked="checkBox2_Unchecked" />
+            <Button Content="Save" Grid.Row="1" Height="72" HorizontalAlignment="Left" Margin="587,78,0,0" Name="saveButton" VerticalAlignment="Top" Width="160" Click="saveButton_Click" />
+            <TextBox Height="72" HorizontalAlignment="Center" Margin="200,73,219,0" Name="textBox1" Text="Player1" VerticalAlignment="Top" Width="334" TextAlignment="Center" />
         </Grid>
     </Grid>
  

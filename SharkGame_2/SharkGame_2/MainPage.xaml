@@ -11,7 +11,7 @@
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Landscape" Orientation="LandscapeLeft"
-    shell:SystemTray.IsVisible="False">
+    shell:SystemTray.IsVisible="False" AllowDrop="False">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot"  >
@@ -31,8 +31,8 @@
             
             <!--Create a single button to navigate to the second page which is rendered with the XNA Framework-->
             <Button Height="80" Content="Start game" Click="StartButton_Click" Margin="131,91,139,244" BorderBrush="#A3FFFFFF" Background="#41000000" AllowDrop="False" />
-            <Button Height="80" Content="Options" Click="OptionsButton_Click" Margin="131,197,139,138" BorderBrush="White" Background="#41000000" AllowDrop="False" />
-            <Button Content="Exit" Height="80" Margin="131,303,139,32" BorderBrush="White" Background="#41000000" AllowDrop="False" />
+            <Button Height="80" Content="Options" Click="OptionsButton_Click" Margin="131,273,139,82" BorderBrush="White" Background="#41000000" AllowDrop="False" />
+            <Button AllowDrop="False" Background="#41000000" BorderBrush="White" Content="High score" Height="80" Margin="131,187,139,168" Click="ScoreButton_Click" />
         </Grid>
     </Grid>
  

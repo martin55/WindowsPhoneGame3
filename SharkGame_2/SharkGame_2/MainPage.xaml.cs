@@ -10,6 +10,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
+using Microsoft.Xna.Framework;
 
 namespace SharkGame_2
 {
@@ -31,5 +32,19 @@ namespace SharkGame_2
         {
             NavigationService.Navigate(new Uri("/Options.xaml", UriKind.Relative));
         }
+
+       
+        protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+        }
+
+       
+
+        private void ScoreButton_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/Score.xaml", UriKind.Relative));
+        }
+
     }
 }

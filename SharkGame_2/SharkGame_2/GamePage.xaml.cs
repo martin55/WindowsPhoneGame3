@@ -19,6 +19,7 @@ using FarseerPhysics.Dynamics;
 using Microsoft.Xna.Framework.Input;
 using FarseerPhysics.Factories;
 using Microsoft.Devices;
+using Microsoft.Xna.Framework.Input.Touch;
 
 
 
@@ -27,14 +28,16 @@ namespace SharkGame_2
     public partial class GamePage : PhoneApplicationPage
     {
 
-
+      
+        // Input Members
+       
+        Accelerometer accelerometer;
         /* Fields */
 
         /// <summary>
         /// Device's screen width in pixels.
         /// </summary>
         private static int screenWidth=800;
-
         /// <summary>
         /// Device's screen height in pixels.
         /// </summary>
@@ -75,12 +78,12 @@ namespace SharkGame_2
         /// <summary>
         /// Vector with its initial point set to screen center.
         /// </summary>
-        private Vector2 centralVector = new Vector2(screenHeight / 2f, screenWidth / 2f);
+        private Vector2 centralVector = new Vector2(100,100);
 
         /// <summary>
         /// Blue shark's velocity.
         /// </summary>
-        public Vector2 blueSharkVelocity = Vector2.Zero;
+        public Vector2 blueSharkVelocity = new Vector2(1,-1);
 
         /// <summary>
         /// Current frame for the shark's movement animation.
@@ -103,25 +106,25 @@ namespace SharkGame_2
 
         private float rotationAngle = 0f;
 
+
+
         ContentManager contentManager;
         GameTimer timer;
-
-
         /// <summary>
         /// Representation of the physical accelerometer sensor.
         /// </summary>
-        private Accelerometer accelerometer;
+      
         SpriteBatch spriteBatch;
         bool backPressed;
+        bool pausedGame = false;
+      
         public GamePage()
         {
+            InitializeComponent();
             
-
-
+            
             this.camera = new Camera();
             // Set the sharing mode of the graphics device to turn on XNA rendering
-            SharedGraphicsDeviceManager.Current.GraphicsDevice.SetSharingMode(true);
-
 
 
             // Set up accelerometer handling.
@@ -131,18 +134,23 @@ namespace SharkGame_2
 
             this.BackKeyPress += new EventHandler<System.ComponentModel.CancelEventArgs>(GamePage_BackKeyPress);
 
-            contentManager = (Application.Current as App).Content;
-            contentManager.RootDirectory = "Content";
-
-            InitializeComponent();
-
-
-
             // Create a timer for this page
             timer = new GameTimer();
             timer.UpdateInterval = TimeSpan.FromTicks(333333);
             timer.Update += OnUpdate;
             timer.Draw += OnDraw;
+        }
+
+
+
+
+
+        void GamePage_BackKeyPress(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+
+            backPressed = true;
+            HandleInput(backPressed);
+            e.Cancel = true;
         }
 
 
@@ -164,33 +172,44 @@ namespace SharkGame_2
             get { return screenHeight; }
         }
 
-        void GamePage_BackKeyPress(object sender, System.ComponentModel.CancelEventArgs e)
+
+    //two times pressed back button exit game(one time just paused game. not working yet properly)
+        public void HandleInput(bool shouldPause)
         {
-            backPressed = true;
-            e.Cancel = true;
+
+            if (pausedGame)
+            {
+                FinishCurrentGame();
+                pausedGame = false;
+                backPressed = false;
+            }
+            else
+            {
+                pausedGame = true;
+               
+            }
+
         }
 
-       
-
-
-
-
+        private void FinishCurrentGame()
+        {
+            backPressed = false;
+            NavigationService.GoBack();
+        }
 
 
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+            SharedGraphicsDeviceManager.Current.GraphicsDevice.SetSharingMode(true);
 
-
+            contentManager = (Application.Current as App).Content;
+            contentManager.RootDirectory = "Content";
 
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(SharedGraphicsDeviceManager.Current.GraphicsDevice);
 
             backPressed = false;
-
-
-
-          
 
             // Begin playing the game's soundtrack.
             // Song song = Content.Load<Song>("game_s");
@@ -199,19 +218,21 @@ namespace SharkGame_2
 
             if (this.gameWorld == null)
             {
-                this.gameWorld = new World(Microsoft.Xna.Framework.Vector2.Zero);
+                this.gameWorld = new World(Vector2.Zero);
             }
             else
             {
                 this.gameWorld.Clear();
             }
 
+            
 
-
+            // Create a new SpriteBatch, which can be used to draw textures.
+            this.spriteBatch = new SpriteBatch(SharedGraphicsDeviceManager.Current.GraphicsDevice);
 
             // Load particles.
             List<Texture2D> textures = new List<Texture2D>();
-            textures.Add(contentManager.Load<Texture2D>("shadow"));
+            textures.Add(this.contentManager.Load<Texture2D>("shadow"));
 
             // Initializes a new instance of the particle emitter with textures.
             this.particleEngine = new ParticleEmitter(textures, new Vector2(400f, 240f));
@@ -228,24 +249,24 @@ namespace SharkGame_2
             // Load bodies.
             this.bodies = new List<Body>();
 
-            this.bodies.Add(BodyFactory.CreateCircle(this.gameWorld, 0.6f, 1f));
+            this.bodies.Add(BodyFactory.CreateCircle(this.gameWorld, 0.4f, 1f));
             this.bodies[Constants.GameObjects.BlueShark].BodyType = BodyType.Dynamic;
-            this.bodies[Constants.GameObjects.BlueShark].Position = this.centralVector;
+            this.bodies[Constants.GameObjects.BlueShark].Position = new Vector2(100,100);
 
-            this.bodies.Add(BodyFactory.CreateRectangle(this.gameWorld, 0.9f, 0.9f, 1f));
+            this.bodies.Add(BodyFactory.CreateCircle(this.gameWorld, 0.4f, 1f));
             this.bodies[Constants.GameObjects.BlackShark].BodyType = BodyType.Dynamic;
             this.bodies[Constants.GameObjects.BlackShark].Position = new Vector2(5f, 3f);
 
-            this.bodies.Add(BodyFactory.CreateCircle(this.gameWorld, 0.9f, 1f, 1f));
+            this.bodies.Add(BodyFactory.CreateRectangle(this.gameWorld, 0.5f, 1f, 2f));
             this.bodies[Constants.GameObjects.Rocket].BodyType = BodyType.Static;
             this.bodies[Constants.GameObjects.Rocket].Position = new Vector2(3f, 2f);
 
             // Load textures.
             this.sprites = new List<Texture2D>();
 
-            this.sprites.Add(contentManager.Load<Texture2D>("shark"));
-            this.sprites.Add(contentManager.Load<Texture2D>("people"));
-            this.sprites.Add(contentManager.Load<Texture2D>("pool"));
+            this.sprites.Add(this.contentManager.Load<Texture2D>("shark"));
+            this.sprites.Add(this.contentManager.Load<Texture2D>("people"));
+            this.sprites.Add(this.contentManager.Load<Texture2D>("pool"));
 
             this.runFrameWidth = this.sprites[Constants.GameObjects.BlueShark].Width / 16;
             this.runFrameHeight = this.sprites[Constants.GameObjects.BlueShark].Height;
@@ -263,7 +284,7 @@ namespace SharkGame_2
         {
             // Stop the timer
             timer.Stop();
-
+            contentManager.Unload();
             // Set the sharing mode of the graphics device to turn off XNA rendering
             SharedGraphicsDeviceManager.Current.GraphicsDevice.SetSharingMode(false);
 
@@ -278,47 +299,45 @@ namespace SharkGame_2
         private void OnUpdate(object sender, GameTimerEventArgs e)
         {
 
+            
+            if(!pausedGame){
 
-            float elapsed = (float)e.ElapsedTime.Seconds;
 
-            // Set the refresh rate to 30 FPS (step one thirtieth of a second in time).
-            this.gameWorld.Step(Math.Min(elapsed, 1f / 30f));
+               
+                float elapsed = (float)e.ElapsedTime.TotalSeconds;
 
-            this.currentPlayerAnimationDelay += elapsed;
+                // Set the refresh rate to 30 FPS (step one thirtieth of a second in time).
+                this.gameWorld.Step(Math.Min(elapsed, 1f / 30f));
 
-            if (Math.Abs(this.blueSharkVelocity.X) > 0.07f || Math.Abs(this.blueSharkVelocity.Y) > 0.07f)
-            {
-                while (this.currentPlayerAnimationDelay > this.playerAnimationDelay)
-                {
-                    ++this.playerCurrentFrame;
-                    this.playerCurrentFrame = this.playerCurrentFrame % 16;
-                    this.currentPlayerAnimationDelay -= this.playerAnimationDelay;
-                }
+                this.currentPlayerAnimationDelay += elapsed;
 
-                // Measure the angle at which the blue shark is moving forward.
-                this.rotationAngle = this.centralVector.AngleBetween(this.centralVector + this.blueSharkVelocity) % (MathHelper.Pi * 2f);
+               
+                    while (this.currentPlayerAnimationDelay > this.playerAnimationDelay)
+                    {
+                        ++this.playerCurrentFrame;
+                        this.playerCurrentFrame = this.playerCurrentFrame % 16;
+                        this.currentPlayerAnimationDelay -= this.playerAnimationDelay;
+                    }
 
-                // Generate blue shark's "footsteps".
-                this.particleEngine.EmitterAngle = 0f;
-                this.particleEngine.EmitterVelocity = new Vector2(-this.blueSharkVelocity.X, -this.blueSharkVelocity.Y);
-                this.particleEngine.EmitterLocation = this.bodies[Constants.GameObjects.BlueShark].Position;
-                this.particleEngine.Update();
+                    // Measure the angle at which the blue shark is moving forward.
+                    this.rotationAngle = this.centralVector.AngleBetween(this.centralVector + this.blueSharkVelocity) % (MathHelper.Pi * 2f);
+
+                    
+                
+
+                this.centralVector.X += this.blueSharkVelocity.X * Constants.Speeds.Speed;
+                this.centralVector.Y += this.blueSharkVelocity.Y * Constants.Speeds.Speed;
+                this.blueSharkVelocity *= elapsed;
+
+                this.bodies[Constants.GameObjects.BlueShark].ApplyForce(this.blueSharkVelocity);
+                this.bodies[Constants.GameObjects.BlueShark].Position = this.centralVector * elapsed;
+
+                // Adjust camera position so that it follows the blue shark.
+                this.camera.Position = this.bodies[Constants.GameObjects.BlueShark].Position.ToRealVector();
+
             }
-
-            this.centralVector.X += this.blueSharkVelocity.X * Constants.Speeds.Speed;
-            this.centralVector.Y += this.blueSharkVelocity.Y * Constants.Speeds.Speed;
-            this.blueSharkVelocity *=elapsed;
-
-            this.bodies[Constants.GameObjects.BlueShark].ApplyForce(this.blueSharkVelocity);
-            this.bodies[Constants.GameObjects.BlueShark].Position = this.centralVector * elapsed;
-
-            this.camera.Position = this.bodies[Constants.GameObjects.BlueShark].Position.ToRealVector();
-
-
-
-
+            
         }
-
 
 
         /// <summary>
@@ -327,8 +346,6 @@ namespace SharkGame_2
         /// </summary>
         private void OnDraw(object sender, GameTimerEventArgs e)
         {
-            SharedGraphicsDeviceManager.Current.GraphicsDevice.Clear(Color.CornflowerBlue);
-
             // Adjust origin vector according to the current blue shark's position.
             Vector2 origin = new Vector2(
                 (this.sprites[Constants.GameObjects.BlueShark].Width / 16) / 2,
@@ -341,7 +358,6 @@ namespace SharkGame_2
 
             // Draw any existing particles.
             this.particleEngine.Draw(this.spriteBatch);
-
 
 
             // Draw the rocket's sprite.
@@ -357,11 +373,6 @@ namespace SharkGame_2
                 1f,
                 SpriteEffects.None,
                 0f);
-
-
-
-
-
             // Draw the blue shark's sprite.
             this.spriteBatch.Draw(
                 this.sprites[Constants.GameObjects.BlueShark],
@@ -370,7 +381,7 @@ namespace SharkGame_2
                 Color.White,
                 this.rotationAngle,
                 origin,
-                1f,
+                1.2f,
                 SpriteEffects.None,
                 0f);
 
@@ -384,13 +395,15 @@ namespace SharkGame_2
                 new Vector2(
                     this.sprites[Constants.GameObjects.BlackShark].Width / 2f,
                     this.sprites[Constants.GameObjects.BlackShark].Height / 2f),
-                0.7f,
+                0.5f,
                 SpriteEffects.None,
                 0f);
 
-
+          
 
             this.spriteBatch.End();
+
+            // Continue with what was the default action.
 
 
         }
@@ -434,17 +447,7 @@ namespace SharkGame_2
             this.spriteBatch.End();
         }
 
-        /// <summary>
-        /// Returns the viewport vector, representing the visible portion of the canvas (map).
-        /// </summary>
-        /// <returns>Viewport vector.</returns>
-        private Vector2 ViewPortVector()
-        {
-            return new Vector2(
-                screenWidth + Constants.Maps.TileWidth,
-                screenHeight + Constants.Maps.TileHeight);
-        }
-
+     
 
         /// <summary>
         /// Raised when the accelerometer readings are subject to change.
@@ -453,10 +456,12 @@ namespace SharkGame_2
         /// <param name="e">Detailed state connected with the event.</param>
         private void Accelerometer_CurrentValueChanged(object sender, SensorReadingEventArgs<AccelerometerReading> e)
         {
-            // Call UpdateUI on the UI thread and pass the AccelerometerReading event's data.
-            System.Windows.Deployment.Current.Dispatcher.BeginInvoke(() => this.UpdateUI(e.SensorReading));
+            
+         this.UpdateUI(e.SensorReading);
         }
 
+      
+        
         /// <summary>
         /// Handles UI updating.
         /// </summary>
@@ -465,18 +470,30 @@ namespace SharkGame_2
         {
             // Set the minimum speed limit (sensitivity) to a sane value,
             // so that the blue shark will not "drift".
-            if (Math.Abs(accelerometerReading.Acceleration.Y) > Constants.Speeds.BlueSharkSpeedMin)
-            {
-                blueSharkVelocity.X = -accelerometerReading.Acceleration.Y;
-            }
+           
+                this.blueSharkVelocity.X = -accelerometerReading.Acceleration.Y;
+         
 
-            if (Math.Abs(accelerometerReading.Acceleration.X) > Constants.Speeds.BlueSharkSpeedMin)
-            {
-                blueSharkVelocity.Y = -accelerometerReading.Acceleration.X;
-            }
+                this.blueSharkVelocity.Y = -accelerometerReading.Acceleration.X;
+          
 
-            // Limit the velocity.
-            blueSharkVelocity = Vector2.Clamp(blueSharkVelocity, -Constants.Speeds.BlueSharkVelocityMax, Constants.Speeds.BlueSharkVelocityMax);
+         
         }
+
+        /// <summary>
+        /// Returns the viewport vector, representing the visible portion of the canvas (map).
+        /// </summary>
+        /// <returns>Viewport vector.</returns>
+        private Vector2 ViewPortVector()
+        {
+            return new Vector2(
+               screenWidth + Constants.Maps.TileWidth,
+               screenHeight + Constants.Maps.TileHeight);
+        }
+
+
+       
+
+       
     }
 }

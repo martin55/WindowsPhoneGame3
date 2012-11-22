@@ -11,7 +11,7 @@
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Landscape" Orientation="LandscapeLeft"
     mc:Ignorable="d" d:DesignHeight="480" d:DesignWidth="800"
-    shell:SystemTray.IsVisible="False">
+    shell:SystemTray.IsVisible="False" AllowDrop="False">
     
     <!--No XAML content is required as the page is rendered entirely with the XNA Framework-->
 

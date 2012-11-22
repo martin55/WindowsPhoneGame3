@@ -23,3 +23,4 @@ C:\Users\Martin\Documents\Visual Studio 2010\Projects\WindowsPhoneGame3\SharkGam
 C:\Users\Martin\Documents\Visual Studio 2010\Projects\WindowsPhoneGame3\SharkGame_2\SharkGame_2\obj\Debug\XapCacheFile.xml
 C:\Users\Martin\Documents\Visual Studio 2010\Projects\WindowsPhoneGame3\SharkGame_2\SharkGame_2\Bin\Debug\Content\shadow.xnb
 C:\Users\Martin\Documents\Visual Studio 2010\Projects\WindowsPhoneGame3\SharkGame_2\SharkGame_2\obj\Debug\Options.g.i.cs
+C:\Users\Martin\Documents\Visual Studio 2010\Projects\WindowsPhoneGame3\SharkGame_2\SharkGame_2\obj\Debug\Score.g.i.cs
