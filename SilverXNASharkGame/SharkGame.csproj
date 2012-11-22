@@ -111,13 +111,13 @@
     <Content Include="SplashScreenImage.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Farseer Physics Engine 3.3.1 XNA\Farseer Physics XNA WP7.csproj">
+    <ProjectReference Include="..\Farseer Physics Engine 3.3.1 XNA\Farseer Physics XNA WP7.csproj">
       <Project>{AA6CB78E-9484-4843-8613-54CD2BF1E948}</Project>
       <Name>Farseer Physics XNA WP7</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SilverXNASharkGameLib\SilverXNASharkGameLib.csproj">
+    <ProjectReference Include="..\SilverXNASharkGameLib\SharkGameLib.csproj">
       <Project>{C27927A5-8CBB-41E0-AEE3-DA397C696AE3}</Project>
-      <Name>SilverXNASharkGameLib</Name>
+      <Name>SharkGameLib</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.$(TargetFrameworkProfile).Overrides.targets" />
