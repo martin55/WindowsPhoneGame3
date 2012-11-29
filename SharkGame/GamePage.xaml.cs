@@ -121,6 +121,18 @@
         /// </summary>
         private GameTimer timer;
 
+
+
+
+
+        bool backPressed;
+        bool pausedGame = false;
+
+
+
+
+
+
         /* Constructor */
 
         /// <summary>
@@ -170,6 +182,46 @@
         }
 
         /* Methods */
+
+
+
+
+
+        void GamePage_BackKeyPress(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+
+            backPressed = true;
+            HandleInput(backPressed);
+            e.Cancel = true;
+        }
+
+        //two times pressed back button exit game(one time just paused game. not working yet properly)
+        public void HandleInput(bool shouldPause)
+        {
+
+            if (pausedGame)
+            {
+                FinishCurrentGame();
+                pausedGame = false;
+                backPressed = false;
+            }
+            else
+            {
+                pausedGame = true;
+
+            }
+
+        }
+
+        private void FinishCurrentGame()
+        {
+            backPressed = false;
+            NavigationService.GoBack();
+        }
+
+
+
+
 
         /// <summary>
         /// Handles navigating to the game.
@@ -267,6 +319,11 @@
         /// <param name="e">Information passed to the event.</param>
         private void OnUpdate(object sender, GameTimerEventArgs e)
         {
+            //if(!pausedGame){
+
+
+
+
             // TODO: Add your update logic here
             float elapsed = (float)e.ElapsedTime.TotalSeconds;
 

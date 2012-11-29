@@ -1,4 +1,4 @@
-﻿<phone:PhoneApplicationPage 
+﻿<phone:PhoneApplicationPage
     x:Class="SharkGame.MainPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -13,28 +13,30 @@
     SupportedOrientations="Landscape" Orientation="LandscapeLeft"
     shell:SystemTray.IsVisible="False">
 
-    <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot"  >
-        <Grid.Background>
-            <ImageBrush ImageSource="/Background.png" />
-        </Grid.Background>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+  <!--LayoutRoot is the root grid where all page content is placed-->
+  <Grid x:Name="LayoutRoot"  >
+    <Grid.Background>
+      <ImageBrush ImageSource="/Background.png" />
+    </Grid.Background>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
 
-        <!--TitlePanel contains the name of the application and page title-->
-        <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28"></StackPanel>
+    <!--TitlePanel contains the name of the application and page title-->
+    <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28"></StackPanel>
 
-        <!--ContentPanel - place additional content here-->
-        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
+    <!--ContentPanel - place additional content here-->
+    <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
 
-            <!--Create navigation buttons-->
-            <!--Create a single button to navigate to the second page which is rendered with the XNA Framework-->
-            <Button x:Name="StartGame" Content="Start game" Grid.Row="0" Click="StartGame_Click" Margin="131,202,139,133" BorderBrush="White" Background="#41000000" AllowDrop="False" />
-            <!--Create a single button to navigate to Silverlight-based options menu-->
-            <Button x:Name="ShowOptions" Content="Options" Grid.Row="1" Click="ShowOptions_Click" Margin="131,307,139,28" BorderBrush="White" Background="#41000000" AllowDrop="False" />
-        </Grid>
+      <!--Create navigation buttons-->
+      <!--Create a single button to navigate to the second page which is rendered with the XNA Framework-->
+      <Button x:Name="StartGame" Content="Start game" Grid.Row="0" Click="StartGame_Click" Margin="188,161,188,184" BorderBrush="White" Background="#41000000" AllowDrop="False" ClickMode="Press" Width="400" Height="90" />
+      <!--Create a single button to navigate to Silverlight-based options menu-->
+      <Button x:Name="ShowOptions" Content="Options" Click="ShowOptions_Click" Margin="188,238,188,107" BorderBrush="White" Background="#41000000" AllowDrop="False" ClickMode="Press" Width="400" Height="90" />
+      <!--Create a single button to navigate to Silverlight-based high scores menu-->
+      <Button x:Name="ShowHighScores" Content="High scores" Click="ShowScores_Click" Margin="188,316,188,29" BorderBrush="White" Background="#41000000" AllowDrop="False" ClickMode="Press" Width="400" Height="90" />
     </Grid>
+  </Grid>
 
 </phone:PhoneApplicationPage>

@@ -40,5 +40,15 @@
         {
             NavigationService.Navigate(new Uri("/OptionsPage.xaml", UriKind.Relative));
         }
+
+        /// <summary>
+        /// Opens High scores menu.
+        /// </summary>
+        /// <param name="sender">Object that raised the event.</param>
+        /// <param name="e">Information passed to the event.</param>
+        private void ShowScores_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/ScorePage.xaml", UriKind.Relative));
+        }
     }
 }

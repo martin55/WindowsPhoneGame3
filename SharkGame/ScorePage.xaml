@@ -1,0 +1,55 @@
+﻿<phone:PhoneApplicationPage
+    x:Class="SharkGame.Score"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="Landscape" Orientation="Landscape"
+    mc:Ignorable="d" d:DesignHeight="480" d:DesignWidth="800"
+    shell:SystemTray.IsVisible="False">
+
+  <!--LayoutRoot is the root grid where all page content is placed-->
+  <Grid x:Name="LayoutRoot">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+
+    <!--TitlePanel contains the name of the application and page title-->
+    <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28"></StackPanel>
+
+    <!--ContentPanel - place additional content here-->
+    <Grid x:Name="ContentPanel" Margin="154,21,136,0" Background="#A0000000" Grid.Row="1">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="238*" />
+        <ColumnDefinition Width="4*" />
+        <ColumnDefinition Width="Auto" />
+      </Grid.ColumnDefinitions>
+      <TextBlock x:Name="ApplicationTitle" Text="High Score"  Style="{StaticResource PhoneTextNormalStyle}" Margin="162,10,156,338" FontSize="36" FontStyle="Normal" FontFamily="Tahoma" FontWeight="Normal" Foreground="White"  />
+      <ListBox Height="256"  HorizontalAlignment="Center" Margin="116,94,192,0" Name="ScoreBox" VerticalAlignment="Top" Width="194" >
+        <TextBlock HorizontalAlignment="Center" TextAlignment="Center" Text="1. Player" Height="40" />
+        <TextBlock HorizontalAlignment="Center" TextAlignment="Center" Text="2." Height="40"/>
+        <TextBlock HorizontalAlignment="Center" TextAlignment="Center" Text="3." Height="40" />
+        <TextBlock HorizontalAlignment="Center" TextAlignment="Center" Text="4." Height="40"/>
+        <TextBlock HorizontalAlignment="Center" TextAlignment="Center" Text="5." Height="40"/>
+      </ListBox>
+      <ListBox Height="256" HorizontalAlignment="Left" Margin="332,94,0,0" Name="listBox1" VerticalAlignment="Top" Width="45">
+
+        <TextBlock HorizontalAlignment="Center" TextAlignment="Center" Text="50" Height="40" />
+        <TextBlock HorizontalAlignment="Center" TextAlignment="Center" Text="30" Height="40"/>
+        <TextBlock HorizontalAlignment="Center" TextAlignment="Center" Text="20" Height="40" />
+        <TextBlock HorizontalAlignment="Center" TextAlignment="Center" Text="5" Height="40"/>
+        <TextBlock HorizontalAlignment="Center" TextAlignment="Center" Text="0" Height="40"/>
+      </ListBox>
+    </Grid>
+    <Grid.Background>
+      <ImageBrush ImageSource="Background.png" />
+    </Grid.Background>
+  </Grid>
+
+</phone:PhoneApplicationPage>
