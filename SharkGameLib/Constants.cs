@@ -20,17 +20,22 @@ namespace SharkGame
             /// <summary>
             /// Blue Shark index.
             /// </summary>
-            public static int BlueShark { get { return 0; } }
+            public static int Shark { get { return 0; } }
 
             /// <summary>
-            /// Black Shark index. 
+            /// Human index.
             /// </summary>
-            public static int BlackShark { get { return 1; } }
+            public static int Human { get { return 1; } }
 
             /// <summary>
-            /// Rocket index.
+            /// Pool index.
             /// </summary>
-            public static int Rocket { get { return 2; } }
+            public static int Pool { get { return 2; } }
+
+            /// <summary>
+            /// Trap index.
+            /// </summary>
+            public static int Trap { get { return 3; } }
         }
 
         /// <summary>
@@ -58,12 +63,12 @@ namespace SharkGame
             /// <summary>
             /// Single in-game tile width.
             /// </summary>
-            public static int TileWidth { get { return 128; } }
+            public static int TileWidth { get { return 80; } }
 
             /// <summary>
             /// Single in-game tile height.
             /// </summary>
-            public static int TileHeight { get { return 128; } }
+            public static int TileHeight { get { return 80; } }
 
             /// <summary>
             /// First predefined map.
@@ -74,15 +79,11 @@ namespace SharkGame
                 {
                     return new[,]
                     {
+                        { 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 },
                         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                        { 0, 0, 2, 0, 0, 0, 3, 0, 4, 0 },
                         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                        { 0, 0, 2, 0, 0, 0, 0, 0, 0, 0 },
-                        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                        { 0, 0, 1, 0, 0, 0, 0, 2, 0, 0 },
                         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
                     };
                 }

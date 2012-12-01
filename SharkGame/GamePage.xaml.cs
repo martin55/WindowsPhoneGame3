@@ -12,6 +12,8 @@
     using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
     using Microsoft.Xna.Framework.Media;
+    using FarseerPhysics.Dynamics.Contacts;
+    using System.Diagnostics;
 
     /// <summary>
     /// Represents a page for the game itself, accessible from the main menu.
@@ -72,14 +74,19 @@
         private List<Texture2D> tiles;
 
         /// <summary>
+        /// Collection of fixtures for the game objects.
+        /// </summary>
+        private List<Fixture> fixtures;
+
+        /// <summary>
         /// Vector with its initial point set to screen center.
         /// </summary>
         private Vector2 centralVector = Conversions.ToSimVector(new Vector2(screenHeight / 2f, screenWidth / 2f));
 
         /// <summary>
-        /// Blue shark's velocity.
+        /// Shark's velocity.
         /// </summary>
-        private Vector2 blueSharkVelocity = Vector2.Zero;
+        private Vector2 sharkVelocity = Vector2.Zero;
 
         /// <summary>
         /// Current frame for the shark's movement animation.
@@ -107,9 +114,9 @@
         private float currentPlayerAnimationDelay = 0f;
 
         /// <summary>
-        /// Blue shark's direction.
+        /// Shark's rotation angle in degrees.
         /// </summary>
-        private float rotationAngle = 0f;
+        private float sharkRotation = 0f;
 
         /// <summary>
         /// 
@@ -189,7 +196,7 @@
 
         void GamePage_BackKeyPress(object sender, System.ComponentModel.CancelEventArgs e)
         {
-
+            // Pause the game and return to the menu.
             backPressed = true;
             HandleInput(backPressed);
             e.Cancel = true;
@@ -269,16 +276,21 @@
             this.bodies = new List<Body>();
 
             this.bodies.Add(BodyFactory.CreateCircle(this.gameWorld, 0.6f, 1f));
-            this.bodies[Constants.GameObjects.BlueShark].BodyType = BodyType.Dynamic;
-            this.bodies[Constants.GameObjects.BlueShark].Position = this.centralVector;
+            this.bodies[Constants.GameObjects.Shark].BodyType = BodyType.Dynamic;
+            this.bodies[Constants.GameObjects.Shark].Position = this.centralVector;
 
             this.bodies.Add(BodyFactory.CreateRectangle(this.gameWorld, 0.9f, 0.9f, 1f));
-            this.bodies[Constants.GameObjects.BlackShark].BodyType = BodyType.Dynamic;
-            this.bodies[Constants.GameObjects.BlackShark].Position = new Vector2(5f, 3f);
+            this.bodies[Constants.GameObjects.Human].BodyType = BodyType.Dynamic;
+            this.bodies[Constants.GameObjects.Human].Position = new Vector2(5f, 3f);
 
             this.bodies.Add(BodyFactory.CreateCircle(this.gameWorld, 0.9f, 1f, 1f));
-            this.bodies[Constants.GameObjects.Rocket].BodyType = BodyType.Static;
-            this.bodies[Constants.GameObjects.Rocket].Position = new Vector2(3f, 2f);
+            this.bodies[Constants.GameObjects.Pool].BodyType = BodyType.Dynamic;
+            this.bodies[Constants.GameObjects.Pool].Position = new Vector2(3f, 2f);
+            //this.bodies[Constants.GameObjects.Pool].
+
+            this.bodies.Add(BodyFactory.CreateCircle(this.gameWorld, 0.9f, 1f, 1f));
+            this.bodies[Constants.GameObjects.Trap].BodyType = BodyType.Dynamic;
+            this.bodies[Constants.GameObjects.Trap].Position = new Vector2(7f, 5f);
 
             // Load textures.
             this.sprites = new List<Texture2D>();
@@ -286,14 +298,69 @@
             this.sprites.Add(this.contentManager.Load<Texture2D>("shark"));
             this.sprites.Add(this.contentManager.Load<Texture2D>("people"));
             this.sprites.Add(this.contentManager.Load<Texture2D>("pool"));
+            this.sprites.Add(this.contentManager.Load<Texture2D>("trap"));
+            this.sprites.Add(this.contentManager.Load<Texture2D>("wall"));
 
-            this.runFrameWidth = this.sprites[Constants.GameObjects.BlueShark].Width / 16;
-            this.runFrameHeight = this.sprites[Constants.GameObjects.BlueShark].Height;
+            // Create fixtures.
+            this.fixtures = new List<Fixture>();
+
+            this.fixtures.Add(FixtureFactory.AttachCircle(0.6f, 1f, this.bodies[Constants.GameObjects.Shark]));
+            this.fixtures[Constants.GameObjects.Shark].CollisionCategories = Category.Cat1;
+
+            this.fixtures.Add(FixtureFactory.AttachCircle(0.6f, 1f, this.bodies[Constants.GameObjects.Human]));
+            this.fixtures[Constants.GameObjects.Human].CollisionCategories = Category.Cat2;
+            this.fixtures[Constants.GameObjects.Human].OnCollision += HumanEaten;
+
+            this.fixtures.Add(FixtureFactory.AttachCircle(1f, 10f, this.bodies[Constants.GameObjects.Pool]));
+            this.fixtures[Constants.GameObjects.Pool].CollisionCategories = Category.Cat3;
+            this.fixtures[Constants.GameObjects.Pool].OnCollision += TimerReplenished;
+
+            this.fixtures.Add(FixtureFactory.AttachCircle(1f, 10f, this.bodies[Constants.GameObjects.Trap]));
+            this.fixtures[Constants.GameObjects.Trap].CollisionCategories = Category.Cat4;
+            this.fixtures[Constants.GameObjects.Trap].OnCollision += SharkDead;
+
+            //FixtureFactory.AttachEdge(this.gameWorld.
+
+            this.runFrameWidth = this.sprites[Constants.GameObjects.Shark].Width / 16;
+            this.runFrameHeight = this.sprites[Constants.GameObjects.Shark].Height;
 
             // Start the timer.
             this.timer.Start();
 
             base.OnNavigatedTo(e);
+        }
+
+        private bool SharkDead(Fixture fixtureA, Fixture fixtureB, Contact contact)
+        {
+            if (fixtureB.CollisionCategories == Category.Cat1)
+            {
+                Debug.WriteLine("Shark dead");
+                return false;
+            }
+
+            return false;
+        }
+
+        private bool HumanEaten(Fixture fixtureA, Fixture fixtureB, Contact contact)
+        {
+            if (fixtureB.CollisionCategories == Category.Cat1)
+            {
+                Debug.WriteLine("Human eaten");
+                return false;
+            }
+
+            return false;
+        }
+
+        private bool TimerReplenished(Fixture fixtureA, Fixture fixtureB, Contact contact)
+        {
+            if (fixtureB.CollisionCategories == Category.Cat1)
+            {
+                Debug.WriteLine("Timer replenished");
+                return false;
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -319,12 +386,6 @@
         /// <param name="e">Information passed to the event.</param>
         private void OnUpdate(object sender, GameTimerEventArgs e)
         {
-            //if(!pausedGame){
-
-
-
-
-            // TODO: Add your update logic here
             float elapsed = (float)e.ElapsedTime.TotalSeconds;
 
             // Set the refresh rate to 30 FPS (step one thirtieth of a second in time).
@@ -332,7 +393,7 @@
 
             this.currentPlayerAnimationDelay += elapsed;
 
-            if (Math.Abs(this.blueSharkVelocity.X) > 0.07f || Math.Abs(this.blueSharkVelocity.Y) > 0.07f)
+            if (Math.Abs(this.sharkVelocity.X) > 0.07f || Math.Abs(this.sharkVelocity.Y) > 0.07f)
             {
                 while (this.currentPlayerAnimationDelay > this.playerAnimationDelay)
                 {
@@ -341,27 +402,27 @@
                     this.currentPlayerAnimationDelay -= this.playerAnimationDelay;
                 }
 
-                // Measure the angle at which the blue shark is moving forward.
-                this.rotationAngle = this.centralVector.AngleBetween(this.centralVector + this.blueSharkVelocity) % (MathHelper.Pi * 2f);
+                // Measure the angle at which the shark is moving forward.
+                this.sharkRotation = this.centralVector.AngleBetween(this.centralVector + this.sharkVelocity) % (MathHelper.Pi * 2f);
 
-                // Generate blue shark's "footsteps".
+                // Generate shark's "footprints".
                 this.particleEngine.Generate();
             }
-            
-            // Generate blue shark's "footsteps".
+
+            // Generate shark's "footprints".
             this.particleEngine.EmitterAngle = 0f;
-            this.particleEngine.EmitterVelocity = new Vector2(-this.blueSharkVelocity.X, -this.blueSharkVelocity.Y);
-            this.particleEngine.EmitterLocation = this.bodies[Constants.GameObjects.BlueShark].Position;
+            this.particleEngine.EmitterVelocity = new Vector2(-this.sharkVelocity.X, -this.sharkVelocity.Y);
+            this.particleEngine.EmitterLocation = this.bodies[Constants.GameObjects.Shark].Position;
             this.particleEngine.Update();
 
-            this.centralVector.X += this.blueSharkVelocity.X * Constants.Speeds.BlueSharkSpeedMultiplier;
-            this.centralVector.Y += this.blueSharkVelocity.Y * Constants.Speeds.BlueSharkSpeedMultiplier;
-            this.blueSharkVelocity *= elapsed;
+            this.centralVector.X += this.sharkVelocity.X * Constants.Speeds.BlueSharkSpeedMultiplier;
+            this.centralVector.Y += this.sharkVelocity.Y * Constants.Speeds.BlueSharkSpeedMultiplier;
+            this.sharkVelocity *= elapsed;
 
-            this.bodies[Constants.GameObjects.BlueShark].ApplyForce(this.blueSharkVelocity);
-            this.bodies[Constants.GameObjects.BlueShark].Position = this.centralVector * elapsed;
+            this.bodies[Constants.GameObjects.Shark].ApplyForce(this.sharkVelocity);
+            this.bodies[Constants.GameObjects.Shark].Position = this.centralVector * elapsed;
 
-            this.camera.Position = this.bodies[Constants.GameObjects.BlueShark].Position.ToRealVector();
+            this.camera.Position = this.bodies[Constants.GameObjects.Shark].Position.ToRealVector();
         }
 
         /// <summary>
@@ -373,11 +434,10 @@
         {
             SharedGraphicsDeviceManager.Current.GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
-            // Adjust origin vector according to the current blue shark's position.
+            // Adjust origin vector according to the current shark's position.
             Vector2 origin = new Vector2(
-                (this.sprites[Constants.GameObjects.BlueShark].Width / 16) / 2,
-                this.sprites[Constants.GameObjects.BlueShark].Height / 2);
+                (this.sprites[Constants.GameObjects.Shark].Width / 16) / 2,
+                this.sprites[Constants.GameObjects.Shark].Height / 2);
 
             // Draw the map.
             this.DrawMap();
@@ -387,42 +447,56 @@
             // Draw any existing particles.
             this.particleEngine.Draw(this.spriteBatch);
 
-            // Draw the blue shark's sprite.
+            // Draw the pool sprite.
             this.spriteBatch.Draw(
-                this.sprites[Constants.GameObjects.BlueShark],
-                this.bodies[Constants.GameObjects.BlueShark].Position.ToRealVector(),
-                new Microsoft.Xna.Framework.Rectangle(this.playerCurrentFrame * this.runFrameWidth, 0, this.runFrameWidth, this.runFrameHeight),
+                this.sprites[Constants.GameObjects.Pool],
+                this.bodies[Constants.GameObjects.Pool].Position.ToRealVector(),
+                null,
                 Color.White,
-                this.rotationAngle,
-                origin,
+                this.bodies[Constants.GameObjects.Pool].Rotation,
+                new Vector2(
+                    this.sprites[Constants.GameObjects.Pool].Width / 2f,
+                    this.sprites[Constants.GameObjects.Pool].Height / 2f),
                 1f,
                 SpriteEffects.None,
                 0f);
 
-            // Draw the black shark's sprite.
+            // Draw the trap sprite.
             this.spriteBatch.Draw(
-                this.sprites[Constants.GameObjects.BlackShark],
-                this.bodies[Constants.GameObjects.BlackShark].Position.ToRealVector(),
+                this.sprites[Constants.GameObjects.Trap],
+                this.bodies[Constants.GameObjects.Trap].Position.ToRealVector(),
+                null,
+                Color.White,
+                this.bodies[Constants.GameObjects.Pool].Rotation,
+                new Vector2(
+                    this.sprites[Constants.GameObjects.Trap].Width / 2f,
+                    this.sprites[Constants.GameObjects.Trap].Height / 2f),
+                1f,
+                SpriteEffects.None,
+                0f);
+
+            // Draw the human sprite.
+            this.spriteBatch.Draw(
+                this.sprites[Constants.GameObjects.Human],
+                this.bodies[Constants.GameObjects.Human].Position.ToRealVector(),
                 null,
                 Color.Red,
-                this.bodies[Constants.GameObjects.BlackShark].Rotation,
+                this.bodies[Constants.GameObjects.Human].Rotation,
                 new Vector2(
-                    this.sprites[Constants.GameObjects.BlackShark].Width / 2f,
-                    this.sprites[Constants.GameObjects.BlackShark].Height / 2f),
+                    this.sprites[Constants.GameObjects.Human].Width / 2f,
+                    this.sprites[Constants.GameObjects.Human].Height / 2f),
                 1f,
                 SpriteEffects.None,
                 0f);
 
-            // Draw the rocket's sprite.
+            // Draw the shark sprite.
             this.spriteBatch.Draw(
-                this.sprites[Constants.GameObjects.Rocket],
-                this.bodies[Constants.GameObjects.Rocket].Position.ToRealVector(),
-                null,
+                this.sprites[Constants.GameObjects.Shark],
+                this.bodies[Constants.GameObjects.Shark].Position.ToRealVector(),
+                new Microsoft.Xna.Framework.Rectangle(this.playerCurrentFrame * this.runFrameWidth, 0, this.runFrameWidth, this.runFrameHeight),
                 Color.White,
-                this.bodies[Constants.GameObjects.Rocket].Rotation,
-                new Vector2(
-                    this.sprites[Constants.GameObjects.Rocket].Width / 2f,
-                    this.sprites[Constants.GameObjects.Rocket].Height / 2f),
+                this.sharkRotation,
+                origin,
                 1f,
                 SpriteEffects.None,
                 0f);
@@ -498,19 +572,19 @@
         private void UpdateUI(AccelerometerReading accelerometerReading)
         {
             // Set the minimum speed limit (sensitivity) to a sane value,
-            // so that the blue shark will not "drift".
+            // so that the shark will not "drift".
             if (Math.Abs(accelerometerReading.Acceleration.Y) > Constants.Speeds.BlueSharkSpeedMin)
             {
-                this.blueSharkVelocity.X = -accelerometerReading.Acceleration.Y;
+                this.sharkVelocity.X = -accelerometerReading.Acceleration.Y;
             }
 
             if (Math.Abs(accelerometerReading.Acceleration.X) > Constants.Speeds.BlueSharkSpeedMin)
             {
-                this.blueSharkVelocity.Y = -accelerometerReading.Acceleration.X;
+                this.sharkVelocity.Y = -accelerometerReading.Acceleration.X;
             }
 
             // Limit the velocity.
-            this.blueSharkVelocity = Vector2.Clamp(this.blueSharkVelocity, -Constants.Speeds.BlueSharkVelocityMax, Constants.Speeds.BlueSharkVelocityMax);
+            this.sharkVelocity = Vector2.Clamp(this.sharkVelocity, -Constants.Speeds.BlueSharkVelocityMax, Constants.Speeds.BlueSharkVelocityMax);
         }
     }
 }
