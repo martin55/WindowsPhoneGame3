@@ -14,12 +14,33 @@
     using Microsoft.Xna.Framework.Media;
     using FarseerPhysics.Dynamics.Contacts;
     using System.Diagnostics;
-
+    
     /// <summary>
     /// Represents a page for the game itself, accessible from the main menu.
     /// </summary>
     public partial class GamePage : PhoneApplicationPage
     {
+
+       
+        
+
+
+        int tileMapWidth;
+        int tileMapHeight;
+       
+        static int mapWidthInPixels;
+        static int mapHeightInPixels;
+       
+        public static int MapWidthInPixels
+        {
+            get { return mapWidthInPixels; }
+        }
+        public static int MapHeightInPixels
+        {
+            get { return mapHeightInPixels; }
+        }
+        
+        
         /* Fields */
 
         /// <summary>
@@ -41,7 +62,8 @@
         /// Game camera; at fixed height over the board, movable in different
         /// directions, always following the main character.
         /// </summary>
-        private Camera camera;
+        Camera camera ;
+       
 
         /// <summary>
         /// Particle generator.
@@ -72,10 +94,12 @@
         /// Collection of sprites for the map.
         /// </summary>
         private List<Texture2D> tiles;
+       
 
         /// <summary>
         /// Collection of fixtures for the game objects.
         /// </summary>
+        /// 
         private List<Fixture> fixtures;
 
         /// <summary>
@@ -150,8 +174,8 @@
             this.InitializeComponent();
 
             // Create a default camera object.
-            this.camera = new Camera();
-
+            //
+           
             // Set the sharing mode of the graphics device to turn on XNA rendering
             SharedGraphicsDeviceManager.Current.GraphicsDevice.SetSharingMode(true);
 
@@ -243,9 +267,9 @@
             this.spriteBatch = new SpriteBatch(SharedGraphicsDeviceManager.Current.GraphicsDevice);
 
             // Begin playing the game's soundtrack.
-            Song song = this.contentManager.Load<Song>("game_s");
-            MediaPlayer.Play(song);
-            MediaPlayer.IsRepeating = true;
+           // Song song = this.contentManager.Load<Song>("game_s");
+            //MediaPlayer.Play(song);
+            //MediaPlayer.IsRepeating = true;
 
             if (this.gameWorld == null)
             {
@@ -255,6 +279,13 @@
             {
                 this.gameWorld.Clear();
             }
+
+           
+            tileMapWidth = Constants.Maps.Map.GetLength(1);
+            tileMapHeight = Constants.Maps.Map.GetLength(0);
+            mapWidthInPixels = tileMapWidth * Constants.Maps.TileWidth;
+            mapHeightInPixels = tileMapHeight * Constants.Maps.TileHeight;
+           
 
             // Load particles.
             List<Texture2D> textures = new List<Texture2D>();
@@ -267,8 +298,8 @@
             this.tiles = new List<Texture2D>();
 
             this.tiles.Add(this.contentManager.Load<Texture2D>("sand"));
-            this.tiles.Add(this.contentManager.Load<Texture2D>("sand"));
-            this.tiles.Add(this.contentManager.Load<Texture2D>("sand"));
+            this.tiles.Add(this.contentManager.Load<Texture2D>("sea_sand"));
+            this.tiles.Add(this.contentManager.Load<Texture2D>("sea"));
             this.tiles.Add(this.contentManager.Load<Texture2D>("sand"));
             this.tiles.Add(this.contentManager.Load<Texture2D>("sand"));
 
@@ -324,6 +355,7 @@
             this.runFrameWidth = this.sprites[Constants.GameObjects.Shark].Width / 16;
             this.runFrameHeight = this.sprites[Constants.GameObjects.Shark].Height;
 
+            camera = new Camera(this.bodies[Constants.GameObjects.Shark].Position.ToRealVector());
             // Start the timer.
             this.timer.Start();
 
@@ -386,6 +418,7 @@
         /// <param name="e">Information passed to the event.</param>
         private void OnUpdate(object sender, GameTimerEventArgs e)
         {
+            
             float elapsed = (float)e.ElapsedTime.TotalSeconds;
 
             // Set the refresh rate to 30 FPS (step one thirtieth of a second in time).
@@ -422,7 +455,22 @@
             this.bodies[Constants.GameObjects.Shark].ApplyForce(this.sharkVelocity);
             this.bodies[Constants.GameObjects.Shark].Position = this.centralVector * elapsed;
 
-            this.camera.Position = this.bodies[Constants.GameObjects.Shark].Position.ToRealVector();
+            
+            //update camera position
+            camera.position = this.bodies[Constants.GameObjects.Shark].Position.ToRealVector();
+            //clamp camera movement only on the map size
+            camera.position.X = MathHelper.Clamp(camera.position.X,
+                      0,
+                     MapWidthInPixels - ScreenWidth);
+            camera.position.Y = MathHelper.Clamp(camera.position.Y,
+                      0,
+                        MapHeightInPixels - ScreenHeight);
+            
+
+                
+            
+           
+            
         }
 
         /// <summary>
@@ -442,52 +490,55 @@
             // Draw the map.
             this.DrawMap();
 
-            this.spriteBatch.Begin();
+            this.spriteBatch.Begin(SpriteSortMode.BackToFront,
+                        BlendState.AlphaBlend,
+                        null,
+                        null,
+                        null,
+                        null,
+                        camera.get_transformation());
 
             // Draw any existing particles.
             this.particleEngine.Draw(this.spriteBatch);
 
-            // Draw the pool sprite.
-            this.spriteBatch.Draw(
-                this.sprites[Constants.GameObjects.Pool],
-                this.bodies[Constants.GameObjects.Pool].Position.ToRealVector(),
-                null,
-                Color.White,
-                this.bodies[Constants.GameObjects.Pool].Rotation,
-                new Vector2(
-                    this.sprites[Constants.GameObjects.Pool].Width / 2f,
-                    this.sprites[Constants.GameObjects.Pool].Height / 2f),
-                1f,
-                SpriteEffects.None,
-                0f);
 
-            // Draw the trap sprite.
-            this.spriteBatch.Draw(
-                this.sprites[Constants.GameObjects.Trap],
-                this.bodies[Constants.GameObjects.Trap].Position.ToRealVector(),
-                null,
-                Color.White,
-                this.bodies[Constants.GameObjects.Pool].Rotation,
-                new Vector2(
-                    this.sprites[Constants.GameObjects.Trap].Width / 2f,
-                    this.sprites[Constants.GameObjects.Trap].Height / 2f),
-                1f,
-                SpriteEffects.None,
-                0f);
+            
+            //draw all objects in viewpoint
+            Microsoft.Xna.Framework.Point cameraPoint = Conversions.ToCell(camera.position);
+            Microsoft.Xna.Framework.Point viewPoint = Conversions.ToCell(camera.position+
+                                    ViewPortVector());
+            Microsoft.Xna.Framework.Point min = new Microsoft.Xna.Framework.Point();
+            Microsoft.Xna.Framework.Point max = new Microsoft.Xna.Framework.Point();
+            min.X = cameraPoint.X;
+            min.Y = cameraPoint.Y;
+            max.X = (int)Math.Min(viewPoint.X, Constants.Maps.Map.GetLength(1));
+            max.Y = (int)Math.Min(viewPoint.Y, Constants.Maps.Map.GetLength(0));
+            
 
-            // Draw the human sprite.
-            this.spriteBatch.Draw(
-                this.sprites[Constants.GameObjects.Human],
-                this.bodies[Constants.GameObjects.Human].Position.ToRealVector(),
-                null,
-                Color.Red,
-                this.bodies[Constants.GameObjects.Human].Rotation,
-                new Vector2(
-                    this.sprites[Constants.GameObjects.Human].Width / 2f,
-                    this.sprites[Constants.GameObjects.Human].Height / 2f),
-                1f,
-                SpriteEffects.None,
-                0f);
+            for (int y = min.Y; y < max.Y; y++)
+            {
+                for (int x = min.X; x < max.X; x++)
+                {
+
+                    if (Constants.Maps.ObjectMap[y, x] > 0)
+                    {
+                        this.spriteBatch.Draw(
+                    this.sprites[Constants.Maps.ObjectMap[y, x]],
+                    new Vector2(x * Constants.Maps.TileWidth - this.sprites[Constants.Maps.ObjectMap[y, x]].Width / 2f,
+                                 y * Constants.Maps.TileHeight - this.sprites[Constants.Maps.ObjectMap[y, x]].Height / 2f),
+                    null,
+                    Color.White,
+                    this.bodies[Constants.Maps.ObjectMap[y, x]].Rotation,
+                    new Vector2(
+                        this.sprites[Constants.Maps.ObjectMap[y, x]].Width / 2f,
+                        this.sprites[Constants.Maps.ObjectMap[y, x]].Height / 2f),
+                    0.8f,
+                    SpriteEffects.None,
+                    0f);
+                    }
+                }
+            }
+           
 
             // Draw the shark sprite.
             this.spriteBatch.Draw(
@@ -497,7 +548,7 @@
                 Color.White,
                 this.sharkRotation,
                 origin,
-                1f,
+                1.5f,
                 SpriteEffects.None,
                 0f);
 
@@ -509,39 +560,54 @@
         /// </summary>
         private void DrawMap()
         {
-            // Get the upper-left and lower-right points of the visible area.
-            Microsoft.Xna.Framework.Point cameraPoint = this.camera.Position.ToCell();
-            Microsoft.Xna.Framework.Point viewPoint = (this.camera.Position + this.ViewPortVector()).ToCell();
 
-            // Get the upper-left and lower-right points of the visible part of the map.
-            Microsoft.Xna.Framework.Point min = new Microsoft.Xna.Framework.Point(cameraPoint.X, cameraPoint.Y);
-            Microsoft.Xna.Framework.Point max = new Microsoft.Xna.Framework.Point(
-                (int)Math.Min(viewPoint.X, Constants.Maps.Map.GetLength(1)),
-                (int)Math.Min(viewPoint.Y, Constants.Maps.Map.GetLength(0)));
 
-            Microsoft.Xna.Framework.Rectangle tileRectangle =
-                new Microsoft.Xna.Framework.Rectangle(
+            Microsoft.Xna.Framework.Point cameraPoint = Conversions.ToCell(camera.position);
+            Microsoft.Xna.Framework.Point viewPoint = Conversions.ToCell(camera.position +
+                                    ViewPortVector());
+            Microsoft.Xna.Framework.Point min = new Microsoft.Xna.Framework.Point();
+            Microsoft.Xna.Framework.Point max = new Microsoft.Xna.Framework.Point();
+            min.X = cameraPoint.X;
+            min.Y = cameraPoint.Y;
+            max.X = (int)Math.Min(viewPoint.X, Constants.Maps.Map.GetLength(1));
+            max.Y = (int)Math.Min(viewPoint.Y, Constants.Maps.Map.GetLength(0));
+            Rectangle tileRectangle = new Rectangle(
                     0,
                     0,
                     Constants.Maps.TileWidth,
                     Constants.Maps.TileHeight);
-
+            
             this.spriteBatch.Begin();
-            for (int y = min.Y; y < max.Y; ++y)
+
+            for (int y = min.Y; y < max.Y; y++)
             {
-                for (int x = min.X; x < max.X; ++x)
+                for (int x = min.X; x < max.X; x++)
                 {
-                    tileRectangle.X = (x * Constants.Maps.TileWidth) - (int)this.camera.Position.X;
-                    tileRectangle.Y = (y * Constants.Maps.TileHeight) - (int)this.camera.Position.Y;
-                    this.spriteBatch.Draw(
-                        this.tiles[Constants.Maps.Map[y, x]],
-                        tileRectangle,
+                    tileRectangle.X = x * Constants.Maps.TileWidth - (int)camera.position.X;
+                    tileRectangle.Y = y * Constants.Maps.TileHeight - (int)camera.position.Y;
+                    spriteBatch.Draw(tiles[Constants.Maps.Map[y, x]],
+                         tileRectangle,
                         Color.White);
+                       
+                  
                 }
-            }
+            } 
+
+            
+
+            
+           
 
             this.spriteBatch.End();
         }
+
+
+
+
+
+
+
+
 
         /// <summary>
         /// Returns the viewport vector, representing the visible portion of the canvas (map).
@@ -586,5 +652,12 @@
             // Limit the velocity.
             this.sharkVelocity = Vector2.Clamp(this.sharkVelocity, -Constants.Speeds.BlueSharkVelocityMax, Constants.Speeds.BlueSharkVelocityMax);
         }
+
+
+
+       
+       
+       
+        
     }
 }
