@@ -335,6 +335,7 @@
             // Load bodies.
             this.bodies = new List<Body>();
 
+
             this.bodies.Add(BodyFactory.CreateCircle(this.gameWorld, 0.6f, 1f));
             this.bodies[Constants.GameObjects.Shark].BodyType = BodyType.Dynamic;
             this.bodies[Constants.GameObjects.Shark].Position = this.centralVector;
@@ -643,6 +644,14 @@
                 (this.sprites[Constants.GameObjects.Shark].Width / 16) / 2,
                 this.sprites[Constants.GameObjects.Shark].Height / 2);
 
+            // Draw the map.
+            this.drawMap();
+
+            // Draw the HUD.
+            this.drawHud();
+
+
+
             this.spriteBatch.Begin(SpriteSortMode.BackToFront,
                         BlendState.AlphaBlend,
                         null,
@@ -650,9 +659,6 @@
                         null,
                         null,
                         camera.get_transformation());
-
-            // Draw the map.
-            this.DrawMap();
 
             // Draw any existing particles.
             this.particleEngine.Draw(this.spriteBatch);
@@ -672,6 +678,7 @@
             {
                 for (int x = min.X; x < max.X; x++)
                 {
+                  
                     if (Constants.Maps.ObjectMap[y, x] > 0)
                     {
                         this.spriteBatch.Draw(
@@ -691,19 +698,23 @@
                 }
             }
 
-            // Draw the human sprite.
-            this.spriteBatch.Draw(
-                this.sprites[Constants.GameObjects.Human],
-                this.bodies[Constants.GameObjects.Human].Position.ToRealVector(),
-                null,
-                Color.Yellow,
-                this.bodies[Constants.GameObjects.Human].Rotation,
-                new Vector2(
-                    this.sprites[Constants.GameObjects.Human].Width / 2f,
-                    this.sprites[Constants.GameObjects.Human].Height / 2f),
-                1f,
-                SpriteEffects.None,
-                0f);
+            foreach (Body wall in this.walls)
+            {
+                // Draw the wall sprite.
+                this.spriteBatch.Draw(
+                    this.sprites[Constants.GameObjects.Wall],
+                    wall.Position.ToRealVector(),
+                    null,
+                    Color.White,
+                    wall.Rotation,
+                    new Vector2(
+                        this.sprites[Constants.GameObjects.Wall].Width / 2f,
+                        this.sprites[Constants.GameObjects.Wall].Height / 2f),
+                    1f,
+                    SpriteEffects.None,
+                    0f);
+
+            }
 
             // Draw the shark sprite.
             this.spriteBatch.Draw(
@@ -717,8 +728,7 @@
                 SpriteEffects.None,
                 0f);
 
-            // Draw the HUD.
-            this.drawHud();
+          
 
             this.spriteBatch.End();
         }
@@ -726,11 +736,11 @@
         /// <summary>
         /// Draws the map of the game.
         /// </summary>
-        private void DrawMap()
+        private void drawMap()
         {
+            this.spriteBatch.Begin();
             Microsoft.Xna.Framework.Point cameraPoint = Conversions.ToCell(camera.position);
-            Microsoft.Xna.Framework.Point viewPoint = Conversions.ToCell(
-                camera.position + ViewPortVector());
+            Microsoft.Xna.Framework.Point viewPoint = Conversions.ToCell(camera.position + ViewPortVector());
             Microsoft.Xna.Framework.Point min = new Microsoft.Xna.Framework.Point();
             Microsoft.Xna.Framework.Point max = new Microsoft.Xna.Framework.Point();
             min.X = cameraPoint.X;
@@ -742,42 +752,25 @@
                     0,
                     Constants.Maps.TileWidth,
                     Constants.Maps.TileHeight);
-
-            for (int y = min.Y; y < max.Y; ++y)
+            
+            for (int y = min.Y; y < max.Y; y++)
             {
-                for (int x = min.X; x < max.X; ++x)
+                for (int x = min.X; x < max.X; x++)
                 {
                     tileRectangle.X = x * Constants.Maps.TileWidth - (int)camera.position.X;
                     tileRectangle.Y = y * Constants.Maps.TileHeight - (int)camera.position.Y;
 
-                    this.spriteBatch.Draw(
-                        tiles[Constants.Maps.Map[y, x]],
-                        tileRectangle,
-                        null,
-                        Color.White,
-                        0f,
-                        Vector2.Zero,
-                        SpriteEffects.None,
-                        1f);
-                }
-            }
+                      spriteBatch.Draw(tiles[Constants.Maps.Map[y, x]],
+                     tileRectangle,
+                     Color.White);
+              }
+         }
+            spriteBatch.End();
 
-            foreach (Body wall in this.walls)
-            {
-                // Draw the wall sprite.
-                this.spriteBatch.Draw(
-                    this.sprites[Constants.GameObjects.Wall],
-                    wall.Position.ToRealVector(),
-                    null,
-                    Color.Red,
-                    wall.Rotation,
-                    new Vector2(
-                        this.sprites[Constants.GameObjects.Wall].Width / 2f,
-                        this.sprites[Constants.GameObjects.Wall].Height / 2f),
-                    1f,
-                    SpriteEffects.None,
-                    0f);
-            }
+
+
+              
+                 
         }
 
         /// <summary>
@@ -785,8 +778,10 @@
         /// </summary>
         private void drawHud()
         {
-            this.spriteBatch.DrawString(this.contentManager.Load<SpriteFont>("DisplayFont"), this.timeLeft.ToString("ss"), new Vector2(0.5f, 0.5f).ToRealVector(), Color.Blue);
-            this.spriteBatch.DrawString(this.contentManager.Load<SpriteFont>("DisplayFont"), this.points.ToString(), new Vector2(7.0f, 4.5f).ToRealVector(), Color.Yellow);
+            this.spriteBatch.Begin();
+            this.spriteBatch.DrawString(this.contentManager.Load<SpriteFont>("DisplayFont"), this.timeLeft.ToString("ss"), new Vector2(0.2f, 0.2f).ToRealVector(), Color.Blue);
+            this.spriteBatch.DrawString(this.contentManager.Load<SpriteFont>("DisplayFont"), this.points.ToString(), new Vector2(7.4f, 4.0f).ToRealVector(), Color.Yellow);
+            this.spriteBatch.End();
         }
 
         /// <summary>
