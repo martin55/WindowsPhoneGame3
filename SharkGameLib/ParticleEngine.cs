@@ -130,7 +130,6 @@ namespace SharkGame
         /// <returns>A new, predefined particle.</returns>
         private Particle GenerateNewParticle()
         {
-            System.Diagnostics.Debug.WriteLine("Emitter: {0}", this.emitterLocation);
             return new Particle(
                 this.emitterLocation,
                 this.emitterVelocity / 5f,

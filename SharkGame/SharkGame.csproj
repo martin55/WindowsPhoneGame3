@@ -82,6 +82,7 @@
     <Compile Include="ScorePage.xaml.cs">
       <DependentUpon>ScorePage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SpriteTextureFromShape.cs" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">

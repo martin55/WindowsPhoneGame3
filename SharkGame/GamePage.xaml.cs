@@ -2,35 +2,34 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.IO.IsolatedStorage;
+    using System.Linq;
     using System.Windows;
     using System.Windows.Navigation;
     using FarseerPhysics.Dynamics;
+    using FarseerPhysics.Dynamics.Contacts;
     using FarseerPhysics.Factories;
     using Microsoft.Devices.Sensors;
     using Microsoft.Phone.Controls;
     using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Audio;
     using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
     using Microsoft.Xna.Framework.Media;
-    using FarseerPhysics.Dynamics.Contacts;
-    using System.Diagnostics;
-    
+    using System.Threading;
+
     /// <summary>
     /// Represents a page for the game itself, accessible from the main menu.
     /// </summary>
     public partial class GamePage : PhoneApplicationPage
     {
-
-       
-        
-
-
         int tileMapWidth;
         int tileMapHeight;
-       
+
         static int mapWidthInPixels;
         static int mapHeightInPixels;
-       
+
         public static int MapWidthInPixels
         {
             get { return mapWidthInPixels; }
@@ -39,19 +38,19 @@
         {
             get { return mapHeightInPixels; }
         }
-        
-        
+
+
         /* Fields */
 
         /// <summary>
         /// Device's screen width in pixels.
         /// </summary>
-        private static int screenWidth = 800;
+        private static readonly int screenWidth = 800;
 
         /// <summary>
         /// Device's screen height in pixels.
         /// </summary>
-        private static int screenHeight = 480;
+        private static readonly int screenHeight = 480;
 
         /// <summary>
         /// Representation of the physical accelerometer sensor.
@@ -62,8 +61,7 @@
         /// Game camera; at fixed height over the board, movable in different
         /// directions, always following the main character.
         /// </summary>
-        Camera camera ;
-       
+        private Camera camera;
 
         /// <summary>
         /// Particle generator.
@@ -76,7 +74,7 @@
         private World gameWorld;
 
         /// <summary>
-        /// Textures for the particle generator.
+        /// Textures for all game objects.
         /// </summary>
         private SpriteBatch spriteBatch;
 
@@ -84,6 +82,8 @@
         /// Collection of game bodies.
         /// </summary>
         private List<Body> bodies;
+
+        private List<Body> walls;
 
         /// <summary>
         /// Collection of game sprites for corresponding bodies.
@@ -94,7 +94,6 @@
         /// Collection of sprites for the map.
         /// </summary>
         private List<Texture2D> tiles;
-       
 
         /// <summary>
         /// Collection of fixtures for the game objects.
@@ -152,6 +151,31 @@
         /// </summary>
         private GameTimer timer;
 
+        /// <summary>
+        /// Time left until the shark suffocates.
+        /// </summary>
+        private TimeSpan timeLeft;
+
+        /// <summary>
+        /// Amount of points the player has collected throughout the current level.
+        /// </summary>
+        private int points;
+
+        /// <summary>
+        /// Timer for eating sound effect.
+        /// </summary>
+        private float timeSinceEatingSound;
+
+        /// <summary>
+        /// Timer for trap sound effect.
+        /// </summary>
+        private float timeSinceTrapSound;
+
+        /// <summary>
+        /// Timer for water sound effect.
+        /// </summary>
+        private float timeSinceWaterSound;
+
 
 
 
@@ -173,20 +197,27 @@
         {
             this.InitializeComponent();
 
-            // Create a default camera object.
-            //
-           
-            // Set the sharing mode of the graphics device to turn on XNA rendering
+            // Set the sharing mode of the graphics device to turn on XNA rendering.
             SharedGraphicsDeviceManager.Current.GraphicsDevice.SetSharingMode(true);
 
-            // Get the content manager from the application
+            // Get the content manager from the application.
             this.contentManager = (Application.Current as App).Content;
 
-            // Create a timer for this page
+            // Create a timer for this page.
             this.timer = new GameTimer();
             this.timer.UpdateInterval = TimeSpan.FromTicks(333333);
             this.timer.Update += this.OnUpdate;
             this.timer.Draw += this.OnDraw;
+
+            // Start the time countdown and reset points.
+            this.timeLeft = TimeSpan.FromSeconds(30.0);
+            this.points = 0;
+
+            // Set sound effect timers to arbitrary positive number so that early collisions will trigger them as well.
+            // Five [seconds], a number higher than any sound effect timer, should do.
+            this.timeSinceEatingSound = 5f;
+            this.timeSinceTrapSound = 5f;
+            this.timeSinceWaterSound = 5f;
 
             // Set up accelerometer handling.
             this.accelerometer = new Accelerometer();
@@ -267,9 +298,9 @@
             this.spriteBatch = new SpriteBatch(SharedGraphicsDeviceManager.Current.GraphicsDevice);
 
             // Begin playing the game's soundtrack.
-           // Song song = this.contentManager.Load<Song>("game_s");
-            //MediaPlayer.Play(song);
-            //MediaPlayer.IsRepeating = true;
+            Song song = this.contentManager.Load<Song>("game");
+            MediaPlayer.Play(song);
+            MediaPlayer.IsRepeating = true;
 
             if (this.gameWorld == null)
             {
@@ -280,12 +311,10 @@
                 this.gameWorld.Clear();
             }
 
-           
             tileMapWidth = Constants.Maps.Map.GetLength(1);
             tileMapHeight = Constants.Maps.Map.GetLength(0);
             mapWidthInPixels = tileMapWidth * Constants.Maps.TileWidth;
             mapHeightInPixels = tileMapHeight * Constants.Maps.TileHeight;
-           
 
             // Load particles.
             List<Texture2D> textures = new List<Texture2D>();
@@ -309,19 +338,35 @@
             this.bodies.Add(BodyFactory.CreateCircle(this.gameWorld, 0.6f, 1f));
             this.bodies[Constants.GameObjects.Shark].BodyType = BodyType.Dynamic;
             this.bodies[Constants.GameObjects.Shark].Position = this.centralVector;
+            this.bodies[Constants.GameObjects.Shark].CollidesWith = Category.All;
 
             this.bodies.Add(BodyFactory.CreateRectangle(this.gameWorld, 0.9f, 0.9f, 1f));
-            this.bodies[Constants.GameObjects.Human].BodyType = BodyType.Dynamic;
             this.bodies[Constants.GameObjects.Human].Position = new Vector2(5f, 3f);
 
             this.bodies.Add(BodyFactory.CreateCircle(this.gameWorld, 0.9f, 1f, 1f));
-            this.bodies[Constants.GameObjects.Pool].BodyType = BodyType.Dynamic;
             this.bodies[Constants.GameObjects.Pool].Position = new Vector2(3f, 2f);
-            //this.bodies[Constants.GameObjects.Pool].
 
             this.bodies.Add(BodyFactory.CreateCircle(this.gameWorld, 0.9f, 1f, 1f));
-            this.bodies[Constants.GameObjects.Trap].BodyType = BodyType.Dynamic;
             this.bodies[Constants.GameObjects.Trap].Position = new Vector2(7f, 5f);
+
+            float width = 8f;
+            float height = 5f;
+
+            walls = new List<Body>();
+            walls.Add(BodyFactory.CreateEdge(this.gameWorld, new Vector2(0f, 0f), new Vector2(width, 0f)));
+            walls.Add(BodyFactory.CreateEdge(this.gameWorld, new Vector2(0f, 0f), new Vector2(0f, height)));
+            walls.Add(BodyFactory.CreateEdge(this.gameWorld, new Vector2(width, height), new Vector2(width, 0f)));
+            walls.Add(BodyFactory.CreateEdge(this.gameWorld, new Vector2(width, height), new Vector2(0f, height)));
+
+            //Vertices aBorders = new Vertices(4);
+            //aBorders.Add(new Vector2(0, 0));
+            //aBorders.Add(new Vector2(0, height));
+            //aBorders.Add(new Vector2(width, height));
+            //aBorders.Add(new Vector2(width, 0));
+
+            //this.bodies.Add(BodyFactory.CreateLoopShape(this.gameWorld, aBorders));
+            //this.bodies[Constants.GameObjects.Wall].CollisionCategories = Category.All;
+            //this.bodies[Constants.GameObjects.Wall].CollidesWith = Category.All;
 
             // Load textures.
             this.sprites = new List<Texture2D>();
@@ -335,61 +380,170 @@
             // Create fixtures.
             this.fixtures = new List<Fixture>();
 
-            this.fixtures.Add(FixtureFactory.AttachCircle(0.6f, 1f, this.bodies[Constants.GameObjects.Shark]));
-            this.fixtures[Constants.GameObjects.Shark].CollisionCategories = Category.Cat1;
+            this.fixtures.Add(FixtureFactory.AttachCircle(0.3f, 1f, this.bodies[Constants.GameObjects.Shark]));
 
-            this.fixtures.Add(FixtureFactory.AttachCircle(0.6f, 1f, this.bodies[Constants.GameObjects.Human]));
-            this.fixtures[Constants.GameObjects.Human].CollisionCategories = Category.Cat2;
+            this.fixtures.Add(FixtureFactory.AttachCircle(0.5f, 1f, this.bodies[Constants.GameObjects.Human]));
             this.fixtures[Constants.GameObjects.Human].OnCollision += HumanEaten;
 
-            this.fixtures.Add(FixtureFactory.AttachCircle(1f, 10f, this.bodies[Constants.GameObjects.Pool]));
-            this.fixtures[Constants.GameObjects.Pool].CollisionCategories = Category.Cat3;
+            this.fixtures.Add(FixtureFactory.AttachCircle(0.5f, 1f, this.bodies[Constants.GameObjects.Pool]));
             this.fixtures[Constants.GameObjects.Pool].OnCollision += TimerReplenished;
 
-            this.fixtures.Add(FixtureFactory.AttachCircle(1f, 10f, this.bodies[Constants.GameObjects.Trap]));
-            this.fixtures[Constants.GameObjects.Trap].CollisionCategories = Category.Cat4;
+            this.fixtures.Add(FixtureFactory.AttachCircle(0.5f, 1f, this.bodies[Constants.GameObjects.Trap]));
             this.fixtures[Constants.GameObjects.Trap].OnCollision += SharkDead;
 
-            //FixtureFactory.AttachEdge(this.gameWorld.
+            //this.fixtures.Add(FixtureFactory.AttachLoopShape(aBorders, this.bodies[Constants.GameObjects.Wall]));
+            //this.fixtures[Constants.GameObjects.Wall].CollisionCategories = Category.All;
+            //this.fixtures[Constants.GameObjects.Wall].CollidesWith = Category.All;
+            //this.fixtures[Constants.GameObjects.Wall].Restitution = 1f;
+            //this.fixtures[Constants.GameObjects.Wall].Friction = 0f;
+            //this.fixtures[Constants.GameObjects.Wall].OnCollision += WallHit;
 
             this.runFrameWidth = this.sprites[Constants.GameObjects.Shark].Width / 16;
             this.runFrameHeight = this.sprites[Constants.GameObjects.Shark].Height;
 
-            camera = new Camera(this.bodies[Constants.GameObjects.Shark].Position.ToRealVector());
+            // Create a default camera object centered on the shark.
+            this.camera = new Camera(this.bodies[Constants.GameObjects.Shark].Position.ToRealVector());
+
             // Start the timer.
             this.timer.Start();
 
             base.OnNavigatedTo(e);
         }
 
+        /// <summary>
+        /// Handles collision of the shark and a wall.
+        /// </summary>
+        /// <param name="fixtureA">One of the colliding objects - wall.</param>
+        /// <param name="fixtureB">One of the colliding objects - shark.</param>
+        /// <param name="contact">Detailed info about the contact made.</param>
+        /// <returns>True if collision passes, false if it is canceled.</returns>
+        private bool WallHit(Fixture fixtureA, Fixture fixtureB, Contact contact)
+        {
+            if (fixtureB.CollisionCategories == Category.Cat1)
+            {
+                Debug.WriteLine("Wall hit");
+                fixtureA.Body.LinearVelocity = Vector2.Zero;
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Handles collision of the shark and a trap.
+        /// </summary>
+        /// <param name="fixtureA">One of the colliding objects - trap.</param>
+        /// <param name="fixtureB">One of the colliding objects - shark.</param>
+        /// <param name="contact">Detailed info about the contact made.</param>
+        /// <returns>True if collision passes, false if it is canceled.</returns>
         private bool SharkDead(Fixture fixtureA, Fixture fixtureB, Contact contact)
         {
-            if (fixtureB.CollisionCategories == Category.Cat1)
+            if (fixtureB.CollisionCategories == Category.Cat1 && this.timeSinceTrapSound > 1f)
             {
                 Debug.WriteLine("Shark dead");
-                return false;
+                this.gameOver();
+                this.contentManager.Load<SoundEffect>("trapsound").Play();
+                this.timeSinceTrapSound = 0f;
+                return true;
             }
 
             return false;
         }
 
+        /// <summary>
+        /// Handles game over screen display.
+        /// </summary>
+        private void gameOver()
+        {
+            this.timer.Stop();
+            this.spriteBatch.Begin();
+            this.spriteBatch.DrawString(this.contentManager.Load<SpriteFont>("DisplayFont"), "You failed\nmiserably!", new Vector2(2f, 2f).ToRealVector(), Color.Red);
+            this.spriteBatch.DrawString(this.contentManager.Load<SpriteFont>("DisplayFont"), "Points: ", new Vector2(2f, 2f).ToRealVector(), Color.Red);
+            this.spriteBatch.End();
+
+            // TODO: Delay for three seconds?
+
+            // Check high-scores - if the score for this level was high enough, induct player to the high scores list.
+            Dictionary<string, int> highScores;
+            IsolatedStorageSettings userSettings = IsolatedStorageSettings.ApplicationSettings;
+            try
+            {
+
+                highScores = userSettings["High scores"] as Dictionary<string, int>;
+            }
+            catch (KeyNotFoundException exception)
+            {
+                Debug.WriteLine("High scores data not found; " + exception.Message);
+                highScores = new Dictionary<string, int>();
+            }
+
+            int lowestScore = 0;
+
+            if (highScores.Count > 0)
+            {
+                lowestScore = highScores.Aggregate(highScores.First(), (min, curr) => curr.Value < min.Value ? curr : min).Value;
+            }
+
+            if (this.points > lowestScore)
+            {
+                // Induct the player to high scores list. If more than 8 elements, remove the last element.
+                string currentDate = DateTime.Now.ToString("YY-MM-DD HH:mm");
+                highScores.Add(currentDate, this.points);
+                highScores = highScores.OrderByDescending(x => x.Value).ToDictionary(pair => pair.Key, pair => pair.Value);
+                if (highScores.Count > 8)
+                {
+                    highScores.Remove(highScores.Aggregate(highScores.First(), (min, curr) => curr.Value < min.Value ? curr : min).Key);
+                }
+
+                // TODO: make this highlighting working by finding the index of added entry...
+                // might be impossible since dictionary indices are undefined. :<
+                int position = 3;
+
+                // This shark was a hero indeed. Go to the high scores page.
+                NavigationService.Navigate(new Uri("/ScorePage.xaml?highlight=" + position, UriKind.Relative));
+            }
+
+            // Shark is not a cat, has only one life, so a dead one means a dead one. Go to the main menu screen.
+            NavigationService.Navigate(new Uri("/MainPage.xaml", UriKind.Relative));
+        }
+
+        /// <summary>
+        /// Handles collision of the shark and a human.
+        /// </summary>
+        /// <param name="fixtureA">One of the colliding objects - human.</param>
+        /// <param name="fixtureB">One of the colliding objects - shark.</param>
+        /// <param name="contact">Detailed info about the contact made.</param>
+        /// <returns>True if collision passes, false if it is canceled.</returns>
         private bool HumanEaten(Fixture fixtureA, Fixture fixtureB, Contact contact)
         {
-            if (fixtureB.CollisionCategories == Category.Cat1)
+            if (fixtureB.CollisionCategories == Category.Cat1 && this.timeSinceEatingSound > 1f)
             {
                 Debug.WriteLine("Human eaten");
-                return false;
+                this.points += 5;
+                this.contentManager.Load<SoundEffect>("eating").Play();
+                this.timeSinceEatingSound = 0f;
+                return true;
             }
 
             return false;
         }
 
+        /// <summary>
+        /// Handles collision of the shark and a pool of water.
+        /// </summary>
+        /// <param name="fixtureA">One of the colliding objects - a pool of water.</param>
+        /// <param name="fixtureB">One of the colliding objects - shark.</param>
+        /// <param name="contact">Detailed info about the contact made.</param>
+        /// <returns>True if collision passes, false if it is canceled.</returns>
         private bool TimerReplenished(Fixture fixtureA, Fixture fixtureB, Contact contact)
         {
-            if (fixtureB.CollisionCategories == Category.Cat1)
+            if (fixtureB.CollisionCategories == Category.Cat1 && this.timeSinceWaterSound > 2f)
             {
                 Debug.WriteLine("Timer replenished");
-                return false;
+                this.timeLeft += TimeSpan.FromSeconds(2.0);
+                this.contentManager.Load<SoundEffect>("water").Play();
+                this.timeSinceWaterSound = 0f;
+                return true;
             }
 
             return false;
@@ -418,13 +572,21 @@
         /// <param name="e">Information passed to the event.</param>
         private void OnUpdate(object sender, GameTimerEventArgs e)
         {
-            
             float elapsed = (float)e.ElapsedTime.TotalSeconds;
 
             // Set the refresh rate to 30 FPS (step one thirtieth of a second in time).
             this.gameWorld.Step(Math.Min(elapsed, 1f / 30f));
 
+            this.timeLeft -= e.ElapsedTime;
+            if (this.timeLeft < TimeSpan.FromSeconds(0.0))
+            {
+                this.gameOver();
+            }
+
             this.currentPlayerAnimationDelay += elapsed;
+            this.timeSinceEatingSound += elapsed;
+            this.timeSinceTrapSound += elapsed;
+            this.timeSinceWaterSound += elapsed;
 
             if (Math.Abs(this.sharkVelocity.X) > 0.07f || Math.Abs(this.sharkVelocity.Y) > 0.07f)
             {
@@ -455,7 +617,7 @@
             this.bodies[Constants.GameObjects.Shark].ApplyForce(this.sharkVelocity);
             this.bodies[Constants.GameObjects.Shark].Position = this.centralVector * elapsed;
 
-            
+
             //update camera position
             camera.position = this.bodies[Constants.GameObjects.Shark].Position.ToRealVector();
             //clamp camera movement only on the map size
@@ -465,12 +627,6 @@
             camera.position.Y = MathHelper.Clamp(camera.position.Y,
                       0,
                         MapHeightInPixels - ScreenHeight);
-            
-
-                
-            
-           
-            
         }
 
         /// <summary>
@@ -487,9 +643,6 @@
                 (this.sprites[Constants.GameObjects.Shark].Width / 16) / 2,
                 this.sprites[Constants.GameObjects.Shark].Height / 2);
 
-            // Draw the map.
-            this.DrawMap();
-
             this.spriteBatch.Begin(SpriteSortMode.BackToFront,
                         BlendState.AlphaBlend,
                         null,
@@ -498,14 +651,15 @@
                         null,
                         camera.get_transformation());
 
+            // Draw the map.
+            this.DrawMap();
+
             // Draw any existing particles.
             this.particleEngine.Draw(this.spriteBatch);
 
-
-            
-            //draw all objects in viewpoint
+            // Draw all objects in the viewpoint.
             Microsoft.Xna.Framework.Point cameraPoint = Conversions.ToCell(camera.position);
-            Microsoft.Xna.Framework.Point viewPoint = Conversions.ToCell(camera.position+
+            Microsoft.Xna.Framework.Point viewPoint = Conversions.ToCell(camera.position +
                                     ViewPortVector());
             Microsoft.Xna.Framework.Point min = new Microsoft.Xna.Framework.Point();
             Microsoft.Xna.Framework.Point max = new Microsoft.Xna.Framework.Point();
@@ -513,32 +667,43 @@
             min.Y = cameraPoint.Y;
             max.X = (int)Math.Min(viewPoint.X, Constants.Maps.Map.GetLength(1));
             max.Y = (int)Math.Min(viewPoint.Y, Constants.Maps.Map.GetLength(0));
-            
 
             for (int y = min.Y; y < max.Y; y++)
             {
                 for (int x = min.X; x < max.X; x++)
                 {
-
                     if (Constants.Maps.ObjectMap[y, x] > 0)
                     {
                         this.spriteBatch.Draw(
-                    this.sprites[Constants.Maps.ObjectMap[y, x]],
-                    new Vector2(x * Constants.Maps.TileWidth - this.sprites[Constants.Maps.ObjectMap[y, x]].Width / 2f,
-                                 y * Constants.Maps.TileHeight - this.sprites[Constants.Maps.ObjectMap[y, x]].Height / 2f),
-                    null,
-                    Color.White,
-                    this.bodies[Constants.Maps.ObjectMap[y, x]].Rotation,
-                    new Vector2(
-                        this.sprites[Constants.Maps.ObjectMap[y, x]].Width / 2f,
-                        this.sprites[Constants.Maps.ObjectMap[y, x]].Height / 2f),
-                    0.8f,
-                    SpriteEffects.None,
-                    0f);
+                            this.sprites[Constants.Maps.ObjectMap[y, x]],
+                            new Vector2(x * Constants.Maps.TileWidth - this.sprites[Constants.Maps.ObjectMap[y, x]].Width / 2f,
+                                         y * Constants.Maps.TileHeight - this.sprites[Constants.Maps.ObjectMap[y, x]].Height / 2f),
+                            null,
+                            Color.White,
+                            this.bodies[Constants.Maps.ObjectMap[y, x]].Rotation,
+                            new Vector2(
+                                this.sprites[Constants.Maps.ObjectMap[y, x]].Width / 2f,
+                                this.sprites[Constants.Maps.ObjectMap[y, x]].Height / 2f),
+                            0.8f,
+                            SpriteEffects.None,
+                            1f);
                     }
                 }
             }
-           
+
+            // Draw the human sprite.
+            this.spriteBatch.Draw(
+                this.sprites[Constants.GameObjects.Human],
+                this.bodies[Constants.GameObjects.Human].Position.ToRealVector(),
+                null,
+                Color.Yellow,
+                this.bodies[Constants.GameObjects.Human].Rotation,
+                new Vector2(
+                    this.sprites[Constants.GameObjects.Human].Width / 2f,
+                    this.sprites[Constants.GameObjects.Human].Height / 2f),
+                1f,
+                SpriteEffects.None,
+                0f);
 
             // Draw the shark sprite.
             this.spriteBatch.Draw(
@@ -552,6 +717,9 @@
                 SpriteEffects.None,
                 0f);
 
+            // Draw the HUD.
+            this.drawHud();
+
             this.spriteBatch.End();
         }
 
@@ -560,11 +728,9 @@
         /// </summary>
         private void DrawMap()
         {
-
-
             Microsoft.Xna.Framework.Point cameraPoint = Conversions.ToCell(camera.position);
-            Microsoft.Xna.Framework.Point viewPoint = Conversions.ToCell(camera.position +
-                                    ViewPortVector());
+            Microsoft.Xna.Framework.Point viewPoint = Conversions.ToCell(
+                camera.position + ViewPortVector());
             Microsoft.Xna.Framework.Point min = new Microsoft.Xna.Framework.Point();
             Microsoft.Xna.Framework.Point max = new Microsoft.Xna.Framework.Point();
             min.X = cameraPoint.X;
@@ -576,38 +742,52 @@
                     0,
                     Constants.Maps.TileWidth,
                     Constants.Maps.TileHeight);
-            
-            this.spriteBatch.Begin();
 
-            for (int y = min.Y; y < max.Y; y++)
+            for (int y = min.Y; y < max.Y; ++y)
             {
-                for (int x = min.X; x < max.X; x++)
+                for (int x = min.X; x < max.X; ++x)
                 {
                     tileRectangle.X = x * Constants.Maps.TileWidth - (int)camera.position.X;
                     tileRectangle.Y = y * Constants.Maps.TileHeight - (int)camera.position.Y;
-                    spriteBatch.Draw(tiles[Constants.Maps.Map[y, x]],
-                         tileRectangle,
-                        Color.White);
-                       
-                  
+
+                    this.spriteBatch.Draw(
+                        tiles[Constants.Maps.Map[y, x]],
+                        tileRectangle,
+                        null,
+                        Color.White,
+                        0f,
+                        Vector2.Zero,
+                        SpriteEffects.None,
+                        1f);
                 }
-            } 
+            }
 
-            
-
-            
-           
-
-            this.spriteBatch.End();
+            foreach (Body wall in this.walls)
+            {
+                // Draw the wall sprite.
+                this.spriteBatch.Draw(
+                    this.sprites[Constants.GameObjects.Wall],
+                    wall.Position.ToRealVector(),
+                    null,
+                    Color.Red,
+                    wall.Rotation,
+                    new Vector2(
+                        this.sprites[Constants.GameObjects.Wall].Width / 2f,
+                        this.sprites[Constants.GameObjects.Wall].Height / 2f),
+                    1f,
+                    SpriteEffects.None,
+                    0f);
+            }
         }
 
-
-
-
-
-
-
-
+        /// <summary>
+        /// Draws the display, such as time left and points collected so far.
+        /// </summary>
+        private void drawHud()
+        {
+            this.spriteBatch.DrawString(this.contentManager.Load<SpriteFont>("DisplayFont"), this.timeLeft.ToString("ss"), new Vector2(0.5f, 0.5f).ToRealVector(), Color.Blue);
+            this.spriteBatch.DrawString(this.contentManager.Load<SpriteFont>("DisplayFont"), this.points.ToString(), new Vector2(7.0f, 4.5f).ToRealVector(), Color.Yellow);
+        }
 
         /// <summary>
         /// Returns the viewport vector, representing the visible portion of the canvas (map).
@@ -652,12 +832,5 @@
             // Limit the velocity.
             this.sharkVelocity = Vector2.Clamp(this.sharkVelocity, -Constants.Speeds.BlueSharkVelocityMax, Constants.Speeds.BlueSharkVelocityMax);
         }
-
-
-
-       
-       
-       
-        
     }
 }

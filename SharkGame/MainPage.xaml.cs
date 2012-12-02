@@ -3,12 +3,22 @@
     using System;
     using System.Windows;
     using Microsoft.Phone.Controls;
+    using Microsoft.Xna.Framework.Media;
+    using Microsoft.Xna.Framework.Content;
+    using Microsoft.Xna.Framework;
 
     /// <summary>
     /// Represents a page for main game menu, providing access to options as well as starting the game itself.
     /// </summary>
     public partial class MainPage : PhoneApplicationPage
     {
+        /* Fields */
+
+        /// <summary>
+        /// Content manager for the Main Page.
+        /// </summary>
+        private ContentManager contentManager;
+
         /* Constructor */
 
         /// <summary>
@@ -20,6 +30,21 @@
         }
 
         /* Methods */
+
+        /// <summary>
+        /// Handles navigating to the Main Page.
+        /// </summary>
+        /// <param name="e">Information passed to the event.</param>
+        protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
+        {
+            // Play the menu song.
+            this.contentManager = (Application.Current as App).Content;
+            FrameworkDispatcher.Update();
+            MediaPlayer.Play(this.contentManager.Load<Song>("menu"));
+            MediaPlayer.IsRepeating = true;
+
+            base.OnNavigatedTo(e);
+        }
 
         /// <summary>
         /// Starts the game itself.
