@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.Specialized;
     using System.Diagnostics;
     using System.IO.IsolatedStorage;
     using System.Linq;
@@ -17,6 +18,7 @@
     using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
     using Microsoft.Xna.Framework.Media;
+    using SharkGameLib;
 
     /// <summary>
     /// Represents a page for the game itself, accessible from the main menu.
@@ -462,42 +464,44 @@
             // TODO: Delay for three seconds?
 
             // Check high-scores - if the score for this level was high enough, induct player to the high scores list.
-            Dictionary<string, int> highScores;
+            List<HighScore> highScores;
             IsolatedStorageSettings userSettings = IsolatedStorageSettings.ApplicationSettings;
             try
             {
-
-                highScores = userSettings["High scores"] as Dictionary<string, int>;
+                highScores = userSettings["High scores"] as List<HighScore>;
             }
             catch (KeyNotFoundException exception)
             {
                 Debug.WriteLine("High scores data not found; " + exception.Message);
-                highScores = new Dictionary<string, int>();
+                highScores = new List<HighScore>();
             }
 
-            int lowestScore = 0;
-
-            if (highScores.Count > 0)
+            if (highScores.Count == 0 || highScores.Count > 0 && this.points > highScores.Min(item => item.Points))
             {
-                lowestScore = highScores.Aggregate(highScores.First(), (min, curr) => curr.Value < min.Value ? curr : min).Value;
-            }
+                HighScore currentScore = new HighScore("player", DateTime.Now, this.points);
 
-            if (this.points > lowestScore)
-            {
-                // Induct the player to high scores list. If more than 8 elements, remove the last element.
-                string currentDate = DateTime.Now.ToString("YY-MM-DD HH:mm");
-                highScores.Add(currentDate, this.points);
-                highScores = highScores.OrderByDescending(x => x.Value).ToDictionary(pair => pair.Key, pair => pair.Value);
+                // Induct the player into high scores list. If more than 8 elements, remove the last element.
+                highScores.Add(currentScore);
+                highScores = highScores.OrderByDescending(x => x.Points).ToList();
                 if (highScores.Count > 8)
                 {
-                    highScores.Remove(highScores.Aggregate(highScores.First(), (min, curr) => curr.Value < min.Value ? curr : min).Key);
+                    highScores.Remove(highScores[highScores.Count]);
                 }
 
-                // TODO: make this highlighting working by finding the index of added entry...
-                // might be impossible since dictionary indices are undefined. :<
-                int position = 3;
+                // This shark was a hero indeed. Save the result in the Isolated Storage
+                // and go to the high scores page.
+                if (userSettings.Contains("High Scores"))
+                {
+                    userSettings["High Scores"] = highScores;
+                }
+                else
+                {
+                    userSettings.Add("High Scores", highScores);
+                }
 
-                // This shark was a hero indeed. Go to the high scores page.
+                userSettings.Save();
+
+                int position = highScores.IndexOf(currentScore);
                 NavigationService.Navigate(new Uri("/ScorePage.xaml?highlight=" + position, UriKind.Relative));
             }
 

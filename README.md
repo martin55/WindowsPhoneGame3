@@ -1,4 +1,6 @@
-﻿Frutti di Spiaggia
+﻿Shark Game
 ============
 
-Frutti di Spiaggia (fruits of the beach), a game written in C# and XNA framework for Windows Phone 7.
+Shark Game, a game written in C# and XNA framework for Windows Phone 7.
+Refer to the project wiki on GitHub for more info:
+https://github.com/martin55/WindowsPhoneGame3/wiki

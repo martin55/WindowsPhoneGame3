@@ -40,8 +40,13 @@
             // Play the menu song.
             this.contentManager = (Application.Current as App).Content;
             FrameworkDispatcher.Update();
-            MediaPlayer.Play(this.contentManager.Load<Song>("menu"));
-            MediaPlayer.IsRepeating = true;
+            Song menuSong = this.contentManager.Load<Song>("menu");
+            if (MediaPlayer.Queue.ActiveSong == null || MediaPlayer.Queue.ActiveSong.Name != menuSong.Name)
+            {
+                MediaPlayer.Play(menuSong);
+                MediaPlayer.IsRepeating = true;
+            }
+
 
             base.OnNavigatedTo(e);
         }
