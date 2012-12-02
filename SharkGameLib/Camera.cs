@@ -24,7 +24,6 @@ namespace SharkGame
         public Camera(Vector2 pos)
         {
             this.position = pos;
-
         }
 
         /// <summary>
@@ -41,8 +40,8 @@ namespace SharkGame
         /// </summary>
         public Vector2 Pos
         {
-            get { return position; }
-            set { position = value; }
+            get { return this.position; }
+            set { this.position = value; }
         }
 
         /// <summary>
@@ -52,10 +51,10 @@ namespace SharkGame
         public Matrix get_transformation()
         {
             // Thanks to o KB o for this solution.
-            _transform = Matrix.CreateTranslation(
-                new Vector3(-position.X, -position.Y, 0))
-                * Matrix.CreateTranslation(new Vector3(800 * 0.5f, 480 * 0.5f, 0));
-            return _transform;
+            this._transform = Matrix.CreateTranslation(
+                new Vector3(-this.position.X, -this.position.Y, 0f))
+                * Matrix.CreateTranslation(new Vector3(800f * 0.5f, 480f * 0.5f, 0f));
+            return this._transform;
         }
     }
 }

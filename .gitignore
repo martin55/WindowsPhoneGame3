@@ -5,9 +5,6 @@ obj
 # mstest test results
 TestResults
 
-# cached StyleCop data
-*.Cache
-
 #################
 ## Visual Studio
 #################
@@ -43,4 +40,8 @@ TestResults
 *.dotCover
 
 # Others
+*.Debug.cachefile
 stylecop.*
+
+# cached StyleCop data
+*.Cache

@@ -17,7 +17,6 @@
     using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
     using Microsoft.Xna.Framework.Media;
-    using System.Threading;
 
     /// <summary>
     /// Represents a page for the game itself, accessible from the main menu.
@@ -329,8 +328,6 @@
             this.tiles.Add(this.contentManager.Load<Texture2D>("sand"));
             this.tiles.Add(this.contentManager.Load<Texture2D>("sea_sand"));
             this.tiles.Add(this.contentManager.Load<Texture2D>("sea"));
-            this.tiles.Add(this.contentManager.Load<Texture2D>("sand"));
-            this.tiles.Add(this.contentManager.Load<Texture2D>("sand"));
 
             // Load bodies.
             this.bodies = new List<Body>();
@@ -645,12 +642,7 @@
                 this.sprites[Constants.GameObjects.Shark].Height / 2);
 
             // Draw the map.
-            this.drawMap();
-
-            // Draw the HUD.
-            this.drawHud();
-
-
+            this.DrawMap();
 
             this.spriteBatch.Begin(SpriteSortMode.BackToFront,
                         BlendState.AlphaBlend,
@@ -664,9 +656,8 @@
             this.particleEngine.Draw(this.spriteBatch);
 
             // Draw all objects in the viewpoint.
-            Microsoft.Xna.Framework.Point cameraPoint = Conversions.ToCell(camera.position);
-            Microsoft.Xna.Framework.Point viewPoint = Conversions.ToCell(camera.position +
-                                    ViewPortVector());
+            Microsoft.Xna.Framework.Point cameraPoint = Conversions.ToCell(this.camera.position);
+            Microsoft.Xna.Framework.Point viewPoint = Conversions.ToCell(this.camera.position + this.ViewPortVector());
             Microsoft.Xna.Framework.Point min = new Microsoft.Xna.Framework.Point();
             Microsoft.Xna.Framework.Point max = new Microsoft.Xna.Framework.Point();
             min.X = cameraPoint.X;
@@ -678,7 +669,6 @@
             {
                 for (int x = min.X; x < max.X; x++)
                 {
-                  
                     if (Constants.Maps.ObjectMap[y, x] > 0)
                     {
                         this.spriteBatch.Draw(
@@ -698,23 +688,19 @@
                 }
             }
 
-            foreach (Body wall in this.walls)
-            {
-                // Draw the wall sprite.
-                this.spriteBatch.Draw(
-                    this.sprites[Constants.GameObjects.Wall],
-                    wall.Position.ToRealVector(),
-                    null,
-                    Color.White,
-                    wall.Rotation,
-                    new Vector2(
-                        this.sprites[Constants.GameObjects.Wall].Width / 2f,
-                        this.sprites[Constants.GameObjects.Wall].Height / 2f),
-                    1f,
-                    SpriteEffects.None,
-                    0f);
-
-            }
+            // Draw the human sprite.
+            this.spriteBatch.Draw(
+                this.sprites[Constants.GameObjects.Human],
+                this.bodies[Constants.GameObjects.Human].Position.ToRealVector(),
+                null,
+                Color.Yellow,
+                this.bodies[Constants.GameObjects.Human].Rotation,
+                new Vector2(
+                    this.sprites[Constants.GameObjects.Human].Width / 2f,
+                    this.sprites[Constants.GameObjects.Human].Height / 2f),
+                1f,
+                SpriteEffects.None,
+                0f);
 
             // Draw the shark sprite.
             this.spriteBatch.Draw(
@@ -727,16 +713,17 @@
                 1.5f,
                 SpriteEffects.None,
                 0f);
-
-          
-
             this.spriteBatch.End();
+
+            // Draw the HUD.
+            this.DrawHud();
+
         }
 
         /// <summary>
         /// Draws the map of the game.
         /// </summary>
-        private void drawMap()
+        private void DrawMap()
         {
             this.spriteBatch.Begin();
             Microsoft.Xna.Framework.Point cameraPoint = Conversions.ToCell(camera.position);
@@ -752,31 +739,51 @@
                     0,
                     Constants.Maps.TileWidth,
                     Constants.Maps.TileHeight);
-            
-            for (int y = min.Y; y < max.Y; y++)
+
+            for (int y = min.Y; y < max.Y; ++y)
             {
-                for (int x = min.X; x < max.X; x++)
+                for (int x = min.X; x < max.X; ++x)
                 {
                     tileRectangle.X = x * Constants.Maps.TileWidth - (int)camera.position.X;
                     tileRectangle.Y = y * Constants.Maps.TileHeight - (int)camera.position.Y;
-
                       spriteBatch.Draw(tiles[Constants.Maps.Map[y, x]],
                      tileRectangle,
                      Color.White);
-              }
-         }
-            spriteBatch.End();
+                    //this.spriteBatch.Draw(
+                    //    tiles[Constants.Maps.Map[y, x]],
+                    //    tileRectangle,
+                    //    null,
+                    //    Color.White,
+                    //    0f,
+                    //    Vector2.Zero,
+                    //    SpriteEffects.None,
+                    //    1f);
+                }
+            }
 
-
-
-              
-                 
+            //foreach (Body wall in this.walls)
+            //{
+            //    // Draw the wall sprite.
+            //    this.spriteBatch.Draw(
+            //        this.sprites[Constants.GameObjects.Wall],
+            //        wall.Position.ToRealVector(),
+            //        null,
+            //        Color.Red,
+            //        wall.Rotation,
+            //        new Vector2(
+            //            this.sprites[Constants.GameObjects.Wall].Width / 2f,
+            //            this.sprites[Constants.GameObjects.Wall].Height / 2f),
+            //        1f,
+            //        SpriteEffects.None,
+            //        0f);
+            //}
+            this.spriteBatch.End();
         }
 
         /// <summary>
         /// Draws the display, such as time left and points collected so far.
         /// </summary>
-        private void drawHud()
+        private void DrawHud()
         {
             this.spriteBatch.Begin();
             this.spriteBatch.DrawString(this.contentManager.Load<SpriteFont>("DisplayFont"), this.timeLeft.ToString("ss"), new Vector2(0.2f, 0.2f).ToRealVector(), Color.Blue);
