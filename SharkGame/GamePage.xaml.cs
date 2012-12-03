@@ -303,6 +303,7 @@
             this.pools = new List<Body>();
             this.traps = new List<Body>();
             this.crates = new List<Body>();
+
             int humanIndex = 0;
             int poolIndex = 0;
             int trapIndex = 0;
@@ -336,7 +337,7 @@
                             ++poolIndex;
                             break;
 
-                        case 3: this.traps.Add(BodyFactory.CreateCircle(this.gameWorld, 0.6f, 1f, 1f));
+                        case 3: this.traps.Add(BodyFactory.CreateCircle(this.gameWorld, 0.9f, 1f, 1f));
                             this.traps[trapIndex].BodyType = BodyType.Static;
                             this.traps[trapIndex].Position =
                                    (new Vector2(x * Constants.Maps.TileWidth, y * Constants.Maps.TileHeight)
@@ -376,6 +377,7 @@
             this.sprites.Add(this.contentManager.Load<Texture2D>("pool"));
             this.sprites.Add(this.contentManager.Load<Texture2D>("trap"));
             this.sprites.Add(this.contentManager.Load<Texture2D>("crate"));
+            this.sprites.Add(this.contentManager.Load<Texture2D>("wall"));
 
             this.runFrameWidth = this.sprites[Constants.GameObjects.Shark].Width / 16;
             this.runFrameHeight = this.sprites[Constants.GameObjects.Shark].Height;
@@ -595,13 +597,11 @@
                 this.centralVector.Y += this.sharkVelocity.Y * Constants.Speeds.BlueSharkSpeedMultiplier;
                 this.sharkVelocity *= elapsed;
 
-                    this.bodies[Constants.GameObjects.Shark].ApplyForce(this.sharkVelocity);
-                    this.bodies[Constants.GameObjects.Shark].Position = this.centralVector * elapsed;
-                
-   
+                this.bodies[Constants.GameObjects.Shark].ApplyForce(this.sharkVelocity);
+                this.bodies[Constants.GameObjects.Shark].Position = this.centralVector * elapsed;
 
                 //update camera position
-                camera.position = this.bodies[Constants.GameObjects.Shark].Position.ToRealVector();
+                this.camera.position = this.bodies[Constants.GameObjects.Shark].Position.ToRealVector();
                 //clamp camera movement only on the map size
                 camera.position.X = MathHelper.Clamp(camera.position.X,
                           0,
@@ -633,8 +633,10 @@
             if (this.isGameOver)
             {
                 this.spriteBatch.Begin();
+
                 this.spriteBatch.DrawString(this.contentManager.Load<SpriteFont>("DisplayFont"), "Game over!", new Vector2(2f, 1.5f).ToRealVector(), Color.Red);
                 this.spriteBatch.DrawString(this.contentManager.Load<SpriteFont>("DisplayFont"), "Points: " + this.points, new Vector2(2.2f, 3.5f).ToRealVector(), Color.Red);
+
                 this.spriteBatch.End();
             }
             else
