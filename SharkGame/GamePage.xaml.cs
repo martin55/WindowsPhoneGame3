@@ -87,6 +87,7 @@
         private List<Body> humans;
         private List<Body> pools;
         private List<Body> traps;
+        private List<Body> crates;
 
         private List<Body> walls;
 
@@ -100,11 +101,7 @@
         /// </summary>
         private List<Texture2D> tiles;
 
-        /// <summary>
-        /// Collection of fixtures for the game objects.
-        /// </summary>
-        /// 
-        private List<Fixture> fixtures;
+      
 
         /// <summary>
         /// Vector with its initial point set to screen center.
@@ -297,7 +294,7 @@
             // Load bodies.
             this.bodies = new List<Body>();
 
-            this.bodies.Add(BodyFactory.CreateCircle(this.gameWorld, 0.6f, 1f));
+            this.bodies.Add(BodyFactory.CreateCircle(this.gameWorld, 0.8f, 1f));
             this.bodies[Constants.GameObjects.Shark].BodyType = BodyType.Dynamic;
             this.bodies[Constants.GameObjects.Shark].Position = this.centralVector;
             this.bodies[Constants.GameObjects.Shark].CollidesWith = Category.All;
@@ -305,9 +302,11 @@
             this.humans = new List<Body>();
             this.pools = new List<Body>();
             this.traps = new List<Body>();
+            this.crates = new List<Body>();
             int humanIndex = 0;
             int poolIndex = 0;
             int trapIndex = 0;
+            int crateIndex = 0;
 
             for (int y = 0; y < Constants.Maps.Map.GetLength(1); y++)
             {
@@ -333,18 +332,28 @@
                                     (new Vector2(x * Constants.Maps.TileWidth, y * Constants.Maps.TileHeight)
                                        - new Vector2(screenWidth / 2, screenHeight / 2)
                                        + new Vector2(Constants.Maps.TileWidth / 2, Constants.Maps.TileHeight / 2)).ToSimVector();
-                            FixtureFactory.AttachCircle(1f, 1f, this.pools[poolIndex]).OnCollision += this.TimerReplenished;
+                            FixtureFactory.AttachCircle(0.9f, 1f, this.pools[poolIndex]).OnCollision += this.TimerReplenished;
                             ++poolIndex;
                             break;
 
-                        case 3: this.traps.Add(BodyFactory.CreateCircle(this.gameWorld, 0.9f, 1f, 1f));
+                        case 3: this.traps.Add(BodyFactory.CreateCircle(this.gameWorld, 0.6f, 1f, 1f));
                             this.traps[trapIndex].BodyType = BodyType.Static;
                             this.traps[trapIndex].Position =
                                    (new Vector2(x * Constants.Maps.TileWidth, y * Constants.Maps.TileHeight)
                                        - new Vector2(screenWidth / 2, screenHeight / 2)
                                        + new Vector2(Constants.Maps.TileWidth / 2, Constants.Maps.TileHeight / 2)).ToSimVector();
-                            // FixtureFactory.AttachCircle(1f, 1f, this.traps[trapIndex]).OnCollision += this.SharkDead;
+                            FixtureFactory.AttachCircle(0.2f, 0.5f, this.traps[trapIndex]).OnCollision += this.SharkDead;
                             ++trapIndex;
+                            break;
+
+                        case 4: this.crates.Add(BodyFactory.CreateRectangle(this.gameWorld, 1f, 1f, 1f));
+                            this.crates[crateIndex].BodyType = BodyType.Dynamic;
+                            this.crates[crateIndex].Position =
+                                   (new Vector2(x * Constants.Maps.TileWidth, y * Constants.Maps.TileHeight)
+                                       - new Vector2(screenWidth / 2, screenHeight / 2)
+                                       + new Vector2(Constants.Maps.TileWidth / 2, Constants.Maps.TileHeight / 2)).ToSimVector();
+                            
+                            ++crateIndex;
                             break;
                     }
                 }
@@ -366,7 +375,7 @@
             this.sprites.Add(this.contentManager.Load<Texture2D>("people"));
             this.sprites.Add(this.contentManager.Load<Texture2D>("pool"));
             this.sprites.Add(this.contentManager.Load<Texture2D>("trap"));
-            this.sprites.Add(this.contentManager.Load<Texture2D>("wall"));
+            this.sprites.Add(this.contentManager.Load<Texture2D>("crate"));
 
             this.runFrameWidth = this.sprites[Constants.GameObjects.Shark].Width / 16;
             this.runFrameHeight = this.sprites[Constants.GameObjects.Shark].Height;
@@ -589,9 +598,10 @@
                 this.centralVector.Y += this.sharkVelocity.Y * Constants.Speeds.BlueSharkSpeedMultiplier;
                 this.sharkVelocity *= elapsed;
 
-                this.bodies[Constants.GameObjects.Shark].ApplyForce(this.sharkVelocity);
-                this.bodies[Constants.GameObjects.Shark].Position = this.centralVector * elapsed;
-
+                    this.bodies[Constants.GameObjects.Shark].ApplyForce(this.sharkVelocity);
+                    this.bodies[Constants.GameObjects.Shark].Position = this.centralVector * elapsed;
+                
+   
 
                 //update camera position
                 camera.position = this.bodies[Constants.GameObjects.Shark].Position.ToRealVector();
@@ -677,7 +687,7 @@
                                     new Vector2(
                                     this.sprites[Constants.Maps.ObjectMap[y, x]].Width / 2f,
                                     this.sprites[Constants.Maps.ObjectMap[y, x]].Height / 2f),
-                                     1f,
+                                     0.7f,
                                      SpriteEffects.None,
                                     1f);
                                 }
@@ -710,7 +720,23 @@
                                     new Vector2(
                                     this.sprites[Constants.Maps.ObjectMap[y, x]].Width / 2f,
                                     this.sprites[Constants.Maps.ObjectMap[y, x]].Height / 2f),
-                                     1f,
+                                     0.6f,
+                                     SpriteEffects.None,
+                                    1f);
+                                }
+                                break;
+                            case 4: foreach (Body c in crates)
+                                {
+                                    this.spriteBatch.Draw(
+                                     this.sprites[Constants.Maps.ObjectMap[y, x]],
+                                   c.Position.ToRealVector(),
+                                    null,
+                                    Color.White,
+                                    c.Rotation,
+                                    new Vector2(
+                                    this.sprites[Constants.Maps.ObjectMap[y, x]].Width / 2f,
+                                    this.sprites[Constants.Maps.ObjectMap[y, x]].Height / 2f),
+                                     0.5f,
                                      SpriteEffects.None,
                                     1f);
                                 }
@@ -727,7 +753,7 @@
                     Color.White,
                     this.sharkRotation,
                     origin,
-                    1.5f,
+                    1.4f,
                     SpriteEffects.None,
                     0f);
                 this.spriteBatch.End();
