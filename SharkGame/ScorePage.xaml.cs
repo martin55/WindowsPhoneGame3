@@ -4,8 +4,12 @@
     using System.Diagnostics;
     using System.IO.IsolatedStorage;
     using System.Linq;
+    using System.Windows;
     using Microsoft.Phone.Controls;
-    using System;
+    using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Media;
+
+    using SharkGameLib;
 
     public partial class ScorePage : PhoneApplicationPage
     {
@@ -14,9 +18,9 @@
         /// <summary>
         /// High scores collection.
         /// </summary>
-        private Dictionary<string, int> highScores;
+        private List<HighScore> highScores;
 
-
+        /* Constructor */
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ScorePage" /> class.
@@ -28,24 +32,23 @@
             IsolatedStorageSettings userSettings = IsolatedStorageSettings.ApplicationSettings;
             try
             {
-
-                this.highScores = userSettings["High scores"] as Dictionary<string, int>;
+                this.highScores = userSettings["High Scores"] as List<HighScore>;
             }
             catch (KeyNotFoundException exception)
             {
                 Debug.WriteLine("High scores data not found; " + exception.Message);
-                this.highScores = new Dictionary<string, int>();
+                this.highScores = new List<HighScore>();
             }
 
-            this.highScores.Add("PLAYER", 340);
-            this.highScores.Add("PLAYER1", 604);
-            this.highScores.Add("PLAYER2", 317);
-            this.highScores.Add("PLAYER3", 204);
-
-            this.highScores = this.highScores.OrderByDescending(x => x.Value).ToDictionary(pair => pair.Key, pair => pair.Value);
+            if (this.highScores.Count > 0)
+            {
+                this.highScores = this.highScores.OrderByDescending(x => x.Points).ToList();
+            }
 
             this.highScoresBox.ItemsSource = this.highScores;
         }
+
+        /* Methods */
 
         /// <summary>
         /// Handles navigating to the Score Page.
@@ -53,6 +56,15 @@
         /// <param name="e">Information passed to the event.</param>
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
+            // Play the menu song.
+            FrameworkDispatcher.Update();
+            Song menuSong = (Application.Current as App).Content.Load<Song>("menu");
+            if (MediaPlayer.Queue.ActiveSong == null || MediaPlayer.Queue.ActiveSong.Name != menuSong.Name)
+            {
+                MediaPlayer.Play(menuSong);
+                MediaPlayer.IsRepeating = true;
+            }
+
             string highlight;
             if (NavigationContext.QueryString.TryGetValue("highlight", out highlight))
             {
@@ -60,22 +72,11 @@
                 if (int.TryParse(highlight, out playerScore))
                 {
                     this.highlightRow(playerScore);
+                    NavigationService.RemoveBackEntry();
                 }
             }
 
             base.OnNavigatedTo(e);
-        }
-
-        /// <summary>
-        /// Prevent going back to the game when it is over and the high scores are shown
-        /// by navigating straight to the Main Menu Page.
-        /// </summary>
-        /// <param name="e">Information passed to the event.</param>
-        protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
-        {
-
-            e.Cancel = true;
-            NavigationService.Navigate(new Uri("/MainPage.xaml", UriKind.Relative));
         }
 
         /// <summary>
@@ -84,7 +85,10 @@
         /// <param name="playerScore">Index of player's score.</param>
         private void highlightRow(int playerScore)
         {
-            // TODO: highlight the correct row.
+            if (this.highScoresBox.Items.Count > playerScore)
+            {
+                this.highScoresBox.SelectedIndex = playerScore;
+            }
         }
     }
 }
