@@ -23,6 +23,8 @@
     /// </summary>
     public partial class GamePage : PhoneApplicationPage
     {
+        /* Fields */
+
         int tileMapWidth;
         int tileMapHeight;
 
@@ -37,9 +39,6 @@
         {
             get { return mapHeightInPixels; }
         }
-
-
-        /* Fields */
 
         /// <summary>
         /// Device's screen width in pixels.
@@ -238,46 +237,6 @@
 
         /* Methods */
 
-
-
-
-
-        void GamePage_BackKeyPress(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            // Pause the game and return to the menu.
-            backPressed = true;
-            HandleInput(backPressed);
-            e.Cancel = true;
-        }
-
-        //two times pressed back button exit game(one time just paused game. not working yet properly)
-        public void HandleInput(bool shouldPause)
-        {
-
-            if (pausedGame)
-            {
-                FinishCurrentGame();
-                pausedGame = false;
-                backPressed = false;
-            }
-            else
-            {
-                pausedGame = true;
-
-            }
-
-        }
-
-        private void FinishCurrentGame()
-        {
-            backPressed = false;
-            NavigationService.GoBack();
-        }
-
-
-
-
-
         /// <summary>
         /// Handles navigating to the game.
         /// </summary>
@@ -331,72 +290,51 @@
             this.bodies[Constants.GameObjects.Shark].Position = this.centralVector;
             this.bodies[Constants.GameObjects.Shark].CollidesWith = Category.All;
 
-            //this.bodies.Add(BodyFactory.CreateRectangle(this.gameWorld, 0.9f, 0.9f, 1f));
-            //this.bodies[Constants.GameObjects.Human].BodyType = BodyType.Dynamic;
-            //this.bodies[Constants.GameObjects.Human].Position = new Vector2(2f, 4f);
-
-
-
-            //this.bodies.Add(BodyFactory.CreateCircle(this.gameWorld, 0.9f, 1f, 1f));
-            //this.bodies[Constants.GameObjects.Pool].Position = new Vector2(3f, 2f);
-
-            //this.bodies.Add(BodyFactory.CreateCircle(this.gameWorld, 0.9f, 1f, 1f));
-            //this.bodies[Constants.GameObjects.Trap].Position = new Vector2(1f, 1f);
-
             this.humans = new List<Body>();
             this.pools = new List<Body>();
             this.traps = new List<Body>();
-           int humanIndex=0;
-           int poolIndex = 0;
-           int trapIndex = 0;
-          
-            
-            
+            int humanIndex = 0;
+            int poolIndex = 0;
+            int trapIndex = 0;
 
             for (int y = 0; y < Constants.Maps.Map.GetLength(1); y++)
             {
                 for (int x = 0; x < Constants.Maps.Map.GetLength(0); x++)
-
                 {
+                    switch (Constants.Maps.ObjectMap[y, x])
+                    {
+                        case 1:
+                            this.humans.Add(BodyFactory.CreateRectangle(this.gameWorld, 0.9f, 0.9f, 1f));
 
-                     switch (Constants.Maps.ObjectMap[y, x])
-                        {
-                            case 1:
-                                this.humans.Add(BodyFactory.CreateRectangle(this.gameWorld, 0.9f, 0.9f, 1f));
-                                   
-                                    this.humans[humanIndex].BodyType = BodyType.Dynamic;
-                                    
-                                    this.humans[humanIndex].Position =
-                                          ( new Vector2(x * Constants.Maps.TileWidth, y * Constants.Maps.TileHeight)
-                                           - new Vector2(screenWidth / 2, screenHeight / 2) 
-                                           + new Vector2(Constants.Maps.TileWidth / 2, Constants.Maps.TileHeight / 2)).ToSimVector();
-                                    
-                              
-                                    humanIndex++;
-                                    
-                                break;
-                            case 2: this.pools.Add(BodyFactory.CreateCircle(this.gameWorld, 0.9f, 1f, 1f));
-                                this.pools[poolIndex].BodyType = BodyType.Dynamic;
-                                this.pools[poolIndex].Position =
-                                        (new Vector2(x * Constants.Maps.TileWidth, y * Constants.Maps.TileHeight)
-                                           - new Vector2(screenWidth / 2, screenHeight / 2)
-                                           + new Vector2(Constants.Maps.TileWidth / 2, Constants.Maps.TileHeight / 2)).ToSimVector();
-                                poolIndex++;
-                                break;
-                           
-                         case 3: this.traps.Add(BodyFactory.CreateCircle(this.gameWorld, 0.9f, 1f, 1f));
-                                this.traps[trapIndex].BodyType = BodyType.Dynamic;
-                                this.traps[trapIndex].Position =
-                                       (new Vector2(x * Constants.Maps.TileWidth, y * Constants.Maps.TileHeight)
-                                           - new Vector2(screenWidth / 2, screenHeight / 2)
-                                           + new Vector2(Constants.Maps.TileWidth / 2, Constants.Maps.TileHeight / 2)).ToSimVector();
-                                trapIndex++;
-                                break;
+                            this.humans[humanIndex].BodyType = BodyType.Static;
+                            this.humans[humanIndex].Position =
+                                  (new Vector2(x * Constants.Maps.TileWidth, y * Constants.Maps.TileHeight)
+                                   - new Vector2(screenWidth / 2, screenHeight / 2)
+                                   + new Vector2(Constants.Maps.TileWidth / 2, Constants.Maps.TileHeight / 2)).ToSimVector();
+                            FixtureFactory.AttachCircle(1f, 1f, this.humans[humanIndex]).OnCollision += this.HumanEaten;
+                            ++humanIndex;
+                            break;
 
+                        case 2: this.pools.Add(BodyFactory.CreateCircle(this.gameWorld, 0.9f, 1f, 1f));
+                            this.pools[poolIndex].BodyType = BodyType.Static;
+                            this.pools[poolIndex].Position =
+                                    (new Vector2(x * Constants.Maps.TileWidth, y * Constants.Maps.TileHeight)
+                                       - new Vector2(screenWidth / 2, screenHeight / 2)
+                                       + new Vector2(Constants.Maps.TileWidth / 2, Constants.Maps.TileHeight / 2)).ToSimVector();
+                            FixtureFactory.AttachCircle(1f, 1f, this.pools[poolIndex]).OnCollision += this.TimerReplenished;
+                            ++poolIndex;
+                            break;
 
-
-                              
-                        }
+                        case 3: this.traps.Add(BodyFactory.CreateCircle(this.gameWorld, 0.9f, 1f, 1f));
+                            this.traps[trapIndex].BodyType = BodyType.Static;
+                            this.traps[trapIndex].Position =
+                                   (new Vector2(x * Constants.Maps.TileWidth, y * Constants.Maps.TileHeight)
+                                       - new Vector2(screenWidth / 2, screenHeight / 2)
+                                       + new Vector2(Constants.Maps.TileWidth / 2, Constants.Maps.TileHeight / 2)).ToSimVector();
+                            // FixtureFactory.AttachCircle(1f, 1f, this.traps[trapIndex]).OnCollision += this.SharkDead;
+                            ++trapIndex;
+                            break;
+                    }
                 }
             }
 
@@ -409,16 +347,6 @@
             walls.Add(BodyFactory.CreateEdge(this.gameWorld, new Vector2(width, height), new Vector2(width, 0f)));
             walls.Add(BodyFactory.CreateEdge(this.gameWorld, new Vector2(width, height), new Vector2(0f, height)));
 
-            //Vertices aBorders = new Vertices(4);
-            //aBorders.Add(new Vector2(0, 0));
-            //aBorders.Add(new Vector2(0, height));
-            //aBorders.Add(new Vector2(width, height));
-            //aBorders.Add(new Vector2(width, 0));
-
-            //this.bodies.Add(BodyFactory.CreateLoopShape(this.gameWorld, aBorders));
-            //this.bodies[Constants.GameObjects.Wall].CollisionCategories = Category.All;
-            //this.bodies[Constants.GameObjects.Wall].CollidesWith = Category.All;
-
             // Load textures.
             this.sprites = new List<Texture2D>();
 
@@ -427,27 +355,6 @@
             this.sprites.Add(this.contentManager.Load<Texture2D>("pool"));
             this.sprites.Add(this.contentManager.Load<Texture2D>("trap"));
             this.sprites.Add(this.contentManager.Load<Texture2D>("wall"));
-
-            
-            
-            //Create fixtures.
-            this.fixtures = new List<Fixture>();
-            this.fixtures.Add(FixtureFactory.AttachCircle(0.3f, 1f, this.bodies[Constants.GameObjects.Shark]));
-            this.fixtures.Add(FixtureFactory.AttachCircle(0.5f, 1f, this.humans[humanIndex]));
-            this.fixtures[Constants.GameObjects.Human].OnCollision += HumanEaten;
-            //this.fixtures.Add(FixtureFactory.AttachCircle(0.5f, 1f, this.bodies[Constants.GameObjects.Pool]));
-            //this.fixtures[Constants.GameObjects.Pool].OnCollision += TimerReplenished;
-
-            //this.fixtures.Add(FixtureFactory.AttachCircle(0.5f, 1f, this.bodies[Constants.GameObjects.Trap]));
-            //this.fixtures[Constants.GameObjects.Trap].OnCollision += SharkDead;    
-
-
-            //this.fixtures.Add(FixtureFactory.AttachLoopShape(aBorders, this.bodies[Constants.GameObjects.Wall]));
-            //this.fixtures[Constants.GameObjects.Wall].CollisionCategories = Category.All;
-            //this.fixtures[Constants.GameObjects.Wall].CollidesWith = Category.All;
-            //this.fixtures[Constants.GameObjects.Wall].Restitution = 1f;
-            //this.fixtures[Constants.GameObjects.Wall].Friction = 0f;
-            //this.fixtures[Constants.GameObjects.Wall].OnCollision += WallHit;
 
             this.runFrameWidth = this.sprites[Constants.GameObjects.Shark].Width / 16;
             this.runFrameHeight = this.sprites[Constants.GameObjects.Shark].Height;
@@ -519,7 +426,6 @@
             IsolatedStorageSettings userSettings = IsolatedStorageSettings.ApplicationSettings;
             try
             {
-
                 highScores = userSettings["High scores"] as Dictionary<string, int>;
             }
             catch (KeyNotFoundException exception)
@@ -720,72 +626,71 @@
             for (int y = min.Y; y < max.Y; y++)
             {
                 for (int x = min.X; x < max.X; x++)
-
                 {
-                   
 
-                           switch (Constants.Maps.ObjectMap[y, x])
-                        {
-                            case 1:  // Draw humans
-                                foreach (Body h in humans)
-                                {
-                                    this.spriteBatch.Draw(
-                                     this.sprites[Constants.Maps.ObjectMap[y, x]],
-                                   h.Position.ToRealVector(),
-                                    null,
-                                    Color.White,
-                                    h.Rotation,
-                                    new Vector2(
-                                    this.sprites[Constants.Maps.ObjectMap[y, x]].Width / 2f,
-                                    this.sprites[Constants.Maps.ObjectMap[y, x]].Height / 2f),
-                                     1f,
-                                     SpriteEffects.None,
-                                    1f);
-                                }
-                                
-                                break;
-                            case 2: foreach (Body p in pools)
-                                {
-                                    this.spriteBatch.Draw(
-                                     this.sprites[Constants.Maps.ObjectMap[y, x]],
-                                   p.Position.ToRealVector(),
-                                    null,
-                                    Color.White,
-                                    p.Rotation,
-                                    new Vector2(
-                                    this.sprites[Constants.Maps.ObjectMap[y, x]].Width / 2f,
-                                    this.sprites[Constants.Maps.ObjectMap[y, x]].Height / 2f),
-                                     1f,
-                                     SpriteEffects.None,
-                                    1f);
-                                }
-                                break;
-                                case 3: foreach (Body t in traps)
-                                {
-                                    this.spriteBatch.Draw(
-                                     this.sprites[Constants.Maps.ObjectMap[y, x]],
-                                   t.Position.ToRealVector(),
-                                    null,
-                                    Color.White,
-                                    t.Rotation,
-                                    new Vector2(
-                                    this.sprites[Constants.Maps.ObjectMap[y, x]].Width / 2f,
-                                    this.sprites[Constants.Maps.ObjectMap[y, x]].Height / 2f),
-                                     1f,
-                                     SpriteEffects.None,
-                                    1f);
-                                }
-                                break;
-                                             
 
-                        }
+                    switch (Constants.Maps.ObjectMap[y, x])
+                    {
+                        case 1:  // Draw humans
+                            foreach (Body h in humans)
+                            {
+                                this.spriteBatch.Draw(
+                                 this.sprites[Constants.Maps.ObjectMap[y, x]],
+                               h.Position.ToRealVector(),
+                                null,
+                                Color.White,
+                                h.Rotation,
+                                new Vector2(
+                                this.sprites[Constants.Maps.ObjectMap[y, x]].Width / 2f,
+                                this.sprites[Constants.Maps.ObjectMap[y, x]].Height / 2f),
+                                 1f,
+                                 SpriteEffects.None,
+                                1f);
+                            }
 
-                        
-                                   
-                
-                       
+                            break;
+                        case 2: foreach (Body p in pools)
+                            {
+                                this.spriteBatch.Draw(
+                                 this.sprites[Constants.Maps.ObjectMap[y, x]],
+                               p.Position.ToRealVector(),
+                                null,
+                                Color.White,
+                                p.Rotation,
+                                new Vector2(
+                                this.sprites[Constants.Maps.ObjectMap[y, x]].Width / 2f,
+                                this.sprites[Constants.Maps.ObjectMap[y, x]].Height / 2f),
+                                 1f,
+                                 SpriteEffects.None,
+                                1f);
+                            }
+                            break;
+                        case 3: foreach (Body t in traps)
+                            {
+                                this.spriteBatch.Draw(
+                                 this.sprites[Constants.Maps.ObjectMap[y, x]],
+                               t.Position.ToRealVector(),
+                                null,
+                                Color.White,
+                                t.Rotation,
+                                new Vector2(
+                                this.sprites[Constants.Maps.ObjectMap[y, x]].Width / 2f,
+                                this.sprites[Constants.Maps.ObjectMap[y, x]].Height / 2f),
+                                 1f,
+                                 SpriteEffects.None,
+                                1f);
+                            }
+                            break;
+
+
                     }
+
+
+
+
+
                 }
+            }
 
 
             //// Draw the human sprite.
@@ -802,7 +707,7 @@
             //    SpriteEffects.None,
             //    0f);
 
-          
+
 
             // Draw the shark sprite.
             this.spriteBatch.Draw(
@@ -852,11 +757,11 @@
                    tileRectangle,
                    Color.White);
 
-                  
+
                 }
             }
 
-           
+
             this.spriteBatch.End();
         }
 
@@ -878,8 +783,8 @@
         private Vector2 ViewPortVector()
         {
             return new Vector2(
-                GamePage.screenWidth + 2*Constants.Maps.TileWidth,
-                GamePage.screenHeight + 2*Constants.Maps.TileHeight);
+                GamePage.screenWidth + 2 * Constants.Maps.TileWidth,
+                GamePage.screenHeight + 2 * Constants.Maps.TileHeight);
         }
 
         /// <summary>
