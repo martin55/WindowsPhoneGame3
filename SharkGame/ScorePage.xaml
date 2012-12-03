@@ -34,8 +34,9 @@
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding Key}" Style="{StaticResource PhoneTextLargeStyle}" Margin="10,10,50,10" />
-                            <TextBlock Text="{Binding Value}" Style="{StaticResource PhoneTextLargeStyle}" Margin="50,10,10,10" />
+                            <TextBlock Text="{Binding Date}" Style="{StaticResource PhoneTextLargeStyle}" Margin="10,10,50,10" />
+                            <TextBlock Text="{Binding Name}" Style="{StaticResource PhoneTextLargeStyle}" Margin="50,10,10,10" />
+                            <TextBlock Text="{Binding Points}" Style="{StaticResource PhoneTextLargeStyle}" Margin="50,10,10,10" />
                         </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
