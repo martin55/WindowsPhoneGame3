@@ -12,13 +12,6 @@
     /// </summary>
     public partial class MainPage : PhoneApplicationPage
     {
-        /* Fields */
-
-        /// <summary>
-        /// Content manager for the Main Page.
-        /// </summary>
-        private ContentManager contentManager;
-
         /* Constructor */
 
         /// <summary>
@@ -38,15 +31,13 @@
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             // Play the menu song.
-            this.contentManager = (Application.Current as App).Content;
             FrameworkDispatcher.Update();
-            Song menuSong = this.contentManager.Load<Song>("menu");
+            Song menuSong = (Application.Current as App).Content.Load<Song>("menu");
             if (MediaPlayer.Queue.ActiveSong == null || MediaPlayer.Queue.ActiveSong.Name != menuSong.Name)
             {
                 MediaPlayer.Play(menuSong);
                 MediaPlayer.IsRepeating = true;
             }
-
 
             base.OnNavigatedTo(e);
         }

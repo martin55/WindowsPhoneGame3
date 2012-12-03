@@ -1,11 +1,13 @@
 ﻿namespace SharkGame
 {
-    using System;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO.IsolatedStorage;
     using System.Linq;
+    using System.Windows;
     using Microsoft.Phone.Controls;
+    using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Media;
 
     using SharkGameLib;
 
@@ -54,6 +56,15 @@
         /// <param name="e">Information passed to the event.</param>
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
+            // Play the menu song.
+            FrameworkDispatcher.Update();
+            Song menuSong = (Application.Current as App).Content.Load<Song>("menu");
+            if (MediaPlayer.Queue.ActiveSong == null || MediaPlayer.Queue.ActiveSong.Name != menuSong.Name)
+            {
+                MediaPlayer.Play(menuSong);
+                MediaPlayer.IsRepeating = true;
+            }
+
             string highlight;
             if (NavigationContext.QueryString.TryGetValue("highlight", out highlight))
             {
@@ -61,21 +72,11 @@
                 if (int.TryParse(highlight, out playerScore))
                 {
                     this.highlightRow(playerScore);
+                    NavigationService.RemoveBackEntry();
                 }
             }
 
             base.OnNavigatedTo(e);
-        }
-
-        /// <summary>
-        /// Prevent going back to the game when it is over and the high scores are shown
-        /// by navigating straight to the Main Menu Page.
-        /// </summary>
-        /// <param name="e">Information passed to the event.</param>
-        protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
-        {
-            e.Cancel = true;
-            NavigationService.Navigate(new Uri("/MainPage.xaml", UriKind.Relative));
         }
 
         /// <summary>
