@@ -210,7 +210,7 @@
             this.timer.Draw += this.OnDraw;
 
             // Start the time countdown and reset points.
-            this.timeLeft = TimeSpan.FromSeconds(30.0);
+            this.timeLeft = TimeSpan.FromSeconds(40.0);
             this.points = 0;
 
             // Set sound effect timers to arbitrary positive number so that early collisions will trigger them as well.
@@ -322,7 +322,7 @@
                                   (new Vector2(x * Constants.Maps.TileWidth, y * Constants.Maps.TileHeight)
                                    - new Vector2(screenWidth / 2, screenHeight / 2)
                                    + new Vector2(Constants.Maps.TileWidth / 2, Constants.Maps.TileHeight / 2)).ToSimVector();
-                            FixtureFactory.AttachCircle(1f, 1f, this.humans[humanIndex]).OnCollision += this.HumanEaten;
+                            FixtureFactory.AttachCircle(0.5f, 1f, this.humans[humanIndex]).OnCollision += this.HumanEaten;
                             ++humanIndex;
                             break;
 
@@ -342,7 +342,7 @@
                                    (new Vector2(x * Constants.Maps.TileWidth, y * Constants.Maps.TileHeight)
                                        - new Vector2(screenWidth / 2, screenHeight / 2)
                                        + new Vector2(Constants.Maps.TileWidth / 2, Constants.Maps.TileHeight / 2)).ToSimVector();
-                            FixtureFactory.AttachCircle(0.2f, 0.5f, this.traps[trapIndex]).OnCollision += this.SharkDead;
+                            FixtureFactory.AttachCircle(0.1f, 0.5f, this.traps[trapIndex]).OnCollision += this.SharkDead;
                             ++trapIndex;
                             break;
 
@@ -432,12 +432,9 @@
         /// <summary>
         /// Handles game over screen display.
         /// </summary>
-        private void gameOver()
+        private void GameOver()
         {
             MediaPlayer.Stop();
-
-            // TODO: Delay for three seconds?
-            Thread.Sleep(5);
 
             // Check high-scores - if the score for this level was high enough, induct player to the high scores list.
             List<HighScore> highScores;
@@ -452,7 +449,7 @@
                 highScores = new List<HighScore>();
             }
 
-            if (highScores.Count == 0 || highScores.Count > 0 && this.points > highScores.Min(item => item.Points))
+            if (highScores.Count < 8 || highScores.Count > 0 && this.points > highScores.Min(item => item.Points))
             {
                 // This shark was a hero indeed. Save the result in the Isolated Storage
                 // and go to the high scores page.
@@ -463,7 +460,7 @@
                 highScores = highScores.OrderByDescending(x => x.Points).ToList();
                 if (highScores.Count > 8)
                 {
-                    highScores.Remove(highScores[highScores.Count]);
+                    highScores.Remove(highScores[highScores.Count - 1]);
                 }
 
                 if (userSettings.Contains("High Scores"))
@@ -486,7 +483,6 @@
                 // Go back to the main menu screen.
                 NavigationService.GoBack();
             }
-
         }
 
         /// <summary>
@@ -504,6 +500,7 @@
                 this.points += 5;
                 this.contentManager.Load<SoundEffect>("eating").Play();
                 this.timeSinceEatingSound = 0f;
+                fixtureA.Body.Enabled = false;
                 return true;
             }
 
@@ -615,10 +612,11 @@
             }
             else
             {
+                // After three seconds of showing the game over screen, proceed with GameOver() method.
                 this.timeSinceGameOver += elapsed;
                 if (this.timeSinceGameOver > 3f)
                 {
-                    this.gameOver();
+                    this.GameOver();
                 }
             }
         }
@@ -635,8 +633,8 @@
             if (this.isGameOver)
             {
                 this.spriteBatch.Begin();
-                this.spriteBatch.DrawString(this.contentManager.Load<SpriteFont>("DisplayFont"), "You failed miserably!", new Vector2(2f, 1.5f).ToRealVector(), Color.Red);
-                this.spriteBatch.DrawString(this.contentManager.Load<SpriteFont>("DisplayFont"), "Points: " + this.points, new Vector2(2f, 3.5f).ToRealVector(), Color.Red);
+                this.spriteBatch.DrawString(this.contentManager.Load<SpriteFont>("DisplayFont"), "Game over!", new Vector2(2f, 1.5f).ToRealVector(), Color.Red);
+                this.spriteBatch.DrawString(this.contentManager.Load<SpriteFont>("DisplayFont"), "Points: " + this.points, new Vector2(2.2f, 3.5f).ToRealVector(), Color.Red);
                 this.spriteBatch.End();
             }
             else
@@ -669,6 +667,8 @@
                 // Draw any existing particles.
                 this.particleEngine.Draw(this.spriteBatch);
 
+                Texture2D deadPeople = this.contentManager.Load<Texture2D>("dead_people");
+
                 for (int y = min.Y; y < max.Y; ++y)
                 {
                     for (int x = min.X; x < max.X; ++x)
@@ -679,7 +679,7 @@
                                 foreach (Body h in humans)
                                 {
                                     this.spriteBatch.Draw(
-                                     this.sprites[Constants.Maps.ObjectMap[y, x]],
+                                        h.Enabled ? this.sprites[Constants.Maps.ObjectMap[y, x]] : deadPeople,
                                    h.Position.ToRealVector(),
                                     null,
                                     Color.White,

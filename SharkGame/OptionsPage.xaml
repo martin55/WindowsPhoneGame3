@@ -13,33 +13,33 @@
     SupportedOrientations="Landscape" Orientation="LandscapeLeft"
     shell:SystemTray.IsVisible="False">
 
-  <!--LayoutRoot is the root grid where all page content is placed-->
-  <Grid x:Name="LayoutRoot">
-    <Grid.Background>
-      <ImageBrush ImageSource="/Background.png" />
-    </Grid.Background>
-    <Grid.RowDefinitions>
-      <RowDefinition Height="Auto"/>
-      <RowDefinition Height="*"/>
-    </Grid.RowDefinitions>
+    <!--LayoutRoot is the root grid where all page content is placed-->
+    <Grid x:Name="LayoutRoot">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-    <!--TitlePanel contains the name of the application and page title-->
-    <StackPanel Grid.Row="0" Margin="12,17,0,28">
-      <TextBlock Text="SHARK GAME" Style="{StaticResource PhoneTextNormalStyle}"/>
-      <TextBlock Text="Options" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
-    </StackPanel>
+        <!--TitlePanel contains the name of the application and page title-->
+        <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28"></StackPanel>
 
-    <!--ContentPanel - place additional content here-->
-    <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-      <Grid.RowDefinitions>
-        <RowDefinition Height="201" />
-        <RowDefinition Height="279" />
-      </Grid.RowDefinitions>
-      <TextBlock x:Name="ApplicationTitle" Text="Options" Style="{StaticResource PhoneTextNormalStyle}" Margin="30,6,496,100" FontSize="36" FontStyle="Normal" FontFamily="Tahoma" FontWeight="Normal" Foreground="White" />
-      <CheckBox Content="CheckBox" Height="72" HorizontalAlignment="Left" Margin="231,63,0,0" Name="checkBox1" VerticalAlignment="Top" />
-      <RadioButton Content="RadioButton" Height="72" HorizontalAlignment="Left" Margin="231,30,0,0" Name="radioButton1" VerticalAlignment="Top" Grid.Row="1" />
-      <Slider Height="84" Value="3" HorizontalAlignment="Left" Margin="203,141,0,0" Name="slider1" VerticalAlignment="Top" Width="320" Grid.RowSpan="2" />
+        <!--ContentPanel - place additional content here-->
+        <Grid x:Name="ContentPanel" Margin="155,60,155,10" Background="#A0000000" Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="70" />
+                <RowDefinition Height="70" />
+                <RowDefinition Height="70" />
+                <RowDefinition Height="70" />
+            </Grid.RowDefinitions>
+            <TextBlock Text="Music volume" Grid.Row="0" Padding="10"></TextBlock>
+            <Slider Name="MusicSlider" Grid.Row="0" Value="67" Minimum="0" Maximum="100" Width="400" Height="30" ValueChanged="MusicSlider_ValueChanged"></Slider>
+            <TextBlock Text="Gore level" Grid.Row="1" Padding="10"></TextBlock>
+            <Slider Name="GoreSlider" Grid.Row="1" Value="67" Minimum="0" Maximum="100" Width="400" Height="30" ValueChanged="GoreSlider_ValueChanged"></Slider>
+            <Button Name="ClearHighScores" Content="Clear high scores" Grid.Row="2" Margin="108,0" Click="ClearHighScores_Click" />
+        </Grid>
+        <Grid.Background>
+            <ImageBrush ImageSource="Background.png" />
+        </Grid.Background>
     </Grid>
-  </Grid>
 
 </phone:PhoneApplicationPage>
