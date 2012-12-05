@@ -1,0 +1,278 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<HelpKI>
+
+  <HelpKINode Title="accelerometer field" Url="html/F_SharkGame_GamePage_accelerometer.htm" />
+  <HelpKINode Title="Accelerometer_CurrentValueChanged method" Url="html/M_SharkGame_GamePage_Accelerometer_CurrentValueChanged.htm" />
+  <HelpKINode Title="AddService method" Url="html/M_SharkGame_AppServiceProvider_AddService.htm" />
+  <HelpKINode Title="App class" Url="html/AllMembers_T_SharkGame_App.htm" />
+  <HelpKINode Title="App class" Url="html/T_SharkGame_App.htm" />
+  <HelpKINode Title="App class">
+    <HelpKINode Title="about App class" Url="html/T_SharkGame_App.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers_T_SharkGame_App.htm" />
+    <HelpKINode Title="constructor" Url="html/M_SharkGame_App__ctor.htm" />
+    <HelpKINode Title="fields" Url="html/Fields_T_SharkGame_App.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_SharkGame_App.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_SharkGame_App.htm" />
+  </HelpKINode>
+  <HelpKINode Title="App.App constructor" Url="html/M_SharkGame_App__ctor.htm" />
+  <HelpKINode Title="App.Application_Activated method" Url="html/M_SharkGame_App_Application_Activated.htm" />
+  <HelpKINode Title="App.Application_Closing method" Url="html/M_SharkGame_App_Application_Closing.htm" />
+  <HelpKINode Title="App.Application_Deactivated method" Url="html/M_SharkGame_App_Application_Deactivated.htm" />
+  <HelpKINode Title="App.Application_Launching method" Url="html/M_SharkGame_App_Application_Launching.htm" />
+  <HelpKINode Title="App.Application_UnhandledException method" Url="html/M_SharkGame_App_Application_UnhandledException.htm" />
+  <HelpKINode Title="App.CompleteInitializePhoneApplication method" Url="html/M_SharkGame_App_CompleteInitializePhoneApplication.htm" />
+  <HelpKINode Title="App.Content property" Url="html/P_SharkGame_App_Content.htm" />
+  <HelpKINode Title="App.FrameworkDispatcherFrameAction method" Url="html/M_SharkGame_App_FrameworkDispatcherFrameAction.htm" />
+  <HelpKINode Title="App.FrameworkDispatcherTimer property" Url="html/P_SharkGame_App_FrameworkDispatcherTimer.htm" />
+  <HelpKINode Title="App.InitializeComponent method" Url="html/M_SharkGame_App_InitializeComponent.htm" />
+  <HelpKINode Title="App.InitializePhoneApplication method" Url="html/M_SharkGame_App_InitializePhoneApplication.htm" />
+  <HelpKINode Title="App.InitializeXnaApplication method" Url="html/M_SharkGame_App_InitializeXnaApplication.htm" />
+  <HelpKINode Title="App.phoneApplicationInitialized field" Url="html/F_SharkGame_App_phoneApplicationInitialized.htm" />
+  <HelpKINode Title="App.RootFrame property" Url="html/P_SharkGame_App_RootFrame.htm" />
+  <HelpKINode Title="App.RootFrame_NavigationFailed method" Url="html/M_SharkGame_App_RootFrame_NavigationFailed.htm" />
+  <HelpKINode Title="App.Services property" Url="html/P_SharkGame_App_Services.htm" />
+  <HelpKINode Title="App._contentLoaded field" Url="html/F_SharkGame_App__contentLoaded.htm" />
+  <HelpKINode Title="Application_Activated method" Url="html/M_SharkGame_App_Application_Activated.htm" />
+  <HelpKINode Title="Application_Closing method" Url="html/M_SharkGame_App_Application_Closing.htm" />
+  <HelpKINode Title="Application_Deactivated method" Url="html/M_SharkGame_App_Application_Deactivated.htm" />
+  <HelpKINode Title="Application_Launching method" Url="html/M_SharkGame_App_Application_Launching.htm" />
+  <HelpKINode Title="Application_UnhandledException method" Url="html/M_SharkGame_App_Application_UnhandledException.htm" />
+  <HelpKINode Title="AppServiceProvider class" Url="html/AllMembers_T_SharkGame_AppServiceProvider.htm" />
+  <HelpKINode Title="AppServiceProvider class" Url="html/T_SharkGame_AppServiceProvider.htm" />
+  <HelpKINode Title="AppServiceProvider class">
+    <HelpKINode Title="about AppServiceProvider class" Url="html/T_SharkGame_AppServiceProvider.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers_T_SharkGame_AppServiceProvider.htm" />
+    <HelpKINode Title="constructor" Url="html/M_SharkGame_AppServiceProvider__ctor.htm" />
+    <HelpKINode Title="fields" Url="html/Fields_T_SharkGame_AppServiceProvider.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_SharkGame_AppServiceProvider.htm" />
+  </HelpKINode>
+  <HelpKINode Title="AppServiceProvider.AddService method" Url="html/M_SharkGame_AppServiceProvider_AddService.htm" />
+  <HelpKINode Title="AppServiceProvider.AppServiceProvider constructor" Url="html/M_SharkGame_AppServiceProvider__ctor.htm" />
+  <HelpKINode Title="AppServiceProvider.GetService method" Url="html/M_SharkGame_AppServiceProvider_GetService.htm" />
+  <HelpKINode Title="AppServiceProvider.RemoveService method" Url="html/M_SharkGame_AppServiceProvider_RemoveService.htm" />
+  <HelpKINode Title="AppServiceProvider.services field" Url="html/F_SharkGame_AppServiceProvider_services.htm" />
+  <HelpKINode Title="camera field" Url="html/F_SharkGame_GamePage_camera.htm" />
+  <HelpKINode Title="ClearHighScores field" Url="html/F_SharkGame_OptionsPage_ClearHighScores.htm" />
+  <HelpKINode Title="ClearHighScores_Click method" Url="html/M_SharkGame_OptionsPage_ClearHighScores_Click.htm" />
+  <HelpKINode Title="CompleteInitializePhoneApplication method" Url="html/M_SharkGame_App_CompleteInitializePhoneApplication.htm" />
+  <HelpKINode Title="Content property" Url="html/P_SharkGame_App_Content.htm" />
+  <HelpKINode Title="contentManager field" Url="html/F_SharkGame_GamePage_contentManager.htm" />
+  <HelpKINode Title="ContentPanel field" Url="html/F_SharkGame_MainPage_ContentPanel.htm" />
+  <HelpKINode Title="ContentPanel field" Url="html/F_SharkGame_OptionsPage_ContentPanel.htm" />
+  <HelpKINode Title="ContentPanel field" Url="html/F_SharkGame_ScorePage_ContentPanel.htm" />
+  <HelpKINode Title="crates field" Url="html/F_SharkGame_GamePage_crates.htm" />
+  <HelpKINode Title="currentPlayerAnimationDelay field" Url="html/F_SharkGame_GamePage_currentPlayerAnimationDelay.htm" />
+  <HelpKINode Title="DrawHud method" Url="html/M_SharkGame_GamePage_DrawHud.htm" />
+  <HelpKINode Title="DrawMap method" Url="html/M_SharkGame_GamePage_DrawMap.htm" />
+  <HelpKINode Title="FrameworkDispatcherFrameAction method" Url="html/M_SharkGame_App_FrameworkDispatcherFrameAction.htm" />
+  <HelpKINode Title="FrameworkDispatcherTimer property" Url="html/P_SharkGame_App_FrameworkDispatcherTimer.htm" />
+  <HelpKINode Title="GameOver method" Url="html/M_SharkGame_GamePage_GameOver.htm" />
+  <HelpKINode Title="GamePage class" Url="html/AllMembers_T_SharkGame_GamePage.htm" />
+  <HelpKINode Title="GamePage class" Url="html/T_SharkGame_GamePage.htm" />
+  <HelpKINode Title="GamePage class">
+    <HelpKINode Title="about GamePage class" Url="html/T_SharkGame_GamePage.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers_T_SharkGame_GamePage.htm" />
+    <HelpKINode Title="constructor" Url="html/M_SharkGame_GamePage__ctor.htm" />
+    <HelpKINode Title="fields" Url="html/Fields_T_SharkGame_GamePage.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_SharkGame_GamePage.htm" />
+  </HelpKINode>
+  <HelpKINode Title="GamePage.accelerometer field" Url="html/F_SharkGame_GamePage_accelerometer.htm" />
+  <HelpKINode Title="GamePage.Accelerometer_CurrentValueChanged method" Url="html/M_SharkGame_GamePage_Accelerometer_CurrentValueChanged.htm" />
+  <HelpKINode Title="GamePage.camera field" Url="html/F_SharkGame_GamePage_camera.htm" />
+  <HelpKINode Title="GamePage.contentManager field" Url="html/F_SharkGame_GamePage_contentManager.htm" />
+  <HelpKINode Title="GamePage.crates field" Url="html/F_SharkGame_GamePage_crates.htm" />
+  <HelpKINode Title="GamePage.currentPlayerAnimationDelay field" Url="html/F_SharkGame_GamePage_currentPlayerAnimationDelay.htm" />
+  <HelpKINode Title="GamePage.DrawHud method" Url="html/M_SharkGame_GamePage_DrawHud.htm" />
+  <HelpKINode Title="GamePage.DrawMap method" Url="html/M_SharkGame_GamePage_DrawMap.htm" />
+  <HelpKINode Title="GamePage.GameOver method" Url="html/M_SharkGame_GamePage_GameOver.htm" />
+  <HelpKINode Title="GamePage.GamePage constructor" Url="html/M_SharkGame_GamePage__ctor.htm" />
+  <HelpKINode Title="GamePage.gameWorld field" Url="html/F_SharkGame_GamePage_gameWorld.htm" />
+  <HelpKINode Title="GamePage.HumanEaten method" Url="html/M_SharkGame_GamePage_HumanEaten.htm" />
+  <HelpKINode Title="GamePage.humans field" Url="html/F_SharkGame_GamePage_humans.htm" />
+  <HelpKINode Title="GamePage.InitializeBodies method" Url="html/M_SharkGame_GamePage_InitializeBodies.htm" />
+  <HelpKINode Title="GamePage.InitializeComponent method" Url="html/M_SharkGame_GamePage_InitializeComponent.htm" />
+  <HelpKINode Title="GamePage.InitializeMap method" Url="html/M_SharkGame_GamePage_InitializeMap.htm" />
+  <HelpKINode Title="GamePage.InitializeSprites method" Url="html/M_SharkGame_GamePage_InitializeSprites.htm" />
+  <HelpKINode Title="GamePage.isGameOver field" Url="html/F_SharkGame_GamePage_isGameOver.htm" />
+  <HelpKINode Title="GamePage.OnDraw method" Url="html/M_SharkGame_GamePage_OnDraw.htm" />
+  <HelpKINode Title="GamePage.OnNavigatedFrom method" Url="html/M_SharkGame_GamePage_OnNavigatedFrom.htm" />
+  <HelpKINode Title="GamePage.OnNavigatedTo method" Url="html/M_SharkGame_GamePage_OnNavigatedTo.htm" />
+  <HelpKINode Title="GamePage.OnUpdate method" Url="html/M_SharkGame_GamePage_OnUpdate.htm" />
+  <HelpKINode Title="GamePage.particleEngine field" Url="html/F_SharkGame_GamePage_particleEngine.htm" />
+  <HelpKINode Title="GamePage.playerAnimationDelay field" Url="html/F_SharkGame_GamePage_playerAnimationDelay.htm" />
+  <HelpKINode Title="GamePage.playerCurrentFrame field" Url="html/F_SharkGame_GamePage_playerCurrentFrame.htm" />
+  <HelpKINode Title="GamePage.points field" Url="html/F_SharkGame_GamePage_points.htm" />
+  <HelpKINode Title="GamePage.pools field" Url="html/F_SharkGame_GamePage_pools.htm" />
+  <HelpKINode Title="GamePage.runFrameHeight field" Url="html/F_SharkGame_GamePage_runFrameHeight.htm" />
+  <HelpKINode Title="GamePage.runFrameWidth field" Url="html/F_SharkGame_GamePage_runFrameWidth.htm" />
+  <HelpKINode Title="GamePage.shark field" Url="html/F_SharkGame_GamePage_shark.htm" />
+  <HelpKINode Title="GamePage.SharkDead method" Url="html/M_SharkGame_GamePage_SharkDead.htm" />
+  <HelpKINode Title="GamePage.spriteBatch field" Url="html/F_SharkGame_GamePage_spriteBatch.htm" />
+  <HelpKINode Title="GamePage.sprites field" Url="html/F_SharkGame_GamePage_sprites.htm" />
+  <HelpKINode Title="GamePage.tiles field" Url="html/F_SharkGame_GamePage_tiles.htm" />
+  <HelpKINode Title="GamePage.timeLeft field" Url="html/F_SharkGame_GamePage_timeLeft.htm" />
+  <HelpKINode Title="GamePage.timer field" Url="html/F_SharkGame_GamePage_timer.htm" />
+  <HelpKINode Title="GamePage.TimerReplenished method" Url="html/M_SharkGame_GamePage_TimerReplenished.htm" />
+  <HelpKINode Title="GamePage.timeSinceEatingSound field" Url="html/F_SharkGame_GamePage_timeSinceEatingSound.htm" />
+  <HelpKINode Title="GamePage.timeSinceGameOver field" Url="html/F_SharkGame_GamePage_timeSinceGameOver.htm" />
+  <HelpKINode Title="GamePage.timeSinceTrapSound field" Url="html/F_SharkGame_GamePage_timeSinceTrapSound.htm" />
+  <HelpKINode Title="GamePage.timeSinceWaterSound field" Url="html/F_SharkGame_GamePage_timeSinceWaterSound.htm" />
+  <HelpKINode Title="GamePage.traps field" Url="html/F_SharkGame_GamePage_traps.htm" />
+  <HelpKINode Title="GamePage.UpdateUI method" Url="html/M_SharkGame_GamePage_UpdateUI.htm" />
+  <HelpKINode Title="GamePage.ViewPortVector method" Url="html/M_SharkGame_GamePage_ViewPortVector.htm" />
+  <HelpKINode Title="GamePage.WallHit method" Url="html/M_SharkGame_GamePage_WallHit.htm" />
+  <HelpKINode Title="GamePage.walls field" Url="html/F_SharkGame_GamePage_walls.htm" />
+  <HelpKINode Title="GamePage._contentLoaded field" Url="html/F_SharkGame_GamePage__contentLoaded.htm" />
+  <HelpKINode Title="gameWorld field" Url="html/F_SharkGame_GamePage_gameWorld.htm" />
+  <HelpKINode Title="GetService method" Url="html/M_SharkGame_AppServiceProvider_GetService.htm" />
+  <HelpKINode Title="GoreSlider field" Url="html/F_SharkGame_OptionsPage_GoreSlider.htm" />
+  <HelpKINode Title="GoreSlider_ValueChanged method" Url="html/M_SharkGame_OptionsPage_GoreSlider_ValueChanged.htm" />
+  <HelpKINode Title="HighlightRow method" Url="html/M_SharkGame_ScorePage_HighlightRow.htm" />
+  <HelpKINode Title="highScores field" Url="html/F_SharkGame_ScorePage_highScores.htm" />
+  <HelpKINode Title="highScoresBox field" Url="html/F_SharkGame_ScorePage_highScoresBox.htm" />
+  <HelpKINode Title="HumanEaten method" Url="html/M_SharkGame_GamePage_HumanEaten.htm" />
+  <HelpKINode Title="humans field" Url="html/F_SharkGame_GamePage_humans.htm" />
+  <HelpKINode Title="InitializeBodies method" Url="html/M_SharkGame_GamePage_InitializeBodies.htm" />
+  <HelpKINode Title="InitializeComponent method" Url="html/M_SharkGame_App_InitializeComponent.htm" />
+  <HelpKINode Title="InitializeComponent method" Url="html/M_SharkGame_GamePage_InitializeComponent.htm" />
+  <HelpKINode Title="InitializeComponent method" Url="html/M_SharkGame_MainPage_InitializeComponent.htm" />
+  <HelpKINode Title="InitializeComponent method" Url="html/M_SharkGame_OptionsPage_InitializeComponent.htm" />
+  <HelpKINode Title="InitializeComponent method" Url="html/M_SharkGame_ScorePage_InitializeComponent.htm" />
+  <HelpKINode Title="InitializeMap method" Url="html/M_SharkGame_GamePage_InitializeMap.htm" />
+  <HelpKINode Title="InitializePhoneApplication method" Url="html/M_SharkGame_App_InitializePhoneApplication.htm" />
+  <HelpKINode Title="InitializeSprites method" Url="html/M_SharkGame_GamePage_InitializeSprites.htm" />
+  <HelpKINode Title="InitializeXnaApplication method" Url="html/M_SharkGame_App_InitializeXnaApplication.htm" />
+  <HelpKINode Title="isGameOver field" Url="html/F_SharkGame_GamePage_isGameOver.htm" />
+  <HelpKINode Title="LayoutRoot field" Url="html/F_SharkGame_MainPage_LayoutRoot.htm" />
+  <HelpKINode Title="LayoutRoot field" Url="html/F_SharkGame_OptionsPage_LayoutRoot.htm" />
+  <HelpKINode Title="LayoutRoot field" Url="html/F_SharkGame_ScorePage_LayoutRoot.htm" />
+  <HelpKINode Title="MainPage class" Url="html/AllMembers_T_SharkGame_MainPage.htm" />
+  <HelpKINode Title="MainPage class" Url="html/T_SharkGame_MainPage.htm" />
+  <HelpKINode Title="MainPage class">
+    <HelpKINode Title="about MainPage class" Url="html/T_SharkGame_MainPage.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers_T_SharkGame_MainPage.htm" />
+    <HelpKINode Title="constructor" Url="html/M_SharkGame_MainPage__ctor.htm" />
+    <HelpKINode Title="fields" Url="html/Fields_T_SharkGame_MainPage.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_SharkGame_MainPage.htm" />
+  </HelpKINode>
+  <HelpKINode Title="MainPage.ContentPanel field" Url="html/F_SharkGame_MainPage_ContentPanel.htm" />
+  <HelpKINode Title="MainPage.InitializeComponent method" Url="html/M_SharkGame_MainPage_InitializeComponent.htm" />
+  <HelpKINode Title="MainPage.LayoutRoot field" Url="html/F_SharkGame_MainPage_LayoutRoot.htm" />
+  <HelpKINode Title="MainPage.MainPage constructor" Url="html/M_SharkGame_MainPage__ctor.htm" />
+  <HelpKINode Title="MainPage.OnNavigatedTo method" Url="html/M_SharkGame_MainPage_OnNavigatedTo.htm" />
+  <HelpKINode Title="MainPage.ShowHighScores field" Url="html/F_SharkGame_MainPage_ShowHighScores.htm" />
+  <HelpKINode Title="MainPage.ShowOptions field" Url="html/F_SharkGame_MainPage_ShowOptions.htm" />
+  <HelpKINode Title="MainPage.ShowOptions_Click method" Url="html/M_SharkGame_MainPage_ShowOptions_Click.htm" />
+  <HelpKINode Title="MainPage.ShowScores_Click method" Url="html/M_SharkGame_MainPage_ShowScores_Click.htm" />
+  <HelpKINode Title="MainPage.StartGame field" Url="html/F_SharkGame_MainPage_StartGame.htm" />
+  <HelpKINode Title="MainPage.StartGame_Click method" Url="html/M_SharkGame_MainPage_StartGame_Click.htm" />
+  <HelpKINode Title="MainPage.TitlePanel field" Url="html/F_SharkGame_MainPage_TitlePanel.htm" />
+  <HelpKINode Title="MainPage._contentLoaded field" Url="html/F_SharkGame_MainPage__contentLoaded.htm" />
+  <HelpKINode Title="MusicSlider field" Url="html/F_SharkGame_OptionsPage_MusicSlider.htm" />
+  <HelpKINode Title="MusicSlider_ValueChanged method" Url="html/M_SharkGame_OptionsPage_MusicSlider_ValueChanged.htm" />
+  <HelpKINode Title="OnDraw method" Url="html/M_SharkGame_GamePage_OnDraw.htm" />
+  <HelpKINode Title="OnNavigatedFrom method" Url="html/M_SharkGame_GamePage_OnNavigatedFrom.htm" />
+  <HelpKINode Title="OnNavigatedTo method" Url="html/M_SharkGame_GamePage_OnNavigatedTo.htm" />
+  <HelpKINode Title="OnNavigatedTo method" Url="html/M_SharkGame_MainPage_OnNavigatedTo.htm" />
+  <HelpKINode Title="OnNavigatedTo method" Url="html/M_SharkGame_ScorePage_OnNavigatedTo.htm" />
+  <HelpKINode Title="OnUpdate method" Url="html/M_SharkGame_GamePage_OnUpdate.htm" />
+  <HelpKINode Title="OptionsPage class" Url="html/AllMembers_T_SharkGame_OptionsPage.htm" />
+  <HelpKINode Title="OptionsPage class" Url="html/T_SharkGame_OptionsPage.htm" />
+  <HelpKINode Title="OptionsPage class">
+    <HelpKINode Title="about OptionsPage class" Url="html/T_SharkGame_OptionsPage.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers_T_SharkGame_OptionsPage.htm" />
+    <HelpKINode Title="constructor" Url="html/M_SharkGame_OptionsPage__ctor.htm" />
+    <HelpKINode Title="fields" Url="html/Fields_T_SharkGame_OptionsPage.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_SharkGame_OptionsPage.htm" />
+  </HelpKINode>
+  <HelpKINode Title="OptionsPage.ClearHighScores field" Url="html/F_SharkGame_OptionsPage_ClearHighScores.htm" />
+  <HelpKINode Title="OptionsPage.ClearHighScores_Click method" Url="html/M_SharkGame_OptionsPage_ClearHighScores_Click.htm" />
+  <HelpKINode Title="OptionsPage.ContentPanel field" Url="html/F_SharkGame_OptionsPage_ContentPanel.htm" />
+  <HelpKINode Title="OptionsPage.GoreSlider field" Url="html/F_SharkGame_OptionsPage_GoreSlider.htm" />
+  <HelpKINode Title="OptionsPage.GoreSlider_ValueChanged method" Url="html/M_SharkGame_OptionsPage_GoreSlider_ValueChanged.htm" />
+  <HelpKINode Title="OptionsPage.InitializeComponent method" Url="html/M_SharkGame_OptionsPage_InitializeComponent.htm" />
+  <HelpKINode Title="OptionsPage.LayoutRoot field" Url="html/F_SharkGame_OptionsPage_LayoutRoot.htm" />
+  <HelpKINode Title="OptionsPage.MusicSlider field" Url="html/F_SharkGame_OptionsPage_MusicSlider.htm" />
+  <HelpKINode Title="OptionsPage.MusicSlider_ValueChanged method" Url="html/M_SharkGame_OptionsPage_MusicSlider_ValueChanged.htm" />
+  <HelpKINode Title="OptionsPage.OptionsPage constructor" Url="html/M_SharkGame_OptionsPage__ctor.htm" />
+  <HelpKINode Title="OptionsPage.TitlePanel field" Url="html/F_SharkGame_OptionsPage_TitlePanel.htm" />
+  <HelpKINode Title="OptionsPage._contentLoaded field" Url="html/F_SharkGame_OptionsPage__contentLoaded.htm" />
+  <HelpKINode Title="PageTitle field" Url="html/F_SharkGame_ScorePage_PageTitle.htm" />
+  <HelpKINode Title="particleEngine field" Url="html/F_SharkGame_GamePage_particleEngine.htm" />
+  <HelpKINode Title="phoneApplicationInitialized field" Url="html/F_SharkGame_App_phoneApplicationInitialized.htm" />
+  <HelpKINode Title="playerAnimationDelay field" Url="html/F_SharkGame_GamePage_playerAnimationDelay.htm" />
+  <HelpKINode Title="playerCurrentFrame field" Url="html/F_SharkGame_GamePage_playerCurrentFrame.htm" />
+  <HelpKINode Title="points field" Url="html/F_SharkGame_GamePage_points.htm" />
+  <HelpKINode Title="pools field" Url="html/F_SharkGame_GamePage_pools.htm" />
+  <HelpKINode Title="RemoveService method" Url="html/M_SharkGame_AppServiceProvider_RemoveService.htm" />
+  <HelpKINode Title="RootFrame property" Url="html/P_SharkGame_App_RootFrame.htm" />
+  <HelpKINode Title="RootFrame_NavigationFailed method" Url="html/M_SharkGame_App_RootFrame_NavigationFailed.htm" />
+  <HelpKINode Title="runFrameHeight field" Url="html/F_SharkGame_GamePage_runFrameHeight.htm" />
+  <HelpKINode Title="runFrameWidth field" Url="html/F_SharkGame_GamePage_runFrameWidth.htm" />
+  <HelpKINode Title="ScorePage class" Url="html/AllMembers_T_SharkGame_ScorePage.htm" />
+  <HelpKINode Title="ScorePage class" Url="html/T_SharkGame_ScorePage.htm" />
+  <HelpKINode Title="ScorePage class">
+    <HelpKINode Title="about ScorePage class" Url="html/T_SharkGame_ScorePage.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers_T_SharkGame_ScorePage.htm" />
+    <HelpKINode Title="constructor" Url="html/M_SharkGame_ScorePage__ctor.htm" />
+    <HelpKINode Title="fields" Url="html/Fields_T_SharkGame_ScorePage.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_SharkGame_ScorePage.htm" />
+  </HelpKINode>
+  <HelpKINode Title="ScorePage.ContentPanel field" Url="html/F_SharkGame_ScorePage_ContentPanel.htm" />
+  <HelpKINode Title="ScorePage.HighlightRow method" Url="html/M_SharkGame_ScorePage_HighlightRow.htm" />
+  <HelpKINode Title="ScorePage.highScores field" Url="html/F_SharkGame_ScorePage_highScores.htm" />
+  <HelpKINode Title="ScorePage.highScoresBox field" Url="html/F_SharkGame_ScorePage_highScoresBox.htm" />
+  <HelpKINode Title="ScorePage.InitializeComponent method" Url="html/M_SharkGame_ScorePage_InitializeComponent.htm" />
+  <HelpKINode Title="ScorePage.LayoutRoot field" Url="html/F_SharkGame_ScorePage_LayoutRoot.htm" />
+  <HelpKINode Title="ScorePage.OnNavigatedTo method" Url="html/M_SharkGame_ScorePage_OnNavigatedTo.htm" />
+  <HelpKINode Title="ScorePage.PageTitle field" Url="html/F_SharkGame_ScorePage_PageTitle.htm" />
+  <HelpKINode Title="ScorePage.ScorePage constructor" Url="html/M_SharkGame_ScorePage__ctor.htm" />
+  <HelpKINode Title="ScorePage.TitlePanel field" Url="html/F_SharkGame_ScorePage_TitlePanel.htm" />
+  <HelpKINode Title="ScorePage._contentLoaded field" Url="html/F_SharkGame_ScorePage__contentLoaded.htm" />
+  <HelpKINode Title="services field" Url="html/F_SharkGame_AppServiceProvider_services.htm" />
+  <HelpKINode Title="Services property" Url="html/P_SharkGame_App_Services.htm" />
+  <HelpKINode Title="shark field" Url="html/F_SharkGame_GamePage_shark.htm" />
+  <HelpKINode Title="SharkDead method" Url="html/M_SharkGame_GamePage_SharkDead.htm" />
+  <HelpKINode Title="SharkGame namespace" Url="html/N_SharkGame.htm" />
+  <HelpKINode Title="SharkGame.App class" Url="html/AllMembers_T_SharkGame_App.htm" />
+  <HelpKINode Title="SharkGame.App class" Url="html/T_SharkGame_App.htm" />
+  <HelpKINode Title="SharkGame.AppServiceProvider class" Url="html/AllMembers_T_SharkGame_AppServiceProvider.htm" />
+  <HelpKINode Title="SharkGame.AppServiceProvider class" Url="html/T_SharkGame_AppServiceProvider.htm" />
+  <HelpKINode Title="SharkGame.GamePage class" Url="html/AllMembers_T_SharkGame_GamePage.htm" />
+  <HelpKINode Title="SharkGame.GamePage class" Url="html/T_SharkGame_GamePage.htm" />
+  <HelpKINode Title="SharkGame.MainPage class" Url="html/AllMembers_T_SharkGame_MainPage.htm" />
+  <HelpKINode Title="SharkGame.MainPage class" Url="html/T_SharkGame_MainPage.htm" />
+  <HelpKINode Title="SharkGame.OptionsPage class" Url="html/AllMembers_T_SharkGame_OptionsPage.htm" />
+  <HelpKINode Title="SharkGame.OptionsPage class" Url="html/T_SharkGame_OptionsPage.htm" />
+  <HelpKINode Title="SharkGame.ScorePage class" Url="html/AllMembers_T_SharkGame_ScorePage.htm" />
+  <HelpKINode Title="SharkGame.ScorePage class" Url="html/T_SharkGame_ScorePage.htm" />
+  <HelpKINode Title="ShowHighScores field" Url="html/F_SharkGame_MainPage_ShowHighScores.htm" />
+  <HelpKINode Title="ShowOptions field" Url="html/F_SharkGame_MainPage_ShowOptions.htm" />
+  <HelpKINode Title="ShowOptions_Click method" Url="html/M_SharkGame_MainPage_ShowOptions_Click.htm" />
+  <HelpKINode Title="ShowScores_Click method" Url="html/M_SharkGame_MainPage_ShowScores_Click.htm" />
+  <HelpKINode Title="spriteBatch field" Url="html/F_SharkGame_GamePage_spriteBatch.htm" />
+  <HelpKINode Title="sprites field" Url="html/F_SharkGame_GamePage_sprites.htm" />
+  <HelpKINode Title="StartGame field" Url="html/F_SharkGame_MainPage_StartGame.htm" />
+  <HelpKINode Title="StartGame_Click method" Url="html/M_SharkGame_MainPage_StartGame_Click.htm" />
+  <HelpKINode Title="tiles field" Url="html/F_SharkGame_GamePage_tiles.htm" />
+  <HelpKINode Title="timeLeft field" Url="html/F_SharkGame_GamePage_timeLeft.htm" />
+  <HelpKINode Title="timer field" Url="html/F_SharkGame_GamePage_timer.htm" />
+  <HelpKINode Title="TimerReplenished method" Url="html/M_SharkGame_GamePage_TimerReplenished.htm" />
+  <HelpKINode Title="timeSinceEatingSound field" Url="html/F_SharkGame_GamePage_timeSinceEatingSound.htm" />
+  <HelpKINode Title="timeSinceGameOver field" Url="html/F_SharkGame_GamePage_timeSinceGameOver.htm" />
+  <HelpKINode Title="timeSinceTrapSound field" Url="html/F_SharkGame_GamePage_timeSinceTrapSound.htm" />
+  <HelpKINode Title="timeSinceWaterSound field" Url="html/F_SharkGame_GamePage_timeSinceWaterSound.htm" />
+  <HelpKINode Title="TitlePanel field" Url="html/F_SharkGame_MainPage_TitlePanel.htm" />
+  <HelpKINode Title="TitlePanel field" Url="html/F_SharkGame_OptionsPage_TitlePanel.htm" />
+  <HelpKINode Title="TitlePanel field" Url="html/F_SharkGame_ScorePage_TitlePanel.htm" />
+  <HelpKINode Title="traps field" Url="html/F_SharkGame_GamePage_traps.htm" />
+  <HelpKINode Title="UpdateUI method" Url="html/M_SharkGame_GamePage_UpdateUI.htm" />
+  <HelpKINode Title="ViewPortVector method" Url="html/M_SharkGame_GamePage_ViewPortVector.htm" />
+  <HelpKINode Title="WallHit method" Url="html/M_SharkGame_GamePage_WallHit.htm" />
+  <HelpKINode Title="walls field" Url="html/F_SharkGame_GamePage_walls.htm" />
+  <HelpKINode Title="_contentLoaded field" Url="html/F_SharkGame_App__contentLoaded.htm" />
+  <HelpKINode Title="_contentLoaded field" Url="html/F_SharkGame_GamePage__contentLoaded.htm" />
+  <HelpKINode Title="_contentLoaded field" Url="html/F_SharkGame_MainPage__contentLoaded.htm" />
+  <HelpKINode Title="_contentLoaded field" Url="html/F_SharkGame_OptionsPage__contentLoaded.htm" />
+  <HelpKINode Title="_contentLoaded field" Url="html/F_SharkGame_ScorePage__contentLoaded.htm" />
+</HelpKI>

@@ -1,0 +1,156 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<HelpTOC>
+
+  <HelpTOCNode Id="e9ddf0b7-3da5-404b-8cc6-e7c681441f22" Title="SharkGame Namespace" Url="html/N_SharkGame.htm">
+    <HelpTOCNode Id="59415e08-0f12-4e50-93b5-65b44c820371" Title="App Class" Url="html/T_SharkGame_App.htm">
+      <HelpTOCNode Title="App Members" Url="html/AllMembers_T_SharkGame_App.htm" />
+      <HelpTOCNode Title="App Constructor " Url="html/M_SharkGame_App__ctor.htm" />
+      <HelpTOCNode Id="33da76e4-4c17-4618-a8dd-6ad7c34b5b8b" Title="App Fields" Url="html/Fields_T_SharkGame_App.htm">
+        <HelpTOCNode Title="_contentLoaded Field" Url="html/F_SharkGame_App__contentLoaded.htm" />
+        <HelpTOCNode Title="phoneApplicationInitialized Field" Url="html/F_SharkGame_App_phoneApplicationInitialized.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="95ed03e5-7cb7-46a6-957a-83bd9a93c867" Title="App Methods" Url="html/Methods_T_SharkGame_App.htm">
+        <HelpTOCNode Title="Application_Activated Method " Url="html/M_SharkGame_App_Application_Activated.htm" />
+        <HelpTOCNode Title="Application_Closing Method " Url="html/M_SharkGame_App_Application_Closing.htm" />
+        <HelpTOCNode Title="Application_Deactivated Method " Url="html/M_SharkGame_App_Application_Deactivated.htm" />
+        <HelpTOCNode Title="Application_Launching Method " Url="html/M_SharkGame_App_Application_Launching.htm" />
+        <HelpTOCNode Title="Application_UnhandledException Method " Url="html/M_SharkGame_App_Application_UnhandledException.htm" />
+        <HelpTOCNode Title="CompleteInitializePhoneApplication Method " Url="html/M_SharkGame_App_CompleteInitializePhoneApplication.htm" />
+        <HelpTOCNode Title="FrameworkDispatcherFrameAction Method " Url="html/M_SharkGame_App_FrameworkDispatcherFrameAction.htm" />
+        <HelpTOCNode Title="InitializeComponent Method " Url="html/M_SharkGame_App_InitializeComponent.htm" />
+        <HelpTOCNode Title="InitializePhoneApplication Method " Url="html/M_SharkGame_App_InitializePhoneApplication.htm" />
+        <HelpTOCNode Title="InitializeXnaApplication Method " Url="html/M_SharkGame_App_InitializeXnaApplication.htm" />
+        <HelpTOCNode Title="RootFrame_NavigationFailed Method " Url="html/M_SharkGame_App_RootFrame_NavigationFailed.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="5d278e2b-a0bb-42b7-87d7-240287574073" Title="App Properties" Url="html/Properties_T_SharkGame_App.htm">
+        <HelpTOCNode Title="Content Property " Url="html/P_SharkGame_App_Content.htm" />
+        <HelpTOCNode Title="FrameworkDispatcherTimer Property " Url="html/P_SharkGame_App_FrameworkDispatcherTimer.htm" />
+        <HelpTOCNode Title="RootFrame Property " Url="html/P_SharkGame_App_RootFrame.htm" />
+        <HelpTOCNode Title="Services Property " Url="html/P_SharkGame_App_Services.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="f3dc8626-212e-4cd9-8d89-de8704b272f0" Title="AppServiceProvider Class" Url="html/T_SharkGame_AppServiceProvider.htm">
+      <HelpTOCNode Title="AppServiceProvider Members" Url="html/AllMembers_T_SharkGame_AppServiceProvider.htm" />
+      <HelpTOCNode Title="AppServiceProvider Constructor " Url="html/M_SharkGame_AppServiceProvider__ctor.htm" />
+      <HelpTOCNode Id="2ecf5b10-8a96-443b-901b-119fea30c23c" Title="AppServiceProvider Fields" Url="html/Fields_T_SharkGame_AppServiceProvider.htm">
+        <HelpTOCNode Title="services Field" Url="html/F_SharkGame_AppServiceProvider_services.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="c62b535a-4a6c-4c2a-94a4-fca81c512d92" Title="AppServiceProvider Methods" Url="html/Methods_T_SharkGame_AppServiceProvider.htm">
+        <HelpTOCNode Title="AddService Method " Url="html/M_SharkGame_AppServiceProvider_AddService.htm" />
+        <HelpTOCNode Title="GetService Method " Url="html/M_SharkGame_AppServiceProvider_GetService.htm" />
+        <HelpTOCNode Title="RemoveService Method " Url="html/M_SharkGame_AppServiceProvider_RemoveService.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="cc5872f6-edbe-43db-b6a2-851a6461ace6" Title="GamePage Class" Url="html/T_SharkGame_GamePage.htm">
+      <HelpTOCNode Title="GamePage Members" Url="html/AllMembers_T_SharkGame_GamePage.htm" />
+      <HelpTOCNode Title="GamePage Constructor " Url="html/M_SharkGame_GamePage__ctor.htm" />
+      <HelpTOCNode Id="ab67321f-77e3-4244-81e1-4febda9e601b" Title="GamePage Fields" Url="html/Fields_T_SharkGame_GamePage.htm">
+        <HelpTOCNode Title="_contentLoaded Field" Url="html/F_SharkGame_GamePage__contentLoaded.htm" />
+        <HelpTOCNode Title="accelerometer Field" Url="html/F_SharkGame_GamePage_accelerometer.htm" />
+        <HelpTOCNode Title="camera Field" Url="html/F_SharkGame_GamePage_camera.htm" />
+        <HelpTOCNode Title="contentManager Field" Url="html/F_SharkGame_GamePage_contentManager.htm" />
+        <HelpTOCNode Title="crates Field" Url="html/F_SharkGame_GamePage_crates.htm" />
+        <HelpTOCNode Title="currentPlayerAnimationDelay Field" Url="html/F_SharkGame_GamePage_currentPlayerAnimationDelay.htm" />
+        <HelpTOCNode Title="gameWorld Field" Url="html/F_SharkGame_GamePage_gameWorld.htm" />
+        <HelpTOCNode Title="humans Field" Url="html/F_SharkGame_GamePage_humans.htm" />
+        <HelpTOCNode Title="isGameOver Field" Url="html/F_SharkGame_GamePage_isGameOver.htm" />
+        <HelpTOCNode Title="particleEngine Field" Url="html/F_SharkGame_GamePage_particleEngine.htm" />
+        <HelpTOCNode Title="playerAnimationDelay Field" Url="html/F_SharkGame_GamePage_playerAnimationDelay.htm" />
+        <HelpTOCNode Title="playerCurrentFrame Field" Url="html/F_SharkGame_GamePage_playerCurrentFrame.htm" />
+        <HelpTOCNode Title="points Field" Url="html/F_SharkGame_GamePage_points.htm" />
+        <HelpTOCNode Title="pools Field" Url="html/F_SharkGame_GamePage_pools.htm" />
+        <HelpTOCNode Title="runFrameHeight Field" Url="html/F_SharkGame_GamePage_runFrameHeight.htm" />
+        <HelpTOCNode Title="runFrameWidth Field" Url="html/F_SharkGame_GamePage_runFrameWidth.htm" />
+        <HelpTOCNode Title="shark Field" Url="html/F_SharkGame_GamePage_shark.htm" />
+        <HelpTOCNode Title="spriteBatch Field" Url="html/F_SharkGame_GamePage_spriteBatch.htm" />
+        <HelpTOCNode Title="sprites Field" Url="html/F_SharkGame_GamePage_sprites.htm" />
+        <HelpTOCNode Title="tiles Field" Url="html/F_SharkGame_GamePage_tiles.htm" />
+        <HelpTOCNode Title="timeLeft Field" Url="html/F_SharkGame_GamePage_timeLeft.htm" />
+        <HelpTOCNode Title="timer Field" Url="html/F_SharkGame_GamePage_timer.htm" />
+        <HelpTOCNode Title="timeSinceEatingSound Field" Url="html/F_SharkGame_GamePage_timeSinceEatingSound.htm" />
+        <HelpTOCNode Title="timeSinceGameOver Field" Url="html/F_SharkGame_GamePage_timeSinceGameOver.htm" />
+        <HelpTOCNode Title="timeSinceTrapSound Field" Url="html/F_SharkGame_GamePage_timeSinceTrapSound.htm" />
+        <HelpTOCNode Title="timeSinceWaterSound Field" Url="html/F_SharkGame_GamePage_timeSinceWaterSound.htm" />
+        <HelpTOCNode Title="traps Field" Url="html/F_SharkGame_GamePage_traps.htm" />
+        <HelpTOCNode Title="walls Field" Url="html/F_SharkGame_GamePage_walls.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="472e8d49-5a12-462f-9b25-03719a8166e1" Title="GamePage Methods" Url="html/Methods_T_SharkGame_GamePage.htm">
+        <HelpTOCNode Title="Accelerometer_CurrentValueChanged Method " Url="html/M_SharkGame_GamePage_Accelerometer_CurrentValueChanged.htm" />
+        <HelpTOCNode Title="DrawHud Method " Url="html/M_SharkGame_GamePage_DrawHud.htm" />
+        <HelpTOCNode Title="DrawMap Method " Url="html/M_SharkGame_GamePage_DrawMap.htm" />
+        <HelpTOCNode Title="GameOver Method " Url="html/M_SharkGame_GamePage_GameOver.htm" />
+        <HelpTOCNode Title="HumanEaten Method " Url="html/M_SharkGame_GamePage_HumanEaten.htm" />
+        <HelpTOCNode Title="InitializeBodies Method " Url="html/M_SharkGame_GamePage_InitializeBodies.htm" />
+        <HelpTOCNode Title="InitializeComponent Method " Url="html/M_SharkGame_GamePage_InitializeComponent.htm" />
+        <HelpTOCNode Title="InitializeMap Method " Url="html/M_SharkGame_GamePage_InitializeMap.htm" />
+        <HelpTOCNode Title="InitializeSprites Method " Url="html/M_SharkGame_GamePage_InitializeSprites.htm" />
+        <HelpTOCNode Title="OnDraw Method " Url="html/M_SharkGame_GamePage_OnDraw.htm" />
+        <HelpTOCNode Title="OnNavigatedFrom Method " Url="html/M_SharkGame_GamePage_OnNavigatedFrom.htm" />
+        <HelpTOCNode Title="OnNavigatedTo Method " Url="html/M_SharkGame_GamePage_OnNavigatedTo.htm" />
+        <HelpTOCNode Title="OnUpdate Method " Url="html/M_SharkGame_GamePage_OnUpdate.htm" />
+        <HelpTOCNode Title="SharkDead Method " Url="html/M_SharkGame_GamePage_SharkDead.htm" />
+        <HelpTOCNode Title="TimerReplenished Method " Url="html/M_SharkGame_GamePage_TimerReplenished.htm" />
+        <HelpTOCNode Title="UpdateUI Method " Url="html/M_SharkGame_GamePage_UpdateUI.htm" />
+        <HelpTOCNode Title="ViewPortVector Method " Url="html/M_SharkGame_GamePage_ViewPortVector.htm" />
+        <HelpTOCNode Title="WallHit Method " Url="html/M_SharkGame_GamePage_WallHit.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="c4080a02-77c5-49fd-bcba-29e3c7dc9ac3" Title="MainPage Class" Url="html/T_SharkGame_MainPage.htm">
+      <HelpTOCNode Title="MainPage Members" Url="html/AllMembers_T_SharkGame_MainPage.htm" />
+      <HelpTOCNode Title="MainPage Constructor " Url="html/M_SharkGame_MainPage__ctor.htm" />
+      <HelpTOCNode Id="c0037e11-e89f-481e-bc5f-056e4d9ba18e" Title="MainPage Fields" Url="html/Fields_T_SharkGame_MainPage.htm">
+        <HelpTOCNode Title="_contentLoaded Field" Url="html/F_SharkGame_MainPage__contentLoaded.htm" />
+        <HelpTOCNode Title="ContentPanel Field" Url="html/F_SharkGame_MainPage_ContentPanel.htm" />
+        <HelpTOCNode Title="LayoutRoot Field" Url="html/F_SharkGame_MainPage_LayoutRoot.htm" />
+        <HelpTOCNode Title="ShowHighScores Field" Url="html/F_SharkGame_MainPage_ShowHighScores.htm" />
+        <HelpTOCNode Title="ShowOptions Field" Url="html/F_SharkGame_MainPage_ShowOptions.htm" />
+        <HelpTOCNode Title="StartGame Field" Url="html/F_SharkGame_MainPage_StartGame.htm" />
+        <HelpTOCNode Title="TitlePanel Field" Url="html/F_SharkGame_MainPage_TitlePanel.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="450362e6-54b6-4f9c-b233-2458159aa89f" Title="MainPage Methods" Url="html/Methods_T_SharkGame_MainPage.htm">
+        <HelpTOCNode Title="InitializeComponent Method " Url="html/M_SharkGame_MainPage_InitializeComponent.htm" />
+        <HelpTOCNode Title="OnNavigatedTo Method " Url="html/M_SharkGame_MainPage_OnNavigatedTo.htm" />
+        <HelpTOCNode Title="ShowOptions_Click Method " Url="html/M_SharkGame_MainPage_ShowOptions_Click.htm" />
+        <HelpTOCNode Title="ShowScores_Click Method " Url="html/M_SharkGame_MainPage_ShowScores_Click.htm" />
+        <HelpTOCNode Title="StartGame_Click Method " Url="html/M_SharkGame_MainPage_StartGame_Click.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="2c10b80c-8774-4938-ac30-c05e46971d11" Title="OptionsPage Class" Url="html/T_SharkGame_OptionsPage.htm">
+      <HelpTOCNode Title="OptionsPage Members" Url="html/AllMembers_T_SharkGame_OptionsPage.htm" />
+      <HelpTOCNode Title="OptionsPage Constructor " Url="html/M_SharkGame_OptionsPage__ctor.htm" />
+      <HelpTOCNode Id="5772b402-dcff-4544-b3c1-e110df0d32f9" Title="OptionsPage Fields" Url="html/Fields_T_SharkGame_OptionsPage.htm">
+        <HelpTOCNode Title="_contentLoaded Field" Url="html/F_SharkGame_OptionsPage__contentLoaded.htm" />
+        <HelpTOCNode Title="ClearHighScores Field" Url="html/F_SharkGame_OptionsPage_ClearHighScores.htm" />
+        <HelpTOCNode Title="ContentPanel Field" Url="html/F_SharkGame_OptionsPage_ContentPanel.htm" />
+        <HelpTOCNode Title="GoreSlider Field" Url="html/F_SharkGame_OptionsPage_GoreSlider.htm" />
+        <HelpTOCNode Title="LayoutRoot Field" Url="html/F_SharkGame_OptionsPage_LayoutRoot.htm" />
+        <HelpTOCNode Title="MusicSlider Field" Url="html/F_SharkGame_OptionsPage_MusicSlider.htm" />
+        <HelpTOCNode Title="TitlePanel Field" Url="html/F_SharkGame_OptionsPage_TitlePanel.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="4643f6a3-630f-43ba-90e5-e480aa5cf303" Title="OptionsPage Methods" Url="html/Methods_T_SharkGame_OptionsPage.htm">
+        <HelpTOCNode Title="ClearHighScores_Click Method " Url="html/M_SharkGame_OptionsPage_ClearHighScores_Click.htm" />
+        <HelpTOCNode Title="GoreSlider_ValueChanged Method " Url="html/M_SharkGame_OptionsPage_GoreSlider_ValueChanged.htm" />
+        <HelpTOCNode Title="InitializeComponent Method " Url="html/M_SharkGame_OptionsPage_InitializeComponent.htm" />
+        <HelpTOCNode Title="MusicSlider_ValueChanged Method " Url="html/M_SharkGame_OptionsPage_MusicSlider_ValueChanged.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="461b27a7-4e0b-4810-a976-2ae005f58473" Title="ScorePage Class" Url="html/T_SharkGame_ScorePage.htm">
+      <HelpTOCNode Title="ScorePage Members" Url="html/AllMembers_T_SharkGame_ScorePage.htm" />
+      <HelpTOCNode Title="ScorePage Constructor " Url="html/M_SharkGame_ScorePage__ctor.htm" />
+      <HelpTOCNode Id="66c61306-11fd-4aeb-8761-8cb326843457" Title="ScorePage Fields" Url="html/Fields_T_SharkGame_ScorePage.htm">
+        <HelpTOCNode Title="_contentLoaded Field" Url="html/F_SharkGame_ScorePage__contentLoaded.htm" />
+        <HelpTOCNode Title="ContentPanel Field" Url="html/F_SharkGame_ScorePage_ContentPanel.htm" />
+        <HelpTOCNode Title="highScores Field" Url="html/F_SharkGame_ScorePage_highScores.htm" />
+        <HelpTOCNode Title="highScoresBox Field" Url="html/F_SharkGame_ScorePage_highScoresBox.htm" />
+        <HelpTOCNode Title="LayoutRoot Field" Url="html/F_SharkGame_ScorePage_LayoutRoot.htm" />
+        <HelpTOCNode Title="PageTitle Field" Url="html/F_SharkGame_ScorePage_PageTitle.htm" />
+        <HelpTOCNode Title="TitlePanel Field" Url="html/F_SharkGame_ScorePage_TitlePanel.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="9efa48aa-f3d9-49d8-b78b-97416c9a8d3a" Title="ScorePage Methods" Url="html/Methods_T_SharkGame_ScorePage.htm">
+        <HelpTOCNode Title="HighlightRow Method " Url="html/M_SharkGame_ScorePage_HighlightRow.htm" />
+        <HelpTOCNode Title="InitializeComponent Method " Url="html/M_SharkGame_ScorePage_InitializeComponent.htm" />
+        <HelpTOCNode Title="OnNavigatedTo Method " Url="html/M_SharkGame_ScorePage_OnNavigatedTo.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+  </HelpTOCNode>
+</HelpTOC>
