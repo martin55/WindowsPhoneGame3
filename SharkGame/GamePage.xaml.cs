@@ -88,6 +88,12 @@
         private List<Body> crates;
 
         /// <summary>
+        /// A collection of game object bodies for walls,
+        /// movement restraining invisible barriers.
+        /// </summary>
+        private List<Body> walls;
+
+        /// <summary>
         /// Collection of game sprites for corresponding bodies.
         /// </summary>
         private List<Texture2D> sprites;
@@ -96,14 +102,6 @@
         /// Collection of sprites for the map.
         /// </summary>
         private List<Texture2D> tiles;
-
-        /// <summary>
-        /// Vector with its initial point set to screen center.
-        /// </summary>
-        private Vector2 centralVector = Conversions.ToSimVector(
-            new Vector2(
-                Constants.ScreenHeight / 2f,
-                Constants.ScreenWidth / 2f));
 
         /// <summary>
         /// Current frame for the shark's movement animation.
@@ -190,6 +188,36 @@
             // Get the content manager from the application.
             this.contentManager = (Application.Current as App).Content;
 
+            // Begin playing the game's soundtrack.
+            Song song = this.contentManager.Load<Song>("game");
+            MediaPlayer.Play(song);
+            MediaPlayer.IsRepeating = true;
+
+            // Create a new SpriteBatch, which can be used to draw textures.
+            this.spriteBatch = new SpriteBatch(
+                SharedGraphicsDeviceManager.Current.GraphicsDevice);
+
+            // Initialize the game world with no gravity.
+            this.gameWorld = new World(Vector2.Zero);
+
+            // Load particles.
+            List<Texture2D> textures = new List<Texture2D>();
+            textures.Add(this.contentManager.Load<Texture2D>("shadow"));
+
+            // Initializes a new instance of the particle emitter with textures.
+            this.particleEngine = new ParticleEmitter(
+                textures,
+                new Vector2(400f, 240f));
+
+            this.InitializeMap();
+
+            this.InitializeBodies();
+
+            this.InitializeSprites();
+
+            // Create a default camera object centered on the shark.
+            this.camera = new Camera(this.shark.Position.ToRealVector());
+
             // Create a timer for this page.
             this.timer = new GameTimer();
             this.timer.UpdateInterval = TimeSpan.FromTicks(333333);
@@ -227,39 +255,59 @@
             // Set the sharing mode of the graphics device to turn on XNA rendering
             SharedGraphicsDeviceManager.Current.GraphicsDevice.SetSharingMode(true);
 
-            // Begin playing the game's soundtrack.
-            Song song = this.contentManager.Load<Song>("game");
-            MediaPlayer.Play(song);
-            MediaPlayer.IsRepeating = true;
+            // Start the timer.
+            this.timer.Start();
 
-            // Create a new SpriteBatch, which can be used to draw textures.
-            this.spriteBatch = new SpriteBatch(
-                SharedGraphicsDeviceManager.Current.GraphicsDevice);
+            base.OnNavigatedTo(e);
+        }
 
-            // Initialize the game world with no gravity.
-            this.gameWorld = new World(Vector2.Zero);
+        /// <summary>
+        /// Handles navigating from the game to any other page or app.
+        /// </summary>
+        /// <param name="e">Information passed to the event.</param>
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            // Stop the timer.
+            this.timer.Stop();
 
-            // Load particles.
-            List<Texture2D> textures = new List<Texture2D>();
-            textures.Add(this.contentManager.Load<Texture2D>("shadow"));
+            // Set the sharing mode of the graphics device to turn off XNA rendering
+            SharedGraphicsDeviceManager.Current.GraphicsDevice.SetSharingMode(false);
 
-            // Initializes a new instance of the particle emitter with textures.
-            this.particleEngine = new ParticleEmitter(
-                textures,
-                new Vector2(400f, 240f));
+            base.OnNavigatedFrom(e);
+        }
 
-            // Load tiles.
-            this.tiles = new List<Texture2D>();
+        /// <summary>
+        /// Initialize all game object sprites.
+        /// </summary>
+        private void InitializeSprites()
+        {
+            this.sprites = new List<Texture2D>();
 
-            this.tiles.Add(this.contentManager.Load<Texture2D>("sand"));
-            this.tiles.Add(this.contentManager.Load<Texture2D>("sea_sand"));
-            this.tiles.Add(this.contentManager.Load<Texture2D>("sea"));
+            this.sprites.Add(this.contentManager.Load<Texture2D>("shark"));
+            this.sprites.Add(this.contentManager.Load<Texture2D>("people"));
+            this.sprites.Add(this.contentManager.Load<Texture2D>("pool"));
+            this.sprites.Add(this.contentManager.Load<Texture2D>("trap"));
+            this.sprites.Add(this.contentManager.Load<Texture2D>("crate"));
+            this.sprites.Add(this.contentManager.Load<Texture2D>("wall"));
 
+            this.runFrameWidth = this.sprites[Constants.GameObjects.Shark].Width / 16;
+            this.runFrameHeight = this.sprites[Constants.GameObjects.Shark].Height;
+        }
+
+        /// <summary>
+        /// Initializes all visible game objects' bodies: shark, humans, pools, traps and crates.
+        /// </summary>
+        private void InitializeBodies()
+        {
             // Initialize the shark body.
             this.shark = BodyFactory.CreateCircle(this.gameWorld, 0.8f, 1f);
             this.shark.BodyType = BodyType.Dynamic;
-            this.shark.Position = this.centralVector;
+            this.shark.Position = Conversions.ToSimVector(
+                new Vector2(
+                    Constants.ScreenHeight / 2f,
+                    Constants.ScreenWidth / 2f));
             this.shark.CollidesWith = Category.All;
+            this.shark.CollisionCategories = Category.Cat1;
 
             // Initialize other objects' bodies.
             this.humans = new List<Body>();
@@ -288,7 +336,8 @@
                             this.humans[humanIndex].Position = (new Vector2(
                                 x * Constants.Maps.TileSize - Constants.ScreenWidth / 2 + Constants.Maps.TileSize / 2,
                                 y * Constants.Maps.TileSize - Constants.ScreenHeight / 2 + Constants.Maps.TileSize / 2)).ToSimVector();
-                            this.humans[humanIndex].CollidesWith = Category.Cat2;
+                            this.humans[humanIndex].CollidesWith = Category.None;
+                            this.humans[humanIndex].CollisionCategories = Category.Cat2;
                             FixtureFactory.AttachCircle(0.5f, 1f, this.humans[humanIndex]).OnCollision += this.HumanEaten;
                             ++humanIndex;
                             break;
@@ -298,7 +347,8 @@
                             this.pools[poolIndex].Position = (new Vector2(
                                 x * Constants.Maps.TileSize - Constants.ScreenWidth / 2 + Constants.Maps.TileSize / 2,
                                 y * Constants.Maps.TileSize - Constants.ScreenHeight / 2 + Constants.Maps.TileSize / 2)).ToSimVector();
-                            this.pools[poolIndex].CollidesWith = Category.Cat2;
+                            this.pools[poolIndex].CollidesWith = Category.None;
+                            this.pools[poolIndex].CollisionCategories = Category.Cat3;
                             FixtureFactory.AttachCircle(0.9f, 1f, this.pools[poolIndex]).OnCollision += this.TimerReplenished;
                             ++poolIndex;
                             break;
@@ -308,6 +358,8 @@
                             this.traps[trapIndex].Position = (new Vector2(
                                 x * Constants.Maps.TileSize - Constants.ScreenWidth / 2 + Constants.Maps.TileSize / 2,
                                 y * Constants.Maps.TileSize - Constants.ScreenHeight / 2 + Constants.Maps.TileSize / 2)).ToSimVector();
+                            this.traps[trapIndex].CollidesWith = Category.None;
+                            this.traps[trapIndex].CollisionCategories = Category.Cat4;
                             FixtureFactory.AttachCircle(0.1f, 0.5f, this.traps[trapIndex]).OnCollision += this.SharkDead;
                             ++trapIndex;
                             break;
@@ -318,48 +370,47 @@
                             this.crates[crateIndex].Position = (new Vector2(
                                 x * Constants.Maps.TileSize - Constants.ScreenWidth / 2 + Constants.Maps.TileSize / 2,
                                 y * Constants.Maps.TileSize - Constants.ScreenHeight / 2 + Constants.Maps.TileSize / 2)).ToSimVector();
+                            this.crates[crateIndex].CollidesWith = Category.Cat1;
+                            this.crates[crateIndex].CollisionCategories = Category.Cat5;
+                            this.crates[crateIndex].LinearDamping = 1f;
 
                             ++crateIndex;
                             break;
                     }
                 }
             }
-
-            // Load textures.
-            this.sprites = new List<Texture2D>();
-
-            this.sprites.Add(this.contentManager.Load<Texture2D>("shark"));
-            this.sprites.Add(this.contentManager.Load<Texture2D>("people"));
-            this.sprites.Add(this.contentManager.Load<Texture2D>("pool"));
-            this.sprites.Add(this.contentManager.Load<Texture2D>("trap"));
-            this.sprites.Add(this.contentManager.Load<Texture2D>("crate"));
-            this.sprites.Add(this.contentManager.Load<Texture2D>("wall"));
-
-            this.runFrameWidth = this.sprites[Constants.GameObjects.Shark].Width / 16;
-            this.runFrameHeight = this.sprites[Constants.GameObjects.Shark].Height;
-
-            // Create a default camera object centered on the shark.
-            this.camera = new Camera(this.shark.Position.ToRealVector());
-
-            // Start the timer.
-            this.timer.Start();
-
-            base.OnNavigatedTo(e);
         }
 
         /// <summary>
-        /// Handles navigating from the game to any other page or app.
+        /// Initializes tiles for the map, the map itself and the invisible walls
+        /// to restrict shark's movement to the map only.
         /// </summary>
-        /// <param name="e">Information passed to the event.</param>
-        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        private void InitializeMap()
         {
-            // Stop the timer.
-            this.timer.Stop();
+            // Load tiles.
+            this.tiles = new List<Texture2D>();
 
-            // Set the sharing mode of the graphics device to turn off XNA rendering
-            SharedGraphicsDeviceManager.Current.GraphicsDevice.SetSharingMode(false);
+            this.tiles.Add(this.contentManager.Load<Texture2D>("sand"));
+            this.tiles.Add(this.contentManager.Load<Texture2D>("sea_sand"));
+            this.tiles.Add(this.contentManager.Load<Texture2D>("sea"));
 
-            base.OnNavigatedFrom(e);
+            // Create map bounds - invisible walls that catch shark within
+            // to prevent "leaving" the screen.
+            float simMapWidth = Constants.Maps.MapWidth / Constants.RealToVirtualRatio;
+            float simMapHeight = Constants.Maps.MapHeight / Constants.RealToVirtualRatio;
+
+            this.walls = new List<Body>();
+            // TODO: perform proper sizing and positioning for the wall edges.
+            //walls = new List<Body>();
+            //walls.Add(BodyFactory.CreateEdge(this.gameWorld, new Vector2(0f, 0f), new Vector2(simMapWidth, 0f)));
+            //walls.Add(BodyFactory.CreateEdge(this.gameWorld, new Vector2(0f, 0f), new Vector2(0f, simMapHeight)));
+            //walls.Add(BodyFactory.CreateEdge(this.gameWorld, new Vector2(simMapWidth, simMapHeight), new Vector2(simMapWidth, 0f)));
+            //walls.Add(BodyFactory.CreateEdge(this.gameWorld, new Vector2(simMapWidth, simMapHeight), new Vector2(0f, simMapHeight)));
+            //foreach (Body wallFragment in this.walls)
+            //{
+            //    wallFragment.CollidesWith = Category.Cat1;
+            //    wallFragment.CollisionCategories = Category.Cat6;
+            //}
         }
 
         /// <summary>
@@ -390,16 +441,77 @@
         /// <returns>True if collision passes, false if it is canceled.</returns>
         private bool SharkDead(Fixture fixtureA, Fixture fixtureB, Contact contact)
         {
-            if (fixtureB.CollisionCategories == Category.Cat1 && this.timeSinceTrapSound > 1f)
+            if (fixtureB.CollisionCategories == Category.Cat1)
             {
-                Debug.WriteLine("Shark dead");
-                this.isGameOver = true;
-                this.contentManager.Load<SoundEffect>("trapsound").Play();
-                this.timeSinceTrapSound = 0f;
+                if (this.timeSinceTrapSound > 1f)
+                {
+                    Debug.WriteLine("Shark dead");
+                    this.isGameOver = true;
+                    this.contentManager.Load<SoundEffect>("trapsound").Play();
+                    this.timeSinceTrapSound = 0f;
+                }
+
                 return true;
             }
+            else
+            {
+                return false;
+            }
+        }
 
-            return false;
+        /// <summary>
+        /// Handles collision of the shark and a human.
+        /// </summary>
+        /// <param name="fixtureA">One of the colliding objects - human.</param>
+        /// <param name="fixtureB">One of the colliding objects - shark.</param>
+        /// <param name="contact">Detailed info about the contact made.</param>
+        /// <returns>True if collision passes, false if it is canceled.</returns>
+        private bool HumanEaten(Fixture fixtureA, Fixture fixtureB, Contact contact)
+        {
+            if (fixtureB.CollisionCategories == Category.Cat1)
+            {
+                if (this.timeSinceEatingSound > 1f)
+                {
+                    Debug.WriteLine("Human eaten");
+                    this.points += 5;
+                    this.contentManager.Load<SoundEffect>("eating").Play();
+                    this.timeSinceEatingSound = 0f;
+                    fixtureA.Body.Enabled = false;
+                }
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Handles collision of the shark and a pool of water.
+        /// </summary>
+        /// <param name="fixtureA">One of the colliding objects - a pool of water.</param>
+        /// <param name="fixtureB">One of the colliding objects - shark.</param>
+        /// <param name="contact">Detailed info about the contact made.</param>
+        /// <returns>True if collision passes, false if it is canceled.</returns>
+        private bool TimerReplenished(Fixture fixtureA, Fixture fixtureB, Contact contact)
+        {
+            if (fixtureB.CollisionCategories == Category.Cat1)
+            {
+                if (this.timeSinceWaterSound > 2f)
+                {
+                    Debug.WriteLine("Timer replenished");
+                    this.timeLeft += TimeSpan.FromSeconds(2.0);
+                    this.contentManager.Load<SoundEffect>("water").Play();
+                    this.timeSinceWaterSound = 0f;
+                }
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         /// <summary>
@@ -459,49 +571,6 @@
         }
 
         /// <summary>
-        /// Handles collision of the shark and a human.
-        /// </summary>
-        /// <param name="fixtureA">One of the colliding objects - human.</param>
-        /// <param name="fixtureB">One of the colliding objects - shark.</param>
-        /// <param name="contact">Detailed info about the contact made.</param>
-        /// <returns>True if collision passes, false if it is canceled.</returns>
-        private bool HumanEaten(Fixture fixtureA, Fixture fixtureB, Contact contact)
-        {
-            if (fixtureB.CollisionCategories == Category.Cat1 && this.timeSinceEatingSound > 1f)
-            {
-                Debug.WriteLine("Human eaten");
-                this.points += 5;
-                this.contentManager.Load<SoundEffect>("eating").Play();
-                this.timeSinceEatingSound = 0f;
-                fixtureA.Body.Enabled = false;
-                return true;
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// Handles collision of the shark and a pool of water.
-        /// </summary>
-        /// <param name="fixtureA">One of the colliding objects - a pool of water.</param>
-        /// <param name="fixtureB">One of the colliding objects - shark.</param>
-        /// <param name="contact">Detailed info about the contact made.</param>
-        /// <returns>True if collision passes, false if it is canceled.</returns>
-        private bool TimerReplenished(Fixture fixtureA, Fixture fixtureB, Contact contact)
-        {
-            if (fixtureB.CollisionCategories == Category.Cat1 && this.timeSinceWaterSound > 2f)
-            {
-                Debug.WriteLine("Timer replenished");
-                this.timeLeft += TimeSpan.FromSeconds(2.0);
-                this.contentManager.Load<SoundEffect>("water").Play();
-                this.timeSinceWaterSound = 0f;
-                return true;
-            }
-
-            return false;
-        }
-
-        /// <summary>
         /// Allows the page to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.
         /// </summary>
@@ -538,7 +607,7 @@
                     }
 
                     // Measure the angle at which the shark is moving forward.
-                    this.shark.Rotation = this.centralVector.AngleBetween(this.centralVector + this.shark.LinearVelocity) % (MathHelper.Pi * 2f);
+                    this.shark.Rotation = Vector2.UnitX.AngleBetween(Vector2.UnitX + this.shark.LinearVelocity) % (MathHelper.Pi * 2f);
 
                     // Generate shark's "footprints".
                     this.particleEngine.Generate();
@@ -550,10 +619,9 @@
                 this.particleEngine.EmitterLocation = this.shark.Position;
                 this.particleEngine.Update();
 
-                this.centralVector.X += this.shark.LinearVelocity.X * Constants.Speeds.SharkSpeedMultiplier;
-                this.centralVector.Y += this.shark.LinearVelocity.Y * Constants.Speeds.SharkSpeedMultiplier;
+                // Reset angular velocity (we're not gonna need that)
+                // and apply force according to the shark's speed multiplier.
                 this.shark.AngularVelocity = 0f;
-
                 this.shark.ApplyForce(this.shark.LinearVelocity * Constants.Speeds.SharkSpeedMultiplier);
 
                 // Update camera position.

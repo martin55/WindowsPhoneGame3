@@ -26,7 +26,7 @@ namespace SharkGame
         public static int ScreenHeight { get { return 480; } }
 
         /// <summary>
-        /// Game objects' indices for both bodies and textures collection
+        /// Game objects' indices for both bodies and textures collection.
         /// </summary>
         public static class GameObjects
         {
@@ -173,7 +173,7 @@ namespace SharkGame
             /// <summary>
             /// Shark's speed multiplier.
             /// </summary>
-            public static float SharkSpeedMultiplier { get { return 5f; } }
+            public static float SharkSpeedMultiplier { get { return 10f; } }
 
             /// <summary>
             /// Minimal speed for the blue shark to be registered as movement
