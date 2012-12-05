@@ -9,7 +9,7 @@ namespace SharkGame
     public static class Conversions
     {
         /// <summary>
-        /// Returns an angle between two vectors.
+        /// Returns the angle between this and the second vector given.
         /// </summary>
         /// <param name="a">First vector.</param>
         /// <param name="b">Second vector.</param>
@@ -46,7 +46,7 @@ namespace SharkGame
         }
 
         /// <summary>
-        /// Track down a single tile pointed at by the simulated values vector given.
+        /// Returns a single tile pointed at by the simulated values vector given.
         /// </summary>
         /// <param name="vector">Two-dimensional simulated values vector.</param>
         /// <returns>Single map tile, described as a Point.</returns>

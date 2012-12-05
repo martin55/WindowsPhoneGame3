@@ -102,13 +102,8 @@
         /// </summary>
         private Vector2 centralVector = Conversions.ToSimVector(
             new Vector2(
-                Constants.ScreenHeight / 2f, 
+                Constants.ScreenHeight / 2f,
                 Constants.ScreenWidth / 2f));
-
-        /// <summary>
-        /// Shark's velocity.
-        /// </summary>
-        private Vector2 sharkVelocity = Vector2.Zero;
 
         /// <summary>
         /// Current frame for the shark's movement animation.
@@ -250,7 +245,7 @@
 
             // Initializes a new instance of the particle emitter with textures.
             this.particleEngine = new ParticleEmitter(
-                textures, 
+                textures,
                 new Vector2(400f, 240f));
 
             // Load tiles.
@@ -279,7 +274,7 @@
 
             Microsoft.Xna.Framework.Point maximum
                 = new Microsoft.Xna.Framework.Point(
-                    Constants.Maps.Map.GetLength(0), 
+                    Constants.Maps.Map.GetLength(0),
                     Constants.Maps.Map.GetLength(1));
 
             for (int y = 0; y < maximum.Y; ++y)
@@ -290,30 +285,29 @@
                     {
                         case 1:
                             this.humans.Add(BodyFactory.CreateRectangle(this.gameWorld, 0.9f, 0.9f, 1f));
-                            this.humans[humanIndex].Position =
-                                  (new Vector2(x * Constants.Maps.TileSize, y * Constants.Maps.TileSize)
-                                   - new Vector2(Constants.ScreenWidth / 2, Constants.ScreenHeight / 2)
-                                   + new Vector2(Constants.Maps.TileSize / 2, Constants.Maps.TileSize / 2)).ToSimVector();
+                            this.humans[humanIndex].Position = (new Vector2(
+                                x * Constants.Maps.TileSize - Constants.ScreenWidth / 2 + Constants.Maps.TileSize / 2,
+                                y * Constants.Maps.TileSize - Constants.ScreenHeight / 2 + Constants.Maps.TileSize / 2)).ToSimVector();
+                            this.humans[humanIndex].CollidesWith = Category.Cat2;
                             FixtureFactory.AttachCircle(0.5f, 1f, this.humans[humanIndex]).OnCollision += this.HumanEaten;
                             ++humanIndex;
                             break;
 
                         case 2:
                             this.pools.Add(BodyFactory.CreateCircle(this.gameWorld, 0.9f, 1f, 1f));
-                            this.pools[poolIndex].Position =
-                                    (new Vector2(x * Constants.Maps.TileSize, y * Constants.Maps.TileSize)
-                                       - new Vector2(Constants.ScreenWidth / 2, Constants.ScreenHeight / 2)
-                                       + new Vector2(Constants.Maps.TileSize / 2, Constants.Maps.TileSize / 2)).ToSimVector();
+                            this.pools[poolIndex].Position = (new Vector2(
+                                x * Constants.Maps.TileSize - Constants.ScreenWidth / 2 + Constants.Maps.TileSize / 2,
+                                y * Constants.Maps.TileSize - Constants.ScreenHeight / 2 + Constants.Maps.TileSize / 2)).ToSimVector();
+                            this.pools[poolIndex].CollidesWith = Category.Cat2;
                             FixtureFactory.AttachCircle(0.9f, 1f, this.pools[poolIndex]).OnCollision += this.TimerReplenished;
                             ++poolIndex;
                             break;
 
                         case 3:
                             this.traps.Add(BodyFactory.CreateCircle(this.gameWorld, 0.9f, 1f, 1f));
-                            this.traps[trapIndex].Position =
-                                   (new Vector2(x * Constants.Maps.TileSize, y * Constants.Maps.TileSize)
-                                       - new Vector2(Constants.ScreenWidth / 2, Constants.ScreenHeight / 2)
-                                       + new Vector2(Constants.Maps.TileSize / 2, Constants.Maps.TileSize / 2)).ToSimVector();
+                            this.traps[trapIndex].Position = (new Vector2(
+                                x * Constants.Maps.TileSize - Constants.ScreenWidth / 2 + Constants.Maps.TileSize / 2,
+                                y * Constants.Maps.TileSize - Constants.ScreenHeight / 2 + Constants.Maps.TileSize / 2)).ToSimVector();
                             FixtureFactory.AttachCircle(0.1f, 0.5f, this.traps[trapIndex]).OnCollision += this.SharkDead;
                             ++trapIndex;
                             break;
@@ -321,10 +315,9 @@
                         case 4:
                             this.crates.Add(BodyFactory.CreateRectangle(this.gameWorld, 1f, 1f, 1f));
                             this.crates[crateIndex].BodyType = BodyType.Dynamic;
-                            this.crates[crateIndex].Position =
-                                   (new Vector2(x * Constants.Maps.TileSize, y * Constants.Maps.TileSize)
-                                       - new Vector2(Constants.ScreenWidth / 2, Constants.ScreenHeight / 2)
-                                       + new Vector2(Constants.Maps.TileSize / 2, Constants.Maps.TileSize / 2)).ToSimVector();
+                            this.crates[crateIndex].Position = (new Vector2(
+                                x * Constants.Maps.TileSize - Constants.ScreenWidth / 2 + Constants.Maps.TileSize / 2,
+                                y * Constants.Maps.TileSize - Constants.ScreenHeight / 2 + Constants.Maps.TileSize / 2)).ToSimVector();
 
                             ++crateIndex;
                             break;
@@ -559,21 +552,16 @@
 
                 this.centralVector.X += this.shark.LinearVelocity.X * Constants.Speeds.SharkSpeedMultiplier;
                 this.centralVector.Y += this.shark.LinearVelocity.Y * Constants.Speeds.SharkSpeedMultiplier;
-                this.shark.LinearVelocity *= elapsed;
+                this.shark.AngularVelocity = 0f;
 
-                this.shark.ApplyForce(this.shark.LinearVelocity);
-                this.shark.Position = this.centralVector * elapsed;
+                this.shark.ApplyForce(this.shark.LinearVelocity * Constants.Speeds.SharkSpeedMultiplier);
 
                 // Update camera position.
-                Vector2 realSharkPosition = this.shark.Position.ToRealVector();
-                this.camera.Position = new Vector2(
-                    MathHelper.Clamp(
-                        realSharkPosition.X,
-                        0,
-                        Constants.Maps.MapWidth - Constants.ScreenWidth),
-                    MathHelper.Clamp(
-                        realSharkPosition.Y,
-                        0,
+                this.camera.Position = Vector2.Clamp(
+                    this.shark.Position.ToRealVector(),
+                    Vector2.Zero,
+                    new Vector2(
+                        Constants.Maps.MapWidth - Constants.ScreenWidth,
                         Constants.Maps.MapHeight - Constants.ScreenHeight));
             }
             else
@@ -839,8 +827,8 @@
             // so that the shark will not "drift".
             // We also need to swap the accelerometer readings because
             // a Landscape orientation is used (X becomes Y, Y becomes X).
-            float horizontalReading = this.shark.LinearVelocity.X;
-            float verticalReading = this.shark.LinearVelocity.Y;
+            float horizontalReading = 0f;
+            float verticalReading = 0f;
             if (Math.Abs(accelerometerReading.Acceleration.Y) > Constants.Speeds.SharkSpeedMin)
             {
                 horizontalReading = -accelerometerReading.Acceleration.Y;
@@ -853,8 +841,8 @@
 
             // Limit the velocity.
             this.shark.LinearVelocity = Vector2.Clamp(
-                new Vector2(horizontalReading, verticalReading), 
-                -Constants.Speeds.SharkVelocityMax, 
+                new Vector2(horizontalReading, verticalReading),
+                -Constants.Speeds.SharkVelocityMax,
                 Constants.Speeds.SharkVelocityMax);
         }
     }
