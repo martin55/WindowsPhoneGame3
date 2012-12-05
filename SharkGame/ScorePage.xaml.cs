@@ -11,6 +11,9 @@
 
     using SharkGameLib;
 
+    /// <summary>
+    /// Represents an application page displaying high scores collected since the game was installed.
+    /// </summary>
     public partial class ScorePage : PhoneApplicationPage
     {
         /* Fields */
@@ -71,7 +74,7 @@
                 int playerScore;
                 if (int.TryParse(highlight, out playerScore))
                 {
-                    this.highlightRow(playerScore);
+                    this.HighlightRow(playerScore);
                     NavigationService.RemoveBackEntry();
                 }
             }
@@ -80,12 +83,13 @@
         }
 
         /// <summary>
-        /// Highlights one row in the high scores so that the player will know which is his score.
+        /// Highlights one row in the high scores so that the player will know
+        /// which is his or hers score.
         /// </summary>
         /// <param name="playerScore">Index of player's score.</param>
-        private void highlightRow(int playerScore)
+        private void HighlightRow(int playerScore)
         {
-            if (this.highScoresBox.Items.Count > playerScore)
+            if (playerScore > 0 && playerScore < this.highScoresBox.Items.Count)
             {
                 this.highScoresBox.SelectedIndex = playerScore;
             }

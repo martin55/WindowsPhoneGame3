@@ -171,8 +171,6 @@ namespace SharkGame
             // Create a vector centered in sprite.
             Vector2 origin = new Vector2(this.sprite.Width / 2, this.sprite.Height / 2);
 
-            // System.Diagnostics.Debug.WriteLine("Position: " + this.position);
-
             spriteBatch.Draw(
                 this.sprite,
                 this.position.ToRealVector(),

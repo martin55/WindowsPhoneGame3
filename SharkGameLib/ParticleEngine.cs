@@ -99,6 +99,9 @@ namespace SharkGame
             this.particles.ForEach(particle => particle.Draw(spriteBatch));
         }
 
+        /// <summary>
+        /// Generates three new particles.
+        /// </summary>
         public void Generate()
         {
             for (int i = 0; i < 3; ++i)
@@ -106,7 +109,6 @@ namespace SharkGame
                 this.particles.Add(this.GenerateNewParticle());
             }
         }
-
 
         /// <summary>
         /// Generates some and updates all existing particles.

@@ -45,7 +45,7 @@ namespace SharkGameLib
         /* Properties */
 
         /// <summary>
-        /// Gets the name for this high score entry.
+        /// Gets or sets the name for this high score entry.
         /// </summary>
         [DataMember]
         public string Name
@@ -55,7 +55,7 @@ namespace SharkGameLib
         }
 
         /// <summary>
-        /// Gets the timestamp for this high score entry.
+        /// Gets or sets the timestamp for this high score entry.
         /// </summary>
         [DataMember]
         public DateTime Timestamp
@@ -81,7 +81,7 @@ namespace SharkGameLib
         }
 
         /// <summary>
-        /// Gets the points for this high score entry.
+        /// Gets or sets the points for this high score entry.
         /// </summary>
         [DataMember]
         public int Points

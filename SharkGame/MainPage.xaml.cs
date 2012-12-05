@@ -3,9 +3,8 @@
     using System;
     using System.Windows;
     using Microsoft.Phone.Controls;
-    using Microsoft.Xna.Framework.Media;
-    using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Media;
 
     /// <summary>
     /// Represents a page for main game menu, providing access to options as well as starting the game itself.

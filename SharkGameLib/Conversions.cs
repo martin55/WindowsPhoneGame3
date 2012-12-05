@@ -46,15 +46,15 @@ namespace SharkGame
         }
 
         /// <summary>
-        /// Returns vector's initial point. (?)
+        /// Track down a single tile pointed at by the simulated values vector given.
         /// </summary>
-        /// <param name="vector">Two-dimensional vector.</param>
-        /// <returns>Vector's initial point.</returns>
+        /// <param name="vector">Two-dimensional simulated values vector.</param>
+        /// <returns>Single map tile, described as a Point.</returns>
         public static Point ToCell(this Vector2 vector)
         {
             return new Point(
-                (int)(vector.X / Constants.Maps.TileWidth),
-                (int)(vector.Y / Constants.Maps.TileHeight));
+                (int)(vector.X / Constants.Maps.TileSize),
+                (int)(vector.Y / Constants.Maps.TileSize));
         }
     }
 }

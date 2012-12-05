@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Collections.Specialized;
     using System.Diagnostics;
     using System.IO.IsolatedStorage;
     using System.Linq;
@@ -19,8 +18,6 @@
     using Microsoft.Xna.Framework.Graphics;
     using Microsoft.Xna.Framework.Media;
     using SharkGameLib;
-    using System.Windows.Threading;
-    using System.Threading;
 
     /// <summary>
     /// Represents a page for the game itself, accessible from the main menu.
@@ -29,30 +26,10 @@
     {
         /* Fields */
 
-        int tileMapWidth;
-        int tileMapHeight;
-
-        static int mapWidthInPixels;
-        static int mapHeightInPixels;
-
-        public static int MapWidthInPixels
-        {
-            get { return mapWidthInPixels; }
-        }
-        public static int MapHeightInPixels
-        {
-            get { return mapHeightInPixels; }
-        }
-
         /// <summary>
-        /// Device's screen width in pixels.
+        /// Content manager which fetches media from the LibContent project.
         /// </summary>
-        private static readonly int screenWidth = 800;
-
-        /// <summary>
-        /// Device's screen height in pixels.
-        /// </summary>
-        private static readonly int screenHeight = 480;
+        private ContentManager contentManager;
 
         /// <summary>
         /// Representation of the physical accelerometer sensor.
@@ -71,7 +48,8 @@
         private ParticleEmitter particleEngine;
 
         /// <summary>
-        /// Game world that holds all objects and manages all the physics and collisions.
+        /// Game world that holds all objects and manages all the physics
+        /// and collisions.
         /// </summary>
         private World gameWorld;
 
@@ -81,15 +59,33 @@
         private SpriteBatch spriteBatch;
 
         /// <summary>
-        /// Collection of game bodies.
+        /// Game object body for the shark, game's "protagonist".
         /// </summary>
-        private List<Body> bodies;
-        private List<Body> humans;
-        private List<Body> pools;
-        private List<Body> traps;
-        private List<Body> crates;
+        private Body shark;
 
-        private List<Body> walls;
+        /// <summary>
+        /// A collection of game object bodies for humans,
+        /// game's "antagonists" and prey.
+        /// </summary>
+        private List<Body> humans;
+
+        /// <summary>
+        /// A collection of game object bodies for pools,
+        /// timer replenishers for the shark.
+        /// </summary>
+        private List<Body> pools;
+
+        /// <summary>
+        /// A collection of game object bodies for traps,
+        /// shark insta-killers.
+        /// </summary>
+        private List<Body> traps;
+
+        /// <summary>
+        /// A collection of game object bodies for crates,
+        /// movement hindering and annoying things.
+        /// </summary>
+        private List<Body> crates;
 
         /// <summary>
         /// Collection of game sprites for corresponding bodies.
@@ -101,12 +97,13 @@
         /// </summary>
         private List<Texture2D> tiles;
 
-      
-
         /// <summary>
         /// Vector with its initial point set to screen center.
         /// </summary>
-        private Vector2 centralVector = Conversions.ToSimVector(new Vector2(screenHeight / 2f, screenWidth / 2f));
+        private Vector2 centralVector = Conversions.ToSimVector(
+            new Vector2(
+                Constants.ScreenHeight / 2f, 
+                Constants.ScreenWidth / 2f));
 
         /// <summary>
         /// Shark's velocity.
@@ -129,27 +126,17 @@
         private int runFrameHeight;
 
         /// <summary>
-        /// 
+        /// Delay for the shark's movement animation (optimization aspects).
         /// </summary>
-        private float playerAnimationDelay = .1f;
+        private readonly float playerAnimationDelay = .1f;
 
         /// <summary>
-        /// 
+        /// Current delay for the shark's movement animation.
         /// </summary>
         private float currentPlayerAnimationDelay = 0f;
 
         /// <summary>
-        /// Shark's rotation angle in degrees.
-        /// </summary>
-        private float sharkRotation = 0f;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private ContentManager contentManager;
-
-        /// <summary>
-        /// 
+        /// Main game timer for update events.
         /// </summary>
         private GameTimer timer;
 
@@ -159,22 +146,26 @@
         private TimeSpan timeLeft;
 
         /// <summary>
-        /// Amount of points the player has collected throughout the current level.
+        /// An amount of points the player has collected throughout
+        /// the current level.
         /// </summary>
         private int points;
 
         /// <summary>
-        /// Timer for eating sound effect.
+        /// An amount of time that should pass before the eating
+        /// sound effect can be played again.
         /// </summary>
         private float timeSinceEatingSound;
 
         /// <summary>
-        /// Timer for trap sound effect.
+        /// An amount of time that should pass before the trap 
+        /// sound effect can be played again.
         /// </summary>
         private float timeSinceTrapSound;
 
         /// <summary>
-        /// Timer for water sound effect.
+        /// An amount of time that should pass before the water
+        /// sound effect can be played again.
         /// </summary>
         private float timeSinceWaterSound;
 
@@ -184,7 +175,8 @@
         private bool isGameOver;
 
         /// <summary>
-        /// Timer for game over screen.
+        /// An amount of time that should pass before the game over screen
+        /// fades.
         /// </summary>
         private float timeSinceGameOver;
 
@@ -213,8 +205,9 @@
             this.timeLeft = TimeSpan.FromSeconds(40.0);
             this.points = 0;
 
-            // Set sound effect timers to arbitrary positive number so that early collisions will trigger them as well.
-            // Five [seconds], a number higher than any sound effect timer, should do.
+            // Set sound effect timers to arbitrary positive number so that
+            // early collisions will trigger them as well. Five [seconds],
+            // a number higher than any sound effect timer, should do.
             this.timeSinceEatingSound = 5f;
             this.timeSinceTrapSound = 5f;
             this.timeSinceWaterSound = 5f;
@@ -222,26 +215,10 @@
 
             // Set up accelerometer handling.
             this.accelerometer = new Accelerometer();
-            this.accelerometer.CurrentValueChanged += new EventHandler<SensorReadingEventArgs<AccelerometerReading>>(this.Accelerometer_CurrentValueChanged);
+            this.accelerometer.CurrentValueChanged
+                += new EventHandler<SensorReadingEventArgs<AccelerometerReading>>(
+                    this.Accelerometer_CurrentValueChanged);
             this.accelerometer.Start();
-        }
-
-        /* Properties */
-
-        /// <summary>
-        /// Gets device's screen width.
-        /// </summary>
-        public static int ScreenWidth
-        {
-            get { return GamePage.screenWidth; }
-        }
-
-        /// <summary>
-        /// Gets device's screen height.
-        /// </summary>
-        public static int ScreenHeight
-        {
-            get { return GamePage.screenHeight; }
         }
 
         /* Methods */
@@ -255,34 +232,26 @@
             // Set the sharing mode of the graphics device to turn on XNA rendering
             SharedGraphicsDeviceManager.Current.GraphicsDevice.SetSharingMode(true);
 
-            // Create a new SpriteBatch, which can be used to draw textures.
-            this.spriteBatch = new SpriteBatch(SharedGraphicsDeviceManager.Current.GraphicsDevice);
-
             // Begin playing the game's soundtrack.
             Song song = this.contentManager.Load<Song>("game");
             MediaPlayer.Play(song);
             MediaPlayer.IsRepeating = true;
 
-            if (this.gameWorld == null)
-            {
-                this.gameWorld = new World(Microsoft.Xna.Framework.Vector2.Zero);
-            }
-            else
-            {
-                this.gameWorld.Clear();
-            }
+            // Create a new SpriteBatch, which can be used to draw textures.
+            this.spriteBatch = new SpriteBatch(
+                SharedGraphicsDeviceManager.Current.GraphicsDevice);
 
-            tileMapWidth = Constants.Maps.Map.GetLength(1);
-            tileMapHeight = Constants.Maps.Map.GetLength(0);
-            mapWidthInPixels = tileMapWidth * Constants.Maps.TileWidth;
-            mapHeightInPixels = tileMapHeight * Constants.Maps.TileHeight;
+            // Initialize the game world with no gravity.
+            this.gameWorld = new World(Vector2.Zero);
 
             // Load particles.
             List<Texture2D> textures = new List<Texture2D>();
             textures.Add(this.contentManager.Load<Texture2D>("shadow"));
 
             // Initializes a new instance of the particle emitter with textures.
-            this.particleEngine = new ParticleEmitter(textures, new Vector2(400f, 240f));
+            this.particleEngine = new ParticleEmitter(
+                textures, 
+                new Vector2(400f, 240f));
 
             // Load tiles.
             this.tiles = new List<Texture2D>();
@@ -291,14 +260,13 @@
             this.tiles.Add(this.contentManager.Load<Texture2D>("sea_sand"));
             this.tiles.Add(this.contentManager.Load<Texture2D>("sea"));
 
-            // Load bodies.
-            this.bodies = new List<Body>();
+            // Initialize the shark body.
+            this.shark = BodyFactory.CreateCircle(this.gameWorld, 0.8f, 1f);
+            this.shark.BodyType = BodyType.Dynamic;
+            this.shark.Position = this.centralVector;
+            this.shark.CollidesWith = Category.All;
 
-            this.bodies.Add(BodyFactory.CreateCircle(this.gameWorld, 0.8f, 1f));
-            this.bodies[Constants.GameObjects.Shark].BodyType = BodyType.Dynamic;
-            this.bodies[Constants.GameObjects.Shark].Position = this.centralVector;
-            this.bodies[Constants.GameObjects.Shark].CollidesWith = Category.All;
-
+            // Initialize other objects' bodies.
             this.humans = new List<Body>();
             this.pools = new List<Body>();
             this.traps = new List<Body>();
@@ -309,65 +277,60 @@
             int trapIndex = 0;
             int crateIndex = 0;
 
-            for (int y = 0; y < Constants.Maps.Map.GetLength(1); y++)
+            Microsoft.Xna.Framework.Point maximum
+                = new Microsoft.Xna.Framework.Point(
+                    Constants.Maps.Map.GetLength(0), 
+                    Constants.Maps.Map.GetLength(1));
+
+            for (int y = 0; y < maximum.Y; ++y)
             {
-                for (int x = 0; x < Constants.Maps.Map.GetLength(0); x++)
+                for (int x = 0; x < maximum.X; ++x)
                 {
                     switch (Constants.Maps.ObjectMap[y, x])
                     {
                         case 1:
                             this.humans.Add(BodyFactory.CreateRectangle(this.gameWorld, 0.9f, 0.9f, 1f));
-
-                            this.humans[humanIndex].BodyType = BodyType.Static;
                             this.humans[humanIndex].Position =
-                                  (new Vector2(x * Constants.Maps.TileWidth, y * Constants.Maps.TileHeight)
-                                   - new Vector2(screenWidth / 2, screenHeight / 2)
-                                   + new Vector2(Constants.Maps.TileWidth / 2, Constants.Maps.TileHeight / 2)).ToSimVector();
+                                  (new Vector2(x * Constants.Maps.TileSize, y * Constants.Maps.TileSize)
+                                   - new Vector2(Constants.ScreenWidth / 2, Constants.ScreenHeight / 2)
+                                   + new Vector2(Constants.Maps.TileSize / 2, Constants.Maps.TileSize / 2)).ToSimVector();
                             FixtureFactory.AttachCircle(0.5f, 1f, this.humans[humanIndex]).OnCollision += this.HumanEaten;
                             ++humanIndex;
                             break;
 
-                        case 2: this.pools.Add(BodyFactory.CreateCircle(this.gameWorld, 0.9f, 1f, 1f));
-                            this.pools[poolIndex].BodyType = BodyType.Static;
+                        case 2:
+                            this.pools.Add(BodyFactory.CreateCircle(this.gameWorld, 0.9f, 1f, 1f));
                             this.pools[poolIndex].Position =
-                                    (new Vector2(x * Constants.Maps.TileWidth, y * Constants.Maps.TileHeight)
-                                       - new Vector2(screenWidth / 2, screenHeight / 2)
-                                       + new Vector2(Constants.Maps.TileWidth / 2, Constants.Maps.TileHeight / 2)).ToSimVector();
+                                    (new Vector2(x * Constants.Maps.TileSize, y * Constants.Maps.TileSize)
+                                       - new Vector2(Constants.ScreenWidth / 2, Constants.ScreenHeight / 2)
+                                       + new Vector2(Constants.Maps.TileSize / 2, Constants.Maps.TileSize / 2)).ToSimVector();
                             FixtureFactory.AttachCircle(0.9f, 1f, this.pools[poolIndex]).OnCollision += this.TimerReplenished;
                             ++poolIndex;
                             break;
 
-                        case 3: this.traps.Add(BodyFactory.CreateCircle(this.gameWorld, 0.9f, 1f, 1f));
-                            this.traps[trapIndex].BodyType = BodyType.Static;
+                        case 3:
+                            this.traps.Add(BodyFactory.CreateCircle(this.gameWorld, 0.9f, 1f, 1f));
                             this.traps[trapIndex].Position =
-                                   (new Vector2(x * Constants.Maps.TileWidth, y * Constants.Maps.TileHeight)
-                                       - new Vector2(screenWidth / 2, screenHeight / 2)
-                                       + new Vector2(Constants.Maps.TileWidth / 2, Constants.Maps.TileHeight / 2)).ToSimVector();
+                                   (new Vector2(x * Constants.Maps.TileSize, y * Constants.Maps.TileSize)
+                                       - new Vector2(Constants.ScreenWidth / 2, Constants.ScreenHeight / 2)
+                                       + new Vector2(Constants.Maps.TileSize / 2, Constants.Maps.TileSize / 2)).ToSimVector();
                             FixtureFactory.AttachCircle(0.1f, 0.5f, this.traps[trapIndex]).OnCollision += this.SharkDead;
                             ++trapIndex;
                             break;
 
-                        case 4: this.crates.Add(BodyFactory.CreateRectangle(this.gameWorld, 1f, 1f, 1f));
+                        case 4:
+                            this.crates.Add(BodyFactory.CreateRectangle(this.gameWorld, 1f, 1f, 1f));
                             this.crates[crateIndex].BodyType = BodyType.Dynamic;
                             this.crates[crateIndex].Position =
-                                   (new Vector2(x * Constants.Maps.TileWidth, y * Constants.Maps.TileHeight)
-                                       - new Vector2(screenWidth / 2, screenHeight / 2)
-                                       + new Vector2(Constants.Maps.TileWidth / 2, Constants.Maps.TileHeight / 2)).ToSimVector();
-                            
+                                   (new Vector2(x * Constants.Maps.TileSize, y * Constants.Maps.TileSize)
+                                       - new Vector2(Constants.ScreenWidth / 2, Constants.ScreenHeight / 2)
+                                       + new Vector2(Constants.Maps.TileSize / 2, Constants.Maps.TileSize / 2)).ToSimVector();
+
                             ++crateIndex;
                             break;
                     }
                 }
             }
-
-            float width = 8f;
-            float height = 5f;
-
-            walls = new List<Body>();
-            walls.Add(BodyFactory.CreateEdge(this.gameWorld, new Vector2(0f, 0f), new Vector2(width, 0f)));
-            walls.Add(BodyFactory.CreateEdge(this.gameWorld, new Vector2(0f, 0f), new Vector2(0f, height)));
-            walls.Add(BodyFactory.CreateEdge(this.gameWorld, new Vector2(width, height), new Vector2(width, 0f)));
-            walls.Add(BodyFactory.CreateEdge(this.gameWorld, new Vector2(width, height), new Vector2(0f, height)));
 
             // Load textures.
             this.sprites = new List<Texture2D>();
@@ -383,12 +346,27 @@
             this.runFrameHeight = this.sprites[Constants.GameObjects.Shark].Height;
 
             // Create a default camera object centered on the shark.
-            this.camera = new Camera(this.bodies[Constants.GameObjects.Shark].Position.ToRealVector());
+            this.camera = new Camera(this.shark.Position.ToRealVector());
 
             // Start the timer.
             this.timer.Start();
 
             base.OnNavigatedTo(e);
+        }
+
+        /// <summary>
+        /// Handles navigating from the game to any other page or app.
+        /// </summary>
+        /// <param name="e">Information passed to the event.</param>
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            // Stop the timer.
+            this.timer.Stop();
+
+            // Set the sharing mode of the graphics device to turn off XNA rendering
+            SharedGraphicsDeviceManager.Current.GraphicsDevice.SetSharingMode(false);
+
+            base.OnNavigatedFrom(e);
         }
 
         /// <summary>
@@ -451,7 +429,7 @@
                 highScores = new List<HighScore>();
             }
 
-            if (highScores.Count < 8 || highScores.Count > 0 && this.points > highScores.Min(item => item.Points))
+            if (highScores.Count < 8 || (highScores.Count > 0 && this.points > highScores.Min(item => item.Points)))
             {
                 // This shark was a hero indeed. Save the result in the Isolated Storage
                 // and go to the high scores page.
@@ -531,21 +509,6 @@
         }
 
         /// <summary>
-        /// Handles navigating from the game to any other page or app.
-        /// </summary>
-        /// <param name="e">Information passed to the event.</param>
-        protected override void OnNavigatedFrom(NavigationEventArgs e)
-        {
-            // Stop the timer.
-            this.timer.Stop();
-
-            // Set the sharing mode of the graphics device to turn off XNA rendering
-            SharedGraphicsDeviceManager.Current.GraphicsDevice.SetSharingMode(false);
-
-            base.OnNavigatedFrom(e);
-        }
-
-        /// <summary>
         /// Allows the page to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.
         /// </summary>
@@ -555,7 +518,7 @@
         {
             float elapsed = (float)e.ElapsedTime.TotalSeconds;
 
-            if (!isGameOver)
+            if (!this.isGameOver)
             {
                 // Set the refresh rate to 30 FPS (step one thirtieth of a second in time).
                 this.gameWorld.Step(Math.Min(elapsed, 1f / 30f));
@@ -571,7 +534,8 @@
                 this.timeSinceTrapSound += elapsed;
                 this.timeSinceWaterSound += elapsed;
 
-                if (Math.Abs(this.sharkVelocity.X) > 0.07f || Math.Abs(this.sharkVelocity.Y) > 0.07f)
+                if (Math.Abs(this.sharkVelocity.X) > 0.07f
+                    || Math.Abs(this.sharkVelocity.Y) > 0.07f)
                 {
                     while (this.currentPlayerAnimationDelay > this.playerAnimationDelay)
                     {
@@ -581,34 +545,36 @@
                     }
 
                     // Measure the angle at which the shark is moving forward.
-                    this.sharkRotation = this.centralVector.AngleBetween(this.centralVector + this.sharkVelocity) % (MathHelper.Pi * 2f);
+                    this.shark.Rotation = this.centralVector.AngleBetween(this.centralVector + this.sharkVelocity) % (MathHelper.Pi * 2f);
 
                     // Generate shark's "footprints".
                     this.particleEngine.Generate();
                 }
 
                 // Generate shark's "footprints".
-                this.particleEngine.EmitterAngle = 0f;
-                this.particleEngine.EmitterVelocity = new Vector2(-this.sharkVelocity.X, -this.sharkVelocity.Y);
-                this.particleEngine.EmitterLocation = this.bodies[Constants.GameObjects.Shark].Position;
+                this.particleEngine.EmitterAngle = this.shark.Rotation;
+                this.particleEngine.EmitterVelocity = -this.sharkVelocity;
+                this.particleEngine.EmitterLocation = this.shark.Position;
                 this.particleEngine.Update();
 
-                this.centralVector.X += this.sharkVelocity.X * Constants.Speeds.BlueSharkSpeedMultiplier;
-                this.centralVector.Y += this.sharkVelocity.Y * Constants.Speeds.BlueSharkSpeedMultiplier;
+                this.centralVector.X += this.sharkVelocity.X * Constants.Speeds.SharkSpeedMultiplier;
+                this.centralVector.Y += this.sharkVelocity.Y * Constants.Speeds.SharkSpeedMultiplier;
                 this.sharkVelocity *= elapsed;
 
-                this.bodies[Constants.GameObjects.Shark].ApplyForce(this.sharkVelocity);
-                this.bodies[Constants.GameObjects.Shark].Position = this.centralVector * elapsed;
+                this.shark.ApplyForce(this.sharkVelocity);
+                this.shark.Position = this.centralVector * elapsed;
 
-                //update camera position
-                this.camera.position = this.bodies[Constants.GameObjects.Shark].Position.ToRealVector();
-                //clamp camera movement only on the map size
-                camera.position.X = MathHelper.Clamp(camera.position.X,
-                          0,
-                         MapWidthInPixels - ScreenWidth);
-                camera.position.Y = MathHelper.Clamp(camera.position.Y,
-                          0,
-                            MapHeightInPixels - ScreenHeight);
+                // Update camera position.
+                Vector2 realSharkPosition = this.shark.Position.ToRealVector();
+                this.camera.Position = new Vector2(
+                    MathHelper.Clamp(
+                        realSharkPosition.X,
+                        0,
+                        Constants.Maps.MapWidth - Constants.ScreenWidth),
+                    MathHelper.Clamp(
+                        realSharkPosition.Y,
+                        0,
+                        Constants.Maps.MapHeight - Constants.ScreenHeight));
             }
             else
             {
@@ -634,8 +600,16 @@
             {
                 this.spriteBatch.Begin();
 
-                this.spriteBatch.DrawString(this.contentManager.Load<SpriteFont>("DisplayFont"), "Game over!", new Vector2(2f, 1.5f).ToRealVector(), Color.Red);
-                this.spriteBatch.DrawString(this.contentManager.Load<SpriteFont>("DisplayFont"), "Points: " + this.points, new Vector2(2.2f, 3.5f).ToRealVector(), Color.Red);
+                this.spriteBatch.DrawString(
+                    this.contentManager.Load<SpriteFont>("DisplayFont"),
+                    "Game over!",
+                    new Vector2(2f, 1.5f).ToRealVector(),
+                    Color.Red);
+                this.spriteBatch.DrawString(
+                    this.contentManager.Load<SpriteFont>("DisplayFont"),
+                    "Points: " + this.points,
+                    new Vector2(2.2f, 3.5f).ToRealVector(),
+                    Color.Red);
 
                 this.spriteBatch.End();
             }
@@ -646,25 +620,25 @@
                     (this.sprites[Constants.GameObjects.Shark].Width / 16) / 2,
                     this.sprites[Constants.GameObjects.Shark].Height / 2);
 
-                Microsoft.Xna.Framework.Point cameraPoint = Conversions.ToCell(camera.position);
-                Microsoft.Xna.Framework.Point viewPoint = Conversions.ToCell(camera.position + ViewPortVector());
-                Microsoft.Xna.Framework.Point min = new Microsoft.Xna.Framework.Point();
-                Microsoft.Xna.Framework.Point max = new Microsoft.Xna.Framework.Point();
-                min.X = cameraPoint.X;
-                min.Y = cameraPoint.Y;
-                max.X = (int)Math.Min(viewPoint.X, Constants.Maps.Map.GetLength(1));
-                max.Y = (int)Math.Min(viewPoint.Y, Constants.Maps.Map.GetLength(0));
+                Microsoft.Xna.Framework.Point cameraPoint = this.camera.Position.ToCell();
+                Microsoft.Xna.Framework.Point viewPoint = (this.camera.Position + this.ViewPortVector()).ToCell();
+                Microsoft.Xna.Framework.Point min = new Microsoft.Xna.Framework.Point(
+                    cameraPoint.X, cameraPoint.Y);
+                Microsoft.Xna.Framework.Point max = new Microsoft.Xna.Framework.Point(
+                    (int)Math.Min(viewPoint.X, Constants.Maps.Map.GetLength(1)),
+                    (int)Math.Min(viewPoint.Y, Constants.Maps.Map.GetLength(0)));
 
                 // Draw the map.
-                this.DrawMap();
+                this.DrawMap(min, max);
 
-                this.spriteBatch.Begin(SpriteSortMode.BackToFront,
-                            BlendState.AlphaBlend,
-                            null,
-                            null,
-                            null,
-                            null,
-                            camera.get_transformation());
+                this.spriteBatch.Begin(
+                    SpriteSortMode.BackToFront,
+                    BlendState.AlphaBlend,
+                    null,
+                    null,
+                    null,
+                    null,
+                    this.camera.GetTransformationMatrix());
 
                 // Draw any existing particles.
                 this.particleEngine.Draw(this.spriteBatch);
@@ -677,71 +651,84 @@
                     {
                         switch (Constants.Maps.ObjectMap[y, x])
                         {
-                            case 1:  // Draw humans
-                                foreach (Body h in humans)
+                            case 1:
+                                // Draw each human object in the collection.
+                                foreach (Body human in this.humans)
                                 {
                                     this.spriteBatch.Draw(
-                                        h.Enabled ? this.sprites[Constants.Maps.ObjectMap[y, x]] : deadPeople,
-                                   h.Position.ToRealVector(),
-                                    null,
-                                    Color.White,
-                                    h.Rotation,
-                                    new Vector2(
-                                    this.sprites[Constants.Maps.ObjectMap[y, x]].Width / 2f,
-                                    this.sprites[Constants.Maps.ObjectMap[y, x]].Height / 2f),
-                                     0.7f,
-                                     SpriteEffects.None,
-                                    1f);
+                                        human.Enabled ? this.sprites[Constants.Maps.ObjectMap[y, x]] : deadPeople,
+                                        human.Position.ToRealVector(),
+                                        null,
+                                        Color.White,
+                                        human.Rotation,
+                                        new Vector2(
+                                            this.sprites[Constants.Maps.ObjectMap[y, x]].Width / 2f,
+                                            this.sprites[Constants.Maps.ObjectMap[y, x]].Height / 2f),
+                                            0.7f,
+                                            SpriteEffects.None,
+                                            1f);
                                 }
 
                                 break;
-                            case 2: foreach (Body p in pools)
+
+                            case 2:
+                                // Draw each pool object in the collection.
+                                foreach (Body pool in this.pools)
                                 {
                                     this.spriteBatch.Draw(
-                                     this.sprites[Constants.Maps.ObjectMap[y, x]],
-                                   p.Position.ToRealVector(),
-                                    null,
-                                    Color.White,
-                                    p.Rotation,
-                                    new Vector2(
-                                    this.sprites[Constants.Maps.ObjectMap[y, x]].Width / 2f,
-                                    this.sprites[Constants.Maps.ObjectMap[y, x]].Height / 2f),
-                                     1f,
-                                     SpriteEffects.None,
-                                    1f);
+                                        this.sprites[Constants.Maps.ObjectMap[y, x]],
+                                        pool.Position.ToRealVector(),
+                                        null,
+                                        Color.White,
+                                        pool.Rotation,
+                                        new Vector2(
+                                            this.sprites[Constants.Maps.ObjectMap[y, x]].Width / 2f,
+                                            this.sprites[Constants.Maps.ObjectMap[y, x]].Height / 2f),
+                                            1f,
+                                            SpriteEffects.None,
+                                            1f);
                                 }
+
                                 break;
-                            case 3: foreach (Body t in traps)
+
+                            case 3:
+                                // Draw each trap object in the collection.
+                                foreach (Body trap in this.traps)
                                 {
                                     this.spriteBatch.Draw(
-                                     this.sprites[Constants.Maps.ObjectMap[y, x]],
-                                   t.Position.ToRealVector(),
-                                    null,
-                                    Color.White,
-                                    t.Rotation,
-                                    new Vector2(
-                                    this.sprites[Constants.Maps.ObjectMap[y, x]].Width / 2f,
-                                    this.sprites[Constants.Maps.ObjectMap[y, x]].Height / 2f),
-                                     0.6f,
-                                     SpriteEffects.None,
-                                    1f);
+                                        this.sprites[Constants.Maps.ObjectMap[y, x]],
+                                        trap.Position.ToRealVector(),
+                                        null,
+                                        Color.White,
+                                        trap.Rotation,
+                                        new Vector2(
+                                            this.sprites[Constants.Maps.ObjectMap[y, x]].Width / 2f,
+                                            this.sprites[Constants.Maps.ObjectMap[y, x]].Height / 2f),
+                                            0.6f,
+                                            SpriteEffects.None,
+                                            1f);
                                 }
+
                                 break;
-                            case 4: foreach (Body c in crates)
+
+                            case 4:
+                                // Draw each crate object in the collection.
+                                foreach (Body crate in this.crates)
                                 {
                                     this.spriteBatch.Draw(
-                                     this.sprites[Constants.Maps.ObjectMap[y, x]],
-                                   c.Position.ToRealVector(),
-                                    null,
-                                    Color.White,
-                                    c.Rotation,
-                                    new Vector2(
-                                    this.sprites[Constants.Maps.ObjectMap[y, x]].Width / 2f,
-                                    this.sprites[Constants.Maps.ObjectMap[y, x]].Height / 2f),
-                                     0.5f,
-                                     SpriteEffects.None,
-                                    1f);
+                                        this.sprites[Constants.Maps.ObjectMap[y, x]],
+                                        crate.Position.ToRealVector(),
+                                        null,
+                                        Color.White,
+                                        crate.Rotation,
+                                        new Vector2(
+                                            this.sprites[Constants.Maps.ObjectMap[y, x]].Width / 2f,
+                                            this.sprites[Constants.Maps.ObjectMap[y, x]].Height / 2f),
+                                            0.5f,
+                                            SpriteEffects.None,
+                                            1f);
                                 }
+
                                 break;
                         }
                     }
@@ -750,10 +737,10 @@
                 // Draw the shark sprite.
                 this.spriteBatch.Draw(
                     this.sprites[Constants.GameObjects.Shark],
-                    this.bodies[Constants.GameObjects.Shark].Position.ToRealVector(),
+                    this.shark.Position.ToRealVector(),
                     new Microsoft.Xna.Framework.Rectangle(this.playerCurrentFrame * this.runFrameWidth, 0, this.runFrameWidth, this.runFrameHeight),
                     Color.White,
-                    this.sharkRotation,
+                    this.shark.Rotation,
                     origin,
                     1.4f,
                     SpriteEffects.None,
@@ -766,34 +753,29 @@
         }
 
         /// <summary>
-        /// Draws the map of the game.
+        /// Draws the map tiles in the area specified by min and max points.
         /// </summary>
-        private void DrawMap()
+        /// <param name="min">Upper-left-most point of the drawing rectangle.</param>
+        /// <param name="max">Lower-right-most point of the drawing rectangle.</param>
+        private void DrawMap(Microsoft.Xna.Framework.Point min, Microsoft.Xna.Framework.Point max)
         {
             this.spriteBatch.Begin();
-            Microsoft.Xna.Framework.Point cameraPoint = Conversions.ToCell(camera.position);
-            Microsoft.Xna.Framework.Point viewPoint = Conversions.ToCell(camera.position + ViewPortVector());
-            Microsoft.Xna.Framework.Point min = new Microsoft.Xna.Framework.Point();
-            Microsoft.Xna.Framework.Point max = new Microsoft.Xna.Framework.Point();
-            min.X = cameraPoint.X;
-            min.Y = cameraPoint.Y;
-            max.X = (int)Math.Min(viewPoint.X, Constants.Maps.Map.GetLength(1));
-            max.Y = (int)Math.Min(viewPoint.Y, Constants.Maps.Map.GetLength(0));
             Rectangle tileRectangle = new Rectangle(
-                    0,
-                    0,
-                    Constants.Maps.TileWidth,
-                    Constants.Maps.TileHeight);
+                0,
+                0,
+                Constants.Maps.TileSize,
+                Constants.Maps.TileSize);
 
             for (int y = min.Y; y < max.Y; ++y)
             {
                 for (int x = min.X; x < max.X; ++x)
                 {
-                    tileRectangle.X = x * Constants.Maps.TileWidth - (int)camera.position.X;
-                    tileRectangle.Y = y * Constants.Maps.TileHeight - (int)camera.position.Y;
-                    spriteBatch.Draw(tiles[Constants.Maps.Map[y, x]],
-                   tileRectangle,
-                   Color.White);
+                    tileRectangle.X = (x * Constants.Maps.TileSize) - (int)this.camera.Position.X;
+                    tileRectangle.Y = (y * Constants.Maps.TileSize) - (int)this.camera.Position.Y;
+                    this.spriteBatch.Draw(
+                        this.tiles[Constants.Maps.Map[y, x]],
+                        tileRectangle,
+                        Color.White);
                 }
             }
 
@@ -806,8 +788,22 @@
         private void DrawHud()
         {
             this.spriteBatch.Begin();
-            this.spriteBatch.DrawString(this.contentManager.Load<SpriteFont>("DisplayFont"), this.timeLeft.ToString("ss"), new Vector2(0.2f, 0.2f).ToRealVector(), Color.Blue);
-            this.spriteBatch.DrawString(this.contentManager.Load<SpriteFont>("DisplayFont"), this.points.ToString(), new Vector2(7.4f, 4.0f).ToRealVector(), Color.Yellow);
+
+            // Draw a timer - how many seconds are left in the stage.
+            this.spriteBatch.DrawString(
+                this.contentManager.Load<SpriteFont>("DisplayFont"),
+                this.timeLeft.ToString("ss"),
+                new Vector2(0.2f, 0.2f).ToRealVector(),
+                Color.Blue);
+
+            // Draw a points counter - how many points did the player collect
+            // so far in the stage.
+            this.spriteBatch.DrawString(
+                this.contentManager.Load<SpriteFont>("DisplayFont"),
+                this.points.ToString(),
+                new Vector2(7.4f, 4.0f).ToRealVector(),
+                Color.Yellow);
+
             this.spriteBatch.End();
         }
 
@@ -818,8 +814,8 @@
         private Vector2 ViewPortVector()
         {
             return new Vector2(
-                GamePage.screenWidth + 2 * Constants.Maps.TileWidth,
-                GamePage.screenHeight + 2 * Constants.Maps.TileHeight);
+                Constants.ScreenWidth + (2 * Constants.Maps.TileSize),
+                Constants.ScreenHeight + (2 * Constants.Maps.TileSize));
         }
 
         /// <summary>
@@ -841,18 +837,18 @@
         {
             // Set the minimum speed limit (sensitivity) to a sane value,
             // so that the shark will not "drift".
-            if (Math.Abs(accelerometerReading.Acceleration.Y) > Constants.Speeds.BlueSharkSpeedMin)
+            if (Math.Abs(accelerometerReading.Acceleration.Y) > Constants.Speeds.SharkSpeedMin)
             {
                 this.sharkVelocity.X = -accelerometerReading.Acceleration.Y;
             }
 
-            if (Math.Abs(accelerometerReading.Acceleration.X) > Constants.Speeds.BlueSharkSpeedMin)
+            if (Math.Abs(accelerometerReading.Acceleration.X) > Constants.Speeds.SharkSpeedMin)
             {
                 this.sharkVelocity.Y = -accelerometerReading.Acceleration.X;
             }
 
             // Limit the velocity.
-            this.sharkVelocity = Vector2.Clamp(this.sharkVelocity, -Constants.Speeds.BlueSharkVelocityMax, Constants.Speeds.BlueSharkVelocityMax);
+            this.sharkVelocity = Vector2.Clamp(this.sharkVelocity, -Constants.Speeds.SharkVelocityMax, Constants.Speeds.SharkVelocityMax);
         }
     }
 }

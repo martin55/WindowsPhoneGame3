@@ -7,54 +7,64 @@ namespace SharkGame
     /// </summary>
     public class Camera
     {
+        /* Fields */
+
         /// <summary>
         /// Camera's position.
         /// </summary>
-        public Vector2 position;
+        private Vector2 position;
 
         /// <summary>
         /// Camera's transformation matrix.
         /// </summary>
-        public Matrix _transform;
+        private Matrix transformationMatrix;
+
+        /* Constructor */
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Camera" /> class.
+        /// Initializes a new instance of the <see cref="Camera" /> class
+        /// and places it at the given position.
         /// </summary>
-        /// <param name="pos"></param>
-        public Camera(Vector2 pos)
+        /// <param name="position">Initial camera position.</param>
+        public Camera(Vector2 position)
         {
-            this.position = pos;
+            this.position = position;
         }
 
-        /// <summary>
-        /// Auxiliary function to move the camera.
-        /// </summary>
-        /// <param name="amount"></param>
-        public void Move(Vector2 amount)
-        {
-            position += amount;
-        }
+        /* Properties */
 
         /// <summary>
-        /// Gets the camera's position.
+        /// Gets or sets the camera's position.
+        /// Clamping is performed when calling the setter.
         /// </summary>
-        public Vector2 Pos
+        public Vector2 Position
         {
             get { return this.position; }
             set { this.position = value; }
         }
 
+        /* Methods */
+
+        /// <summary>
+        /// Auxiliary function to move the camera.
+        /// </summary>
+        /// <param name="delta">Delta for the movement.</param>
+        public void Move(Vector2 delta)
+        {
+            this.position += delta;
+        }
+
         /// <summary>
         /// Gets the camera's transformation matrix.
         /// </summary>
-        /// <returns></returns>
-        public Matrix get_transformation()
+        /// <returns>Transformation matrix for this camera.</returns>
+        public Matrix GetTransformationMatrix()
         {
             // Thanks to o KB o for this solution.
-            this._transform = Matrix.CreateTranslation(
+            this.transformationMatrix = Matrix.CreateTranslation(
                 new Vector3(-this.position.X, -this.position.Y, 0f))
                 * Matrix.CreateTranslation(new Vector3(800f * 0.5f, 480f * 0.5f, 0f));
-            return this._transform;
+            return this.transformationMatrix;
         }
     }
 }
