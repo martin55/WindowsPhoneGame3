@@ -534,8 +534,8 @@
                 this.timeSinceTrapSound += elapsed;
                 this.timeSinceWaterSound += elapsed;
 
-                if (Math.Abs(this.sharkVelocity.X) > 0.07f
-                    || Math.Abs(this.sharkVelocity.Y) > 0.07f)
+                if (Math.Abs(this.shark.LinearVelocity.X) > 0.07f
+                    || Math.Abs(this.shark.LinearVelocity.Y) > 0.07f)
                 {
                     while (this.currentPlayerAnimationDelay > this.playerAnimationDelay)
                     {
@@ -545,7 +545,7 @@
                     }
 
                     // Measure the angle at which the shark is moving forward.
-                    this.shark.Rotation = this.centralVector.AngleBetween(this.centralVector + this.sharkVelocity) % (MathHelper.Pi * 2f);
+                    this.shark.Rotation = this.centralVector.AngleBetween(this.centralVector + this.shark.LinearVelocity) % (MathHelper.Pi * 2f);
 
                     // Generate shark's "footprints".
                     this.particleEngine.Generate();
@@ -553,15 +553,15 @@
 
                 // Generate shark's "footprints".
                 this.particleEngine.EmitterAngle = this.shark.Rotation;
-                this.particleEngine.EmitterVelocity = -this.sharkVelocity;
+                this.particleEngine.EmitterVelocity = -this.shark.LinearVelocity;
                 this.particleEngine.EmitterLocation = this.shark.Position;
                 this.particleEngine.Update();
 
-                this.centralVector.X += this.sharkVelocity.X * Constants.Speeds.SharkSpeedMultiplier;
-                this.centralVector.Y += this.sharkVelocity.Y * Constants.Speeds.SharkSpeedMultiplier;
-                this.sharkVelocity *= elapsed;
+                this.centralVector.X += this.shark.LinearVelocity.X * Constants.Speeds.SharkSpeedMultiplier;
+                this.centralVector.Y += this.shark.LinearVelocity.Y * Constants.Speeds.SharkSpeedMultiplier;
+                this.shark.LinearVelocity *= elapsed;
 
-                this.shark.ApplyForce(this.sharkVelocity);
+                this.shark.ApplyForce(this.shark.LinearVelocity);
                 this.shark.Position = this.centralVector * elapsed;
 
                 // Update camera position.
@@ -837,18 +837,25 @@
         {
             // Set the minimum speed limit (sensitivity) to a sane value,
             // so that the shark will not "drift".
+            // We also need to swap the accelerometer readings because
+            // a Landscape orientation is used (X becomes Y, Y becomes X).
+            float horizontalReading = this.shark.LinearVelocity.X;
+            float verticalReading = this.shark.LinearVelocity.Y;
             if (Math.Abs(accelerometerReading.Acceleration.Y) > Constants.Speeds.SharkSpeedMin)
             {
-                this.sharkVelocity.X = -accelerometerReading.Acceleration.Y;
+                horizontalReading = -accelerometerReading.Acceleration.Y;
             }
 
             if (Math.Abs(accelerometerReading.Acceleration.X) > Constants.Speeds.SharkSpeedMin)
             {
-                this.sharkVelocity.Y = -accelerometerReading.Acceleration.X;
+                verticalReading = -accelerometerReading.Acceleration.X;
             }
 
             // Limit the velocity.
-            this.sharkVelocity = Vector2.Clamp(this.sharkVelocity, -Constants.Speeds.SharkVelocityMax, Constants.Speeds.SharkVelocityMax);
+            this.shark.LinearVelocity = Vector2.Clamp(
+                new Vector2(horizontalReading, verticalReading), 
+                -Constants.Speeds.SharkVelocityMax, 
+                Constants.Speeds.SharkVelocityMax);
         }
     }
 }
