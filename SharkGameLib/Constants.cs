@@ -64,12 +64,12 @@ namespace SharkGame
             /// <summary>
             /// Gets given map's width in pixels.
             /// </summary>
-            public static int MapWidth { get { return TileSize * Constants.Maps.TileWidth; } }
+            public static int MapWidth { get { return Constants.Maps.TileSize * Constants.Maps.TileWidth; } }
 
             /// <summary>
             /// Gets given maps' height in pixels.
             /// </summary>
-            public static int MapHeight { get { return TileSize * Constants.Maps.TileHeight; } }
+            public static int MapHeight { get { return Constants.Maps.TileSize * Constants.Maps.TileHeight; } }
 
             /// <summary>
             /// Gets the size of a single tile (both a width and a height, as tiles are squares) in pixels.

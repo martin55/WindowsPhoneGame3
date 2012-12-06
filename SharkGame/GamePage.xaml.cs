@@ -238,9 +238,6 @@
 
             // Set up accelerometer handling.
             this.accelerometer = new Accelerometer();
-            this.accelerometer.CurrentValueChanged
-                += new EventHandler<SensorReadingEventArgs<AccelerometerReading>>(
-                    this.Accelerometer_CurrentValueChanged);
             this.accelerometer.Start();
         }
 
@@ -306,6 +303,7 @@
                 new Vector2(
                     Constants.ScreenHeight / 2f,
                     Constants.ScreenWidth / 2f));
+            this.shark.LinearDamping = 1f;
             this.shark.CollidesWith = Category.All;
             this.shark.CollisionCategories = Category.Cat1;
 
@@ -396,21 +394,24 @@
 
             // Create map bounds - invisible walls that catch shark within
             // to prevent "leaving" the screen.
-            float simMapWidth = Constants.Maps.MapWidth / Constants.RealToVirtualRatio;
-            float simMapHeight = Constants.Maps.MapHeight / Constants.RealToVirtualRatio;
+            Microsoft.Xna.Framework.Point upperLeft = new Microsoft.Xna.Framework.Point(
+                -(Constants.ScreenWidth / 2),
+                -(Constants.ScreenHeight / 2));
+            Microsoft.Xna.Framework.Point lowerRight = new Microsoft.Xna.Framework.Point(
+                Constants.Maps.MapWidth - Constants.ScreenWidth / 2,
+                Constants.Maps.MapHeight - Constants.ScreenHeight / 2);
 
             this.walls = new List<Body>();
-            // TODO: perform proper sizing and positioning for the wall edges.
-            //walls = new List<Body>();
-            //walls.Add(BodyFactory.CreateEdge(this.gameWorld, new Vector2(0f, 0f), new Vector2(simMapWidth, 0f)));
-            //walls.Add(BodyFactory.CreateEdge(this.gameWorld, new Vector2(0f, 0f), new Vector2(0f, simMapHeight)));
-            //walls.Add(BodyFactory.CreateEdge(this.gameWorld, new Vector2(simMapWidth, simMapHeight), new Vector2(simMapWidth, 0f)));
-            //walls.Add(BodyFactory.CreateEdge(this.gameWorld, new Vector2(simMapWidth, simMapHeight), new Vector2(0f, simMapHeight)));
-            //foreach (Body wallFragment in this.walls)
-            //{
-            //    wallFragment.CollidesWith = Category.Cat1;
-            //    wallFragment.CollisionCategories = Category.Cat6;
-            //}
+            walls = new List<Body>();
+            walls.Add(BodyFactory.CreateEdge(this.gameWorld, new Vector2(upperLeft.X, upperLeft.Y).ToSimVector(), new Vector2(lowerRight.X, upperLeft.Y).ToSimVector()));
+            walls.Add(BodyFactory.CreateEdge(this.gameWorld, new Vector2(upperLeft.X, upperLeft.Y).ToSimVector(), new Vector2(upperLeft.X, lowerRight.Y).ToSimVector()));
+            walls.Add(BodyFactory.CreateEdge(this.gameWorld, new Vector2(lowerRight.X, lowerRight.Y).ToSimVector(), new Vector2(lowerRight.X, upperLeft.Y).ToSimVector()));
+            walls.Add(BodyFactory.CreateEdge(this.gameWorld, new Vector2(lowerRight.X, lowerRight.Y).ToSimVector(), new Vector2(upperLeft.X, lowerRight.Y).ToSimVector()));
+            foreach (Body wallFragment in this.walls)
+            {
+                wallFragment.CollidesWith = Category.All;
+                wallFragment.CollisionCategories = Category.Cat6;
+            }
         }
 
         /// <summary>
@@ -472,13 +473,13 @@
             {
                 if (this.timeSinceEatingSound > 1f)
                 {
-                    Debug.WriteLine("Human eaten");
-                    this.points += 5;
                     this.contentManager.Load<SoundEffect>("eating").Play();
-                    this.timeSinceEatingSound = 0f;
-                    fixtureA.Body.Enabled = false;
                 }
 
+                Debug.WriteLine("Human eaten");
+                this.points += 5;
+                this.timeSinceEatingSound = 0f;
+                fixtureA.Body.Enabled = false;
                 return true;
             }
             else
@@ -619,10 +620,28 @@
                 this.particleEngine.EmitterLocation = this.shark.Position;
                 this.particleEngine.Update();
 
+
+                // If the device is tilted sufficiently, adjust shark's velocity.
+                // Get the accelerometer readings and clamp them to a certain range
+                // so that the player will not benefit too much from extreme tilting.
+                // We also need to swap the accelerometer readings because
+                // a Landscape orientation is used (X becomes Y, Y becomes X).
+                float horizontalReading = 0f;
+                float verticalReading = 0f;
+                if (Math.Abs(accelerometer.CurrentValue.Acceleration.Y) > Constants.Speeds.SharkSpeedMin)
+                {
+                    horizontalReading = MathHelper.Clamp(-accelerometer.CurrentValue.Acceleration.Y, -0.6f, 0.6f);
+                }
+
+                if (Math.Abs(accelerometer.CurrentValue.Acceleration.X) > Constants.Speeds.SharkSpeedMin)
+                {
+                    verticalReading = MathHelper.Clamp(-accelerometer.CurrentValue.Acceleration.X, -0.6f, 0.6f);
+                }
+
                 // Reset angular velocity (we're not gonna need that)
                 // and apply force according to the shark's speed multiplier.
                 this.shark.AngularVelocity = 0f;
-                this.shark.ApplyForce(this.shark.LinearVelocity * Constants.Speeds.SharkSpeedMultiplier);
+                this.shark.ApplyForce(new Vector2(horizontalReading, verticalReading) * Constants.Speeds.SharkSpeedMultiplier);
 
                 // Update camera position.
                 this.camera.Position = Vector2.Clamp(
@@ -872,46 +891,6 @@
             return new Vector2(
                 Constants.ScreenWidth + (2 * Constants.Maps.TileSize),
                 Constants.ScreenHeight + (2 * Constants.Maps.TileSize));
-        }
-
-        /// <summary>
-        /// Raised when the accelerometer readings are subject to change.
-        /// </summary>
-        /// <param name="sender">Object that raised the event.</param>
-        /// <param name="e">Detailed state connected with the event.</param>
-        private void Accelerometer_CurrentValueChanged(object sender, SensorReadingEventArgs<AccelerometerReading> e)
-        {
-            // Call UpdateUI on the UI thread and pass the AccelerometerReading event's data.
-            System.Windows.Deployment.Current.Dispatcher.BeginInvoke(() => this.UpdateUI(e.SensorReading));
-        }
-
-        /// <summary>
-        /// Handles UI updating.
-        /// </summary>
-        /// <param name="accelerometerReading">New accelerometer data.</param>
-        private void UpdateUI(AccelerometerReading accelerometerReading)
-        {
-            // Set the minimum speed limit (sensitivity) to a sane value,
-            // so that the shark will not "drift".
-            // We also need to swap the accelerometer readings because
-            // a Landscape orientation is used (X becomes Y, Y becomes X).
-            float horizontalReading = 0f;
-            float verticalReading = 0f;
-            if (Math.Abs(accelerometerReading.Acceleration.Y) > Constants.Speeds.SharkSpeedMin)
-            {
-                horizontalReading = -accelerometerReading.Acceleration.Y;
-            }
-
-            if (Math.Abs(accelerometerReading.Acceleration.X) > Constants.Speeds.SharkSpeedMin)
-            {
-                verticalReading = -accelerometerReading.Acceleration.X;
-            }
-
-            // Limit the velocity.
-            this.shark.LinearVelocity = Vector2.Clamp(
-                new Vector2(horizontalReading, verticalReading),
-                -Constants.Speeds.SharkVelocityMax,
-                Constants.Speeds.SharkVelocityMax);
         }
     }
 }
