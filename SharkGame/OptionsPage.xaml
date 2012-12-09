@@ -26,15 +26,15 @@
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Margin="155,60,155,10" Background="#A0000000" Grid.Row="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="70" />
-                <RowDefinition Height="70" />
-                <RowDefinition Height="70" />
-                <RowDefinition Height="70" />
+                <RowDefinition Height="90" />
+                <RowDefinition Height="90" />
+                <RowDefinition Height="90" />
+                <RowDefinition Height="90" />
             </Grid.RowDefinitions>
             <TextBlock Text="Music volume" Grid.Row="0" Padding="10"></TextBlock>
-            <Slider Name="MusicSlider" Grid.Row="0" Value="67" Minimum="0" Maximum="100" Width="400" Height="30" ValueChanged="MusicSlider_ValueChanged"></Slider>
+            <Slider Name="MusicSlider" Grid.Row="0" Value="67" Minimum="0" Maximum="100" Margin="0,30,0,-30" ValueChanged="MusicSlider_ValueChanged"></Slider>
             <TextBlock Text="Gore level" Grid.Row="1" Padding="10"></TextBlock>
-            <Slider Name="GoreSlider" Grid.Row="1" Value="67" Minimum="0" Maximum="100" Width="400" Height="30" ValueChanged="GoreSlider_ValueChanged"></Slider>
+            <Slider Name="GoreSlider" Grid.Row="1" Value="67" Minimum="0" Maximum="100" Margin="0,30,0,-30" ValueChanged="GoreSlider_ValueChanged"></Slider>
             <Button Name="ClearHighScores" Content="Clear high scores" Grid.Row="2" Margin="108,0" Click="ClearHighScores_Click" />
         </Grid>
         <Grid.Background>

@@ -520,7 +520,9 @@
         /// </summary>
         private void GameOver()
         {
+            // Stop the game timer and the music.
             MediaPlayer.Stop();
+            this.timer.Stop();
 
             // Check high-scores - if the score for this level was high enough, induct player to the high scores list.
             List<HighScore> highScores;

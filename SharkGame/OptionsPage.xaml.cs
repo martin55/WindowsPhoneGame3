@@ -1,12 +1,20 @@
 ﻿namespace SharkGame
 {
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.IO.IsolatedStorage;
     using Microsoft.Phone.Controls;
+    using Microsoft.Xna.Framework.Media;
+    using SharkGameLib;
 
     /// <summary>
     /// Represents a page containing all game options, accessible from the main game menu.
     /// </summary>
     public partial class OptionsPage : PhoneApplicationPage
     {
+        /* Fields */
+        IsolatedStorageSettings userSettings = IsolatedStorageSettings.ApplicationSettings;
+
         /* Constructor */
 
         /// <summary>
@@ -15,6 +23,20 @@
         public OptionsPage()
         {
             this.InitializeComponent();
+
+            double? soundVolume;
+            try
+            {
+                soundVolume = this.userSettings["Sound Volume"] as double?;
+            }
+            catch (KeyNotFoundException exception)
+            {
+                Debug.WriteLine("Sound Volume variable not found; " + exception.Message);
+                soundVolume = 66.6;
+            }
+
+            this.MusicSlider.Value = soundVolume.Value;
+            this.GoreSlider.Value = 100.0;
         }
 
         /* Methods */
@@ -26,7 +48,7 @@
         /// <param name="e">Detailed state connected with the event.</param>
         private void MusicSlider_ValueChanged(object sender, System.Windows.RoutedPropertyChangedEventArgs<double> e)
         {
-            // TODO: Adjust IsolatedStorageSettings
+            MediaPlayer.Volume = (float) (e.NewValue / 100.0);
         }
 
         /// <summary>
@@ -36,7 +58,18 @@
         /// <param name="e">Detailed state connected with the event.</param>
         private void GoreSlider_ValueChanged(object sender, System.Windows.RoutedPropertyChangedEventArgs<double> e)
         {
-            // TODO: Adjust IsolatedStorageSettings
+            if (userSettings.Contains("Gore Level"))
+            {
+                userSettings["Gore Level"] = e.NewValue;
+            }
+            else
+            {
+                userSettings.Add("Gore Level", e.NewValue);
+            }
+
+            // TODO: Implement actual in-game blood and gore level.
+
+            userSettings.Save();
         }
 
         /// <summary>
@@ -46,7 +79,16 @@
         /// <param name="e">Detailed state connected with the event.</param>
         private void ClearHighScores_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            // TODO: Adjust IsolatedStorageSettings
+            if (userSettings.Contains("High Scores"))
+            {
+                userSettings["High Scores"] = new List<HighScore>();
+            }
+            else
+            {
+                userSettings.Add("High Scores", new List<HighScore>());
+            }
+
+            userSettings.Save();
         }
     }
 }
